@@ -9,7 +9,7 @@ float func(float x){
 }
 
 
-long double DormanPrince(long double x0, long double y0, long double h, int x){
+long double DormanPrince(long double x0, long double y0, long double h, long double x){
     long double a[7][6] = {{0, 0, 0, 0, 0, 0},
              {1 / 5, 0, 0, 0, 0, 0},
              {3 / 40, 9 / 40, 0, 0, 0, 0},
@@ -27,13 +27,13 @@ long double DormanPrince(long double x0, long double y0, long double h, int x){
     int i = 0;
 
     while (x0 < x){
-        k[0] = h * func(yk);
-        k[1] = h * func( yk + a[1][0]* k[0]);
-        k[2] = h * func( yk + a[2][0] * k[0] + a[2][1] * k[1]);
-        k[3] = h * func( yk + a[3][0] * k[0] + a[3][1] * k[1] + a[3][2] * k[2]);
-        k[4] = h * func( yk + a[4][0] * k[0] + a[4][1] * k[1] + a[4][2] * k[2] + a[4][3] * k[3]);
-        k[5] = h * func( yk + a[5][0] * k[0] + a[5][1] * k[1] + a[5][2] * k[2] + a[5][3] * k[3] + a[5][4] * k[4]);
-        k[6] = h * func( yk + a[6][0] * k[0] + a[6][1] * k[1] + a[6][2] * k[2] + a[6][3] * k[3] + a[6][4] * k[4] + a[6][5] * k[5]);
+        k[0] = h * func(y0);
+        k[1] = h * func( y0 + a[1][0]* k[0]);
+        k[2] = h * func( y0 + a[2][0] * k[0] + a[2][1] * k[1]);
+        k[3] = h * func( y0 + a[3][0] * k[0] + a[3][1] * k[1] + a[3][2] * k[2]);
+        k[4] = h * func( y0 + a[4][0] * k[0] + a[4][1] * k[1] + a[4][2] * k[2] + a[4][3] * k[3]);
+        k[5] = h * func( y0 + a[5][0] * k[0] + a[5][1] * k[1] + a[5][2] * k[2] + a[5][3] * k[3] + a[5][4] * k[4]);
+        k[6] = h * func( y0 + a[6][0] * k[0] + a[6][1] * k[1] + a[6][2] * k[2] + a[6][3] * k[3] + a[6][4] * k[4] + a[6][5] * k[5]);
 
         for (int j =0; j < 7; j++){
             yk += k[j] *b[j];
@@ -59,7 +59,8 @@ long double DormanPrince(long double x0, long double y0, long double h, int x){
 
 int main()
 {
-    float x0 = 0, y = 0, h = 0.1, x = 5;
+    long double x0 = 0, y0 = 1, h = 0.1, x = 5;
+    cout << DormanPrince(x0, y0, h, x);
     return 0;
 }
 
