@@ -25,11 +25,11 @@ vector<pair<long double, long double>> DormanPrince(long double x0, long double 
     vector <long double> k = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
     long double yk = y0, zk = y0;
-    long double tol = 0.000001, err;
+    long double tol = 0.000001, err, m = 7;
     vector<pair<long double, long double>> xy;
     xy.emplace_back(x0, y0);
 
-    long double gamma; long double koef = 0.9;       //??? надо выбрать константы
+    long double gamma; long double koef = 0.9;
     k[0] = h * func(y0);
 
     while (x0 < x1){
@@ -40,12 +40,12 @@ vector<pair<long double, long double>> DormanPrince(long double x0, long double 
         k[5] = h * func( y0 + a[5][0] * k[0] + a[5][1] * k[1] + a[5][2] * k[2] + a[5][3] * k[3] + a[5][4] * k[4]);
         k[6] = h * func( y0 + a[6][0] * k[0] + a[6][1] * k[1] + a[6][2] * k[2] + a[6][3] * k[3] + a[6][4] * k[4] + a[6][5] * k[5]);
 
-        for (int j =0; j < 7; j++){ //подсчет ук и zк на очередном шаге
+        for (int j =0; j < 7; j++){
             yk += k[j] * b[j];
             zk += k[j] * b1[j];
         }
 
-        err = sqrt(pow((yk-zk), 2) / xy.size()); //пока так(
+        err = sqrt(pow((yk-zk), 2) / m);
         gamma = koef * pow((tol/err), 1/5);
 
         if (err <= tol){
