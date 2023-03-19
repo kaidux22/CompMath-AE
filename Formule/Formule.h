@@ -28,14 +28,12 @@ double GravPot(double x, double y, double z) {
 	double res = 1;
 
 	for (int n = 2; n <= Nz; n++) {
-		double J_wave = -Jn[n] / (nu * pow(R, n));
-		res += J_wave * Pmn.ExtractValue(n, 0) / pow(sqrt(x * x + y * y + z * z) / R, n);
+		res += Jn[n] * Pmn.ExtractValue(n, 0) / pow(sqrt(x * x + y * y + z * z) / R, n);
 	}
 
 	for (int n = 2; n <= Nt; n++) {
 		for (int m = 1; m <= n; m++) {
-			double C_wave = -Cmn[m][n] / (nu * pow(R, n)), S_wave = -Smn[m][n] / (nu * pow(R, n));
-			res += Pmn.ExtractValue(n, m) * (C_wave * cos(m * atan(x / y)) + S_wave * sin(m * atan(x / y))) / pow(sqrt(x * x + y * y + z * z) / R, n);
+			res += Pmn.ExtractValue(n, m) * (Cmn[m][n] * cos(m * atan(x / y)) + Smn[m][n]* sin(m * atan(x / y))) / pow(sqrt(x * x + y * y + z * z) / R, n);
 		}
 	}
 
