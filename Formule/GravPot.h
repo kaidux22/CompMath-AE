@@ -1,3 +1,10 @@
+#ifndef COMPMATH_GRAVPOT
+#define COMPMATH_GRAVPOT
+
+#include <cmath>
+#include <cassert>
+#include <iostream>
+
 #include "LegFunc.h"
 
 #define NZ_CONST 4
@@ -5,11 +12,13 @@
 #define NU_CONST 398600.4415 // км^3/с^2
 #define R_CONST 6378.1363 // км
 
+using namespace std;
+
 double GravPot(double x, double y, double z) {
 	assert(y != 0);
 	int Nz = NZ_CONST, Nt = NT_CONST;
 	double nu = NU_CONST, R = R_CONST;
-	double Jn[5] = {0.0, 0.0, -0.1082635854e-2, 0.2532435346e-5, 0.1619331205e-5};
+	double Jn[5] = { 0.0, 0.0, -0.1082635854e-2, 0.2532435346e-5, 0.1619331205e-5 };
 	//первый индекс - m, второй индекс - n
 	double Cmn[5][5] = { {0.0, 0.0, 0.0, 0.0, 0.0},
 					   {0.0, 0.0, -0.3504890360e-9, 0.2192798802e-5, -0.5087253036e-6},
@@ -33,9 +42,11 @@ double GravPot(double x, double y, double z) {
 
 	for (int n = 2; n <= Nt; n++) {
 		for (int m = 1; m <= n; m++) {
-			res += Pmn.ExtractValue(n, m) * (Cmn[m][n] * cos(m * atan(x / y)) + Smn[m][n]* sin(m * atan(x / y))) / pow(sqrt(x * x + y * y + z * z) / R, n);
+			res += Pmn.ExtractValue(n, m) * (Cmn[m][n] * cos(m * atan(x / y)) + Smn[m][n] * sin(m * atan(x / y))) / pow(sqrt(x * x + y * y + z * z) / R, n);
 		}
 	}
 
-	return res * (- nu / sqrt(x * x + y *y + z * z)); 
+	return res * (-nu / sqrt(x * x + y * y + z * z));
 }
+
+#endif //COMPMATH_GRAVPOT

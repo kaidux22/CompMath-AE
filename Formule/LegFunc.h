@@ -1,5 +1,11 @@
+#ifndef COMPMATH_LEGFUNC
+#define COMPMATH_LEGFUNC
+
 #include <cmath>
 #include <cassert>
+#include <iostream>
+
+typedef long double ld;
 
 using namespace std;
 
@@ -83,3 +89,5 @@ private:
 	double** mFuncs;
 	int mOrd, mPwr;
 };
+
+#endif //COMPMATH_LEGFUNC
