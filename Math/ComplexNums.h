@@ -2,6 +2,7 @@
 #define COMPMATH_COMPLEXNUMS
 
 #include <iostream>
+#include <cmath>
 
 using namespace std;
 
@@ -9,7 +10,10 @@ using namespace std;
 class ComplexNum {
 public:
 	//задаём a+bi, как ComplexNum(a, b)
-	ComplexNum(double real, double img): mReal(real), mImg(img) {}
+	ComplexNum(double real, double img) : mReal(real), mImg(img) {}
+
+	//преобразования double в ComplexNum
+	explicit ComplexNum(double realNum) : ComplexNum(realNum, 0) {}
 
 	//вещественная часть
 	double Real() const { return mReal; }
@@ -31,12 +35,28 @@ public:
 	ComplexNum operator *(const ComplexNum& other) {
 		return ComplexNum(mReal * other.Real() - mImg * other.Img(), mReal * other.Img() + mImg * other.Real());
 	}
+	
+	//модуль комплексного числа
+	double Module() {
+		return sqrt(mReal * mReal + mImg * mImg);
+	}
 
-	//вывод комплексных чисел в стандартной форме
+	//агрумент комплексного числа
+	double Arg() {
+		return atan(mImg / mReal);
+	}
+	
+	//Формула Муавра
+	ComplexNum Pow(double k) {
+		return ((ComplexNum)pow(Module(), k)) * ComplexNum(cos(Arg() * k), sin(Arg() * k));
+	}
+
 	friend std::ostream& operator <<(std::ostream& out, const ComplexNum& num) {
 		out << num.Real() << "+" << num.Img() << "i";
 		return out;
 	}
+
+
 
 private:
 	double mReal, mImg;
