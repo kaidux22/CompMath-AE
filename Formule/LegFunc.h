@@ -7,19 +7,22 @@
 
 using namespace std;
 
+//класс хранит полиномы Лежандра всех степеней и порядков до m и n
 class LegFunc {
 public:
+	//создаём таблицу значений полиномов
 	LegFunc(int n, int m, double arg) {
-		mOrd = n;
-		mPwr = m;
+		mOrd = n; //количество столбцов/порядок полинома
+		mPwr = m; //количество строк/степень полинома
 		mFuncs = new double * [mPwr + 1];
-		mFuncs[0] = LegPol(arg, mOrd);
+		mFuncs[0] = LegPol(arg, mOrd); //m = 0, поэтому первая строка - обычные полиномы Лежандра
 
 		for (int idx = 1; idx <= mPwr; idx++) {
 			mFuncs[idx] = new double[mOrd + 1];
 			mFuncs[idx][0] = 0;
 		}
 
+		//заполняем таблицу по реккурентным формулам
 		for (int pwr = 1; pwr <= mPwr; pwr++) {
 			for (int ord = 1; ord <= mOrd; ord++) {
 				if (pwr == ord) {
@@ -41,6 +44,7 @@ public:
 
 	}
 
+	//выводим всю таблицу значений
 	void PrintMaxtrix() {
 		for (int pwr = 0; pwr <= mPwr; pwr++) {
 			for (int ord = 0; ord <= mOrd; ord++) {
@@ -50,6 +54,7 @@ public:
 		}
 	}
 
+	//выводим значение полинома при конкретных n и m
 	double ExtractValue(int n, int m) {
 		assert(n <= mOrd && m <= mPwr);
 		return mFuncs[m][n];
@@ -64,6 +69,7 @@ public:
 
 private:
 
+	//метод создаёт список из полиномов Лежандра до порядка n
 	double* LegPol(double arg, int ord) {
 		double* pols = new double[ord + 1];
 		pols[0] = 1;

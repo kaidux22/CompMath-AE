@@ -21,6 +21,11 @@ public:
 	//мнимая часть
 	double Img() const { return mImg; }
 
+	//отрицание комплескного числа
+	ComplexNum operator -() const {
+		return ComplexNum(-mReal, -mImg);
+	}
+
 	//сумма комплексных чисел
 	ComplexNum operator +(const ComplexNum& other) const {
 		return ComplexNum(mReal + other.Real(), mImg + other.Img());

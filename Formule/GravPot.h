@@ -7,19 +7,16 @@
 
 #include "LegFunc.h"
 #include "ComplexNums.h"
+#include "Vnm.h"
 
 #define N_CONST 4
 #define NU_CONST 398600.4415 // км^3/с^2
 #define R_CONST 6378.1363 // км
+#define MAX_ORD 2 //наибольшая степень производной
 
 using namespace std;
 
-//функция для дальнейшего подсчёта градиента реккурентно
-ComplexNum Vnm(LegFunc& Pmn, int n, int m, int x, int y, int z) {
-	return (ComplexNum)(Pmn.ExtractValue(n, m) / (pow(sqrt(x * x + y * y + z * z), (double)(n + m + 1)))) * ComplexNum(x, y).Pow(m);
-}
-
-double GravPot(double x, double y, double z, ComplexNum(*func)(LegFunc&, int, int, int, int, int)) {
+double GravPot(double x, double y, double z, ComplexNum(*func)(LegFunc&, int, int, double, double, double)) {
 	assert(y != 0);
 	int N = N_CONST;
 	double nu = NU_CONST, R = R_CONST;
@@ -37,8 +34,8 @@ double GravPot(double x, double y, double z, ComplexNum(*func)(LegFunc&, int, in
 					   {0.0, 0.0, 0.0, 0.1972013239e-6, -0.1201129183e-7},
 					   {0.0, 0.0, 0.0, 0.0, 0.6525605810e-8} };
 
-	LegFunc Pmn = LegFunc(N, N, sqrt(x * x + y * y) / sqrt(x * x + y * y + z * z));
-	Pmn.PrintMaxtrix();
+	LegFunc Pmn = LegFunc(N + MAX_ORD, N + MAX_ORD, sqrt(x * x + y * y) / sqrt(x * x + y * y + z * z));
+	//Pmn.PrintMaxtrix();
 	ComplexNum res = ComplexNum(0, 0);
 
 	for (int n = 0; n <= N; n++) {
