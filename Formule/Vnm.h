@@ -11,11 +11,23 @@ ComplexNum Vnm(LegFunc& Pmn, int n, int m, double x, double y, double z) {
 }
 
 ComplexNum Vdx(LegFunc& Pmn, int n, int m, double x, double y, double z) {
-	return (ComplexNum)((-Vnm(Pmn, n + 1, m + 1, x, y, z)).Real());
+	if (m == 0) {
+		ComplexNum V = Vnm(Pmn, n + 1, 1, x, y, z);
+		return (ComplexNum)0.5 * (- V - V.Conj());	
+	}
+	ComplexNum res = Vnm(Pmn, n + 1, m - 1, x, y, z) * ComplexNum((n - m + 1) * (n - m + 2));
+	res = res + Vnm(Pmn, n + 1, m + 1, x, y, z);
+	return (ComplexNum)(-0.5) * res;
 }
 
 ComplexNum Vdy(LegFunc& Pmn, int n, int m, double x, double y, double z) {
-	return (ComplexNum)((-Vnm(Pmn, n + 1, m + 1, x, y, z)).Img());
+	if (m == 0) {
+		ComplexNum V = Vnm(Pmn, n + 1, 1, x, y, z);
+		return ComplexNum(0, 0.5) * (V - V.Conj());
+	}
+	ComplexNum res = Vnm(Pmn, n + 1, m - 1, x, y, z) * (ComplexNum)((n - m + 1)* (n - m + 2));
+	res = res + Vnm(Pmn, n + 1, m + 1, x, y, z);
+	return ComplexNum(0, 0.5) * res;
 }
 
 ComplexNum Vdz(LegFunc& Pmn, int n, int m, double x, double y, double z) {

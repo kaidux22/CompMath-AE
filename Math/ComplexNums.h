@@ -50,6 +50,11 @@ public:
 	double Arg() {
 		return atan(mImg / mReal);
 	}
+
+	//сопряжённое комплексное число
+	ComplexNum Conj() {
+		return ComplexNum(mReal, -mImg);
+	}
 	
 	//Формула Муавра
 	ComplexNum Pow(double k) {
