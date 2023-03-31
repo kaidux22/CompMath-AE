@@ -8,16 +8,17 @@
 #include "LegFunc.h"
 #include "ComplexNums.h"
 #include "Vnm.h"
+#include "Converter.h"
 
-#define N_CONST 4
+#define N_CONST 2
 #define NU_CONST 398600.4415 // км^3/с^2
 #define R_CONST 6378.1363 // км
 #define MAX_ORD 2 //наибольшая степень производной
 
 using namespace std;
 
-double GravPot(double x, double y, double z, ComplexNum(*func)(LegFunc&, int, int, double, double, double)) {
-	assert(y != 0);
+double GravPot(double* vec, ComplexNum(*func)(LegFunc&, int, int, double*)) {
+	assert(vec[1] != 0);
 	int N = N_CONST;
 	double nu = NU_CONST, R = R_CONST;
 	//первый индекс - m, второй индекс - n
@@ -34,20 +35,32 @@ double GravPot(double x, double y, double z, ComplexNum(*func)(LegFunc&, int, in
 					   {0.0, 0.0, 0.0, 0.1972013239e-6, -0.1201129183e-7},
 					   {0.0, 0.0, 0.0, 0.0, 0.6525605810e-8} };
 
-	LegFunc Pmn = LegFunc(N + MAX_ORD, N + MAX_ORD, sqrt(x * x + y * y) / sqrt(x * x + y * y + z * z));
+	//Создаю таблицу значений полиномов Лежандра до N + 2 степени и порядка
+	LegFunc Pmn = LegFunc(N + MAX_ORD, N + MAX_ORD, sqrt(vec[0] * vec[0] + vec[1] * vec[1]) / sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]));
 	//Pmn.PrintMaxtrix();
 	ComplexNum res = ComplexNum(0, 0);
+
 
 	for (int n = 0; n <= N; n++) {
 		if (n == 1) {
 			continue;
 		}
 		for (int m = 0; m <= n; m++) {
-			res = res + (ComplexNum)pow(R, n) * ComplexNum(Cmn[m][n], -Smn[m][n]) * func(Pmn, n, m, x, y, z);
+			res = res + (ComplexNum)pow(R, n) * ComplexNum(Cmn[m][n], -Smn[m][n]) * func(Pmn, n, m, vec);
 		}
 	}
 
 	return res.Real() * (-nu);
+}
+
+//метод возвращается градиент гравитационного потенциала
+double* GradV(double* vec, double time) {
+	double* grad = new double[3];
+	grad[0] = GravPot(vec, Vdx);
+	grad[1] = GravPot(vec, Vdy);
+	grad[2] = GravPot(vec, Vdz);
+	BodyToSpaceFixed(vec, time);
+	return grad;
 }
 
 #endif //COMPMATH_GRAVPOT
