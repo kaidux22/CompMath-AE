@@ -1,74 +1,78 @@
 #include <iostream>
+#include "GravPot.h"
+
+
 using namespace std;
+/*
+y'(t) = v(t)
+v'(t) = f
+ */
 
-void integrate(void (*f)(const double* y, double* k, double t), double t, double h, int N, double* y){
+void DormandPrince(double t, double h, const int N, double* vec, double a[7][7], double b[7], int integrate_numder, void (*f)(double* vec, ComplexNum(*dx)(LegFunc&, int, int, double*), ComplexNum(*dy)(LegFunc&, int, int, double*), ComplexNum(*dz)(LegFunc&, int, int, double*))) {
 
-    double k1[N], k2[N], k3[N], k4[N], k5[N], k6[N], k7[N], temp[N];
-
-    // Calculate k1
-    f(y, k1, t);
-
-    // Calculate k2
-    for (int i = 0; i < N; i++) {
-        temp[i] = y[i] + (1.0 / 5.0) * h * k1[i];
-    }
-    f(temp, k2, t + (1.0 / 5.0) * h);
-
-    // Calculate k3
-    for (int i = 0; i < N; i++) {
-        temp[i] = y[i] + (3.0 / 40.0) * h * k1[i] + (9.0 / 40.0) * h * k2[i];
-    }
-    f(temp, k3, t + (3.0 / 10.0) * h);
-
-    // Calculate k4
-    for (int i = 0; i < N; i++) {
-        temp[i] = y[i] + (44.0 / 45.0) * h * k1[i] - (56.0 / 15.0) * h * k2[i] + (32.0 / 9.0) * h * k3[i];
-    }
-    f(temp, k4, t + (4.0 / 5.0) * h);
-
-    // Calculate k5
-    for (int i = 0; i < N; i++) {
-        temp[i] = y[i] + (19372.0 / 6561.0) * h * k1[i] - (25360.0 / 2187.0) * h * k2[i] +
-                  (64448.0 / 6561.0) * h * k3[i] - (212.0 / 729.0) * h * k4[i];
-    }
-    f(temp, k5, t + (8.0 / 9.0) * h);
-
-    // Calculate k6
-    for (int i = 0; i < N; i++) {
-        temp[i] = y[i] + (9017.0 / 3168.0) * h * k1[i] - (355.0 / 33.0) * h * k2[i] +
-                  (46732.0 / 5247.0) * h * k3[i] + (49.0 / 176.0) * h * k4[i] - (5103.0 / 18656.0) * h * k5[i];
-    }
-    f(temp, k6, t + h);
-
-    // Calculate k7
-    for (int i = 0; i < N; i++) {
-        temp[i] = y[i] + (35.0 / 384.0) * h * k1[i] + (500.0 / 1113.0) * h * k3[i] +
-                  (125.0 / 192.0) * h * k4[i] - (2187.0 / 6784.0) * h * k5[i] + (11.0 / 84.0) * h * k6[i];
-    }
-    f(temp, k7, t + h);
-
-    // Update state
-    for (int i = 0; i < N; i++) {
-        y[i] += (35.0 / 384.0) * k1[i] + (500.0 / 1113.0) * k3[i] + (125.0 / 192.0) * k4[i] -
-                    (2187.0 / 6784.0) * k5[i] + (11.0 / 84.0) * k6[i];
+    double** k = new double* [7];
+    for (int i = 0; i < 7; i++) {
+        k[i] = new double[N];
+        for (int j = 0; j < N; j++) {
+            k[i][j] = 0;
+        }
     }
 
+    for (int i = 0 ; i < 7; i++) {
+        for (int j = 0; j < N; j++) {
+            k[i][j] = vec[j];
+            for (int t = 0; t < 7; t++) {
+                k[i][j] += a[i][t] * h * k[t][j];
+            }
+        }
+        if (!integrate_numder) {
+            f(k[i], Vdx, Vdy, Vdz);
+        }
+        
+    }
+
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < 7; j++) {
+            vec[i] += b[j] * k[j][i] * h;
+        }
+       
+    }
+    
 }
 
-void derivative(const double* y, double* k, double t){
-    k[0] = y[1];
-    k[1] = -1.0* y[0];
+
+void intergrate(double t, double h, const int N, double* vec, double a[7][7], double b[7], void (*f)(double* vec, ComplexNum(*dx)(LegFunc&, int, int, double*), ComplexNum(*dy)(LegFunc&, int, int, double*), ComplexNum(*dz)(LegFunc&, int, int, double*))) {
+    for (int i = 0; i < 2; i++) {
+        DormandPrince(t, h, N, vec, a, b, i, GravPot);
+    }
 }
 
-int main(){
-    int N = 2;
-    auto *y = new double [N];
-    y[0] = 1.0; y[1] = 0.0;
+
+
+int main() {
+
+    double a[7][7] = { {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
+                       {1.0/ 5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+                       {3.0/ 40.0, 9.0/ 40.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+                       {44.0 /45.0, -56.0/15.0, 32.0/ 9.0, 0.0, 0.0, 0.0, 0.0 },
+                       {19372.0/6561.0, -25360.0/2187.0, 64448.0/6561.0, -212.0/729.0, 0.0, 0.0, 0.0 },
+                       {9017.0/3168.0, -355.0/33.0, 46732.0/5247.0, 49.0/176.0, -5103.0/18656.0, 0.0, 0.0},
+                       {35.0/384.0, 0.0, 500.0/1113.0, 125.0/192.0, -2187.0/6784.0, 11.0/84.0, 0.0},
+    };
+
+    double b[7] = {5179.0/57600.0, 0.0, 7571.0/16695.0, 393.0/640.0, -92097.0/339200.0, 187.0/2100.0, 1.0/40.0 };
+
+
+    int N = 3;
+    auto* y = new double[N];
+    y[0] = 1.0; y[1] = 0.5; y[2] = 0.1;
     double t = 0.0, h = 0.01;
     for (int i = 0; i < 100; i++) {
-        integrate(derivative, t, h, N, y);
+
+        intergrate(t, h, N, y, a, b, GravPot);
+      
         t += h;
-        cout << y[0] << " " << y[1] << endl;
+        cout << y[0] << " " << y[1] << " " << y[2] << endl;
     }
 
     return 0;
