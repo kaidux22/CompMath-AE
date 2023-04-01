@@ -2,7 +2,7 @@
 #include "ComplexNums.h"
 #include "LegFunc.h"
 
-//функция для дальнейшего подсчёта градиента реккурентно
+//С„СѓРЅРєС†РёСЏ РґР»СЏ РґР°Р»СЊРЅРµР№С€РµРіРѕ РїРѕРґСЃС‡С‘С‚Р° РіСЂР°РґРёРµРЅС‚Р° СЂРµРєРєСѓСЂРµРЅС‚РЅРѕ
 ComplexNum Vnm(LegFunc& Pmn, int n, int m, double *vec) {
 	double Coef = Pmn.ExtractValue(n, m) / (pow(sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]), (double)(n + m + 1)));
 	return (ComplexNum)(Coef)*ComplexNum(vec[0], vec[1]).Pow(m);
