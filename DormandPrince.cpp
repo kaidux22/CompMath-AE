@@ -8,7 +8,7 @@ y'(t) = v(t)
 v'(t) = f
  */
 
-void DormandPrince(double t, double h, const int N, double* vec, double a[7][7], double b[7], int integrate_numder, void (*f)(double* vec, ComplexNum(*dx)(LegFunc&, int, int, double*), ComplexNum(*dy)(LegFunc&, int, int, double*), ComplexNum(*dz)(LegFunc&, int, int, double*))) {
+void DormandPrince(double t, double h, const int N, double* vec, double a[7][7], double b[7], int integrate_numder, double* (*f)(double* vec, double)) {
 
     double** k = new double* [7];
     for (int i = 0; i < 7; i++) {
@@ -26,7 +26,7 @@ void DormandPrince(double t, double h, const int N, double* vec, double a[7][7],
             }
         }
         if (!integrate_numder) {
-            f(k[i], Vdx, Vdy, Vdz);
+            k[i] = f(k[i], t);
         }
         
     }
@@ -41,9 +41,9 @@ void DormandPrince(double t, double h, const int N, double* vec, double a[7][7],
 }
 
 
-void intergrate(double t, double h, const int N, double* vec, double a[7][7], double b[7], void (*f)(double* vec, ComplexNum(*dx)(LegFunc&, int, int, double*), ComplexNum(*dy)(LegFunc&, int, int, double*), ComplexNum(*dz)(LegFunc&, int, int, double*))) {
+void intergrate(double t, double h, const int N, double* vec, double a[7][7], double b[7]) {
     for (int i = 0; i < 2; i++) {
-        DormandPrince(t, h, N, vec, a, b, i, GravPot);
+        DormandPrince(t, h, N, vec, a, b, i, GradV);
     }
 }
 
@@ -69,8 +69,7 @@ int main() {
     double t = 0.0, h = 0.01;
     for (int i = 0; i < 100; i++) {
 
-        intergrate(t, h, N, y, a, b, GravPot);
-      
+        intergrate(t, h, N, y, a, b);
         t += h;
         cout << y[0] << " " << y[1] << " " << y[2] << endl;
     }
