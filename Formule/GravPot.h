@@ -54,12 +54,36 @@ double GravPot(double* vec, ComplexNum(*func)(LegFunc&, int, int, double*)) {
 }
 
 //метод возвращается градиент гравитационного потенциала
-double* GradV(double* vec, double time) {
+double* GradV(double* vec, double UTC) {
+	double rotateMatrix[3][3];
+
+	iauC2t06a(UTC + 37 + 32.184, 0, UTC, 0, 0, 0, rotateMatrix);
+	
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			cout << rotateMatrix[i][j] << ' ';
+		}
+		cout << endl;
+	}
+
+	BodySpaceFixed(vec, UTC, rotateMatrix);
+
 	double* grad = new double[3];
 	grad[0] = GravPot(vec, Vdx);
 	grad[1] = GravPot(vec, Vdy);
 	grad[2] = GravPot(vec, Vdz);
-	BodyToSpaceFixed(vec, time);
+
+	Trans(rotateMatrix);
+
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			cout << rotateMatrix[i][j] << ' ';
+		}
+		cout << endl;
+	}
+
+	BodySpaceFixed(vec, UTC, rotateMatrix);
+
 	return grad;
 }
 
