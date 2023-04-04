@@ -44,30 +44,20 @@ double* GradV(double* vec, double UTC) {
 
 	iauC2t06a(UTC + 37 + 32.184, 0, UTC, 0, 0, 0, rotateMatrix);
 
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++) {
-			cout << rotateMatrix[i][j] << ' ';
-		}
-		cout << endl;
-	}
-
 	changeCoords(rotateMatrix, vec);
+	
+	cout << vec[0] << " " << vec[1] << " " << vec[2] << endl;	
 
 	double* grad = new double[3];
 	grad[0] = GravPot(vec, Vdx);
 	grad[1] = GravPot(vec, Vdy);
 	grad[2] = GravPot(vec, Vdz);
+	
+	cout << grad[0] << " " << grad[1] << " " << grad[2] << endl;
 
 	Transposition(rotateMatrix);
 
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++) {
-			cout << rotateMatrix[i][j] << ' ';
-		}
-		cout << endl;
-	}
-
-	changeCoords(rotateMatrix, vec);
+	changeCoords(rotateMatrix, grad);
 
 	return grad;
 }
