@@ -5,10 +5,11 @@
 #include <cassert>
 #include <iostream>
 
-#include "LegFunc.h"
-#include "ComplexNums.h"
+#include "../Math/LegFunc.h"
+#include "../Math/ComplexNums.h"
 #include "Vnm.h"
 #include "Converter.h"
+#include "../sofa/sofa.h"
 
 #define N_CONST 2
 #define NU_CONST 398600.4415 // км^3/с^2
@@ -24,9 +25,9 @@ double GravPot(double* vec, ComplexNum(*func)(LegFunc&, int, int, double*));
 double* GradV(double* vec, double UTC);
 
 /* Численное интегрирование методов Дорманда-Принца */
-void DormandPrince(double t, double h, const int N, double* vec, double a[7][7], double b[7], int integrate_numder, double* (*f)(double* vec, double));
+void DormandPrince(double UTC, double h, const int N, double* vec, double a[7][7], double b[7], double** k, int integrate_numder, double* (*f)(double* vec, double));
 
 /* Решение систему ОДУ */
-void intergrate(double UTC_start, double h, const int N, double* vec);
+double **intergrate(double UTC_start, double h, const int N, double* vec);
 
 #endif //COMPMATH_GRAVPOT

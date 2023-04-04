@@ -4,7 +4,7 @@
 #include <cmath>
 #include <cassert>
 
-//#include "GravPot.h"
+#include "Formule/GravPot.h"
 #include "Math/ComplexNums.h"
 #include "sofa/sofa.h"
 

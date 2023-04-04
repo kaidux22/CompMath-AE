@@ -1,5 +1,7 @@
 #include "GravPot.h"
 
+#define GENERAL_TIME 86400
+
 double GravPot(double* vec, ComplexNum(*func)(LegFunc&, int, int, double*)) {
 	assert(vec[1] != 0);
 	int N = N_CONST;
@@ -49,14 +51,14 @@ double* GradV(double* vec, double UTC) {
 		cout << endl;
 	}
 
-	BodySpaceFixed(vec, UTC, rotateMatrix);
+	changeCoords(rotateMatrix, vec);
 
 	double* grad = new double[3];
 	grad[0] = GravPot(vec, Vdx);
 	grad[1] = GravPot(vec, Vdy);
 	grad[2] = GravPot(vec, Vdz);
 
-	Trans(rotateMatrix);
+	Transposition(rotateMatrix);
 
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
@@ -65,7 +67,7 @@ double* GradV(double* vec, double UTC) {
 		cout << endl;
 	}
 
-	BodySpaceFixed(vec, UTC, rotateMatrix);
+	changeCoords(rotateMatrix, vec);
 
 	return grad;
 }
@@ -75,15 +77,7 @@ y'(t) = v(t)
 v'(t) = f
  */
 
-void DormandPrince(double t, double h, const int N, double* vec, double a[7][7], double b[7], int integrate_numder, double* (*f)(double* vec, double)) {
-
-	double** k = new double* [7];
-	for (int i = 0; i < 7; i++) {
-		k[i] = new double[N];
-		for (int j = 0; j < N; j++) {
-			k[i][j] = 0;
-		}
-	}
+void DormandPrince(double UTC, double h, const int N, double* vec, double a[7][7], double b[7], double** k, int integrate_numder, double* (*f)(double* vec, double)) {
 
 	for (int i = 0; i < 7; i++) {
 		for (int j = 0; j < N; j++) {
@@ -93,9 +87,8 @@ void DormandPrince(double t, double h, const int N, double* vec, double a[7][7],
 			}
 		}
 		if (!integrate_numder) {
-			k[i] = f(k[i], t);
+			k[i] = f(k[i], UTC);
 		}
-
 	}
 
 	for (int i = 0; i < N; i++) {
@@ -107,8 +100,8 @@ void DormandPrince(double t, double h, const int N, double* vec, double a[7][7],
 
 }
 
-void intergrate(double UTC_start, double h, const int N, double* vec) {
-	
+double** intergrate(double UTC, double h, const int N, double* vec) {
+
 	double a[7][7] = { {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
 					   {1.0 / 5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
 					   {3.0 / 40.0, 9.0 / 40.0, 0.0, 0.0, 0.0, 0.0, 0.0},
@@ -119,15 +112,32 @@ void intergrate(double UTC_start, double h, const int N, double* vec) {
 	};
 
 	double b[7] = { 5179.0 / 57600.0, 0.0, 7571.0 / 16695.0, 393.0 / 640.0, -92097.0 / 339200.0, 187.0 / 2100.0, 1.0 / 40.0 };
-	
-	double UTC = 2451545.0 * 24.0 * 60.0 * 60.0;
-	
-	// 86400 секунд в сутках
-	for (int i = 0; i < 86400 / h; i++) {
-		for (int i = 0; i < 2; i++) {
-			DormandPrince(UTC, h, N, vec, a, b, i, GradV);
-			
+
+	double** k = new double* [7];
+	for (int i = 0; i < 7; i++) {
+		k[i] = new double[N];
+		for (int j = 0; j < N; j++) {
+			k[i][j] = 0;
 		}
+	}
+
+	int cnt = GENERAL_TIME / h;
+	double** orbit = new double* [cnt];
+
+	// 86400 секунд в сутках
+	for (int i = 0; i < cnt; i++) {
+		for (int j = 0; j < 2; j++) {
+			DormandPrince(UTC, h, N, vec, a, b, k, j, GradV);
+
+		}
+		orbit[i] = new double[4];
+		orbit[i][0] = UTC, orbit[i][1] = vec[0], orbit[i][2] = vec[1], orbit[i][3] = vec[2];
 		UTC += h;
 	}
+
+	for (int i = 0; i < N; i++) {
+		delete[] k[i];
+	}
+	delete[] k;
+	return orbit;
 }
