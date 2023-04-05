@@ -1,0 +1,3 @@
+/home/helena/CLionProjects/comp_math/build/CMakeFiles/rebuild_cache.dir
+/home/helena/CLionProjects/comp_math/build/CMakeFiles/edit_cache.dir
+/home/helena/CLionProjects/comp_math/build/CMakeFiles/comp_math.dir

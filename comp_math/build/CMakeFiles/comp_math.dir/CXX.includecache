@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/helena/CLionProjects/comp_math/ComplexNums.h
+iostream
+-
+cmath
+-
+
+/home/helena/CLionProjects/comp_math/GravPot.cpp
+GravPot.h
+/home/helena/CLionProjects/comp_math/GravPot.h
+
+/home/helena/CLionProjects/comp_math/GravPot.h
+cmath
+-
+cassert
+-
+iostream
+-
+Vnm.h
+/home/helena/CLionProjects/comp_math/Vnm.h
+
+/home/helena/CLionProjects/comp_math/LegFunc.h
+cmath
+-
+cassert
+-
+
+/home/helena/CLionProjects/comp_math/Vnm.h
+ComplexNums.h
+/home/helena/CLionProjects/comp_math/ComplexNums.h
+LegFunc.h
+/home/helena/CLionProjects/comp_math/LegFunc.h
+
