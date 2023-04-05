@@ -1,6 +1,6 @@
 #include "GravPot.h"
 
-#define GENERAL_TIME 86400
+#define GENERAL_TIME 86400.0
 
 double GravPot(double* vec, ComplexNum(*func)(LegFunc&, int, int, double*)) {
 	assert(vec[1] != 0);
@@ -39,21 +39,17 @@ double GravPot(double* vec, ComplexNum(*func)(LegFunc&, int, int, double*)) {
 }
 
 //метод возвращается градиент гравитационного потенциала
-double* GradV(double* vec, double UTC) {
+double* GradV(double* vec, double JD) {
 	double rotateMatrix[3][3];
 
-	iauC2t06a(UTC + 37 + 32.184, 0, UTC, 0, 0, 0, rotateMatrix);
+	iauC2t06a(JD + (37.0 + 32.184) / 86400.0, 0, JD, 0, 0, 0, rotateMatrix);
 
 	changeCoords(rotateMatrix, vec);
-	
-	cout << vec[0] << " " << vec[1] << " " << vec[2] << endl;	
 
 	double* grad = new double[3];
 	grad[0] = GravPot(vec, Vdx);
 	grad[1] = GravPot(vec, Vdy);
 	grad[2] = GravPot(vec, Vdz);
-	
-	cout << grad[0] << " " << grad[1] << " " << grad[2] << endl;
 
 	Transposition(rotateMatrix);
 
@@ -67,7 +63,7 @@ y'(t) = v(t)
 v'(t) = f
  */
 
-void DormandPrince(double UTC, double h, const int N, double* vec, double a[7][7], double b[7], double** k, int integrate_numder, double* (*f)(double* vec, double)) {
+void DormandPrince(double JD, double h, const int N, double* vec, double a[7][7], double b[7], double** k, int integrate_numder, double* (*f)(double* vec, double)) {
 
 	for (int i = 0; i < 7; i++) {
 		for (int j = 0; j < N; j++) {
@@ -77,7 +73,7 @@ void DormandPrince(double UTC, double h, const int N, double* vec, double a[7][7
 			}
 		}
 		if (!integrate_numder) {
-			k[i] = f(k[i], UTC);
+			k[i] = f(k[i], JD);
 		}
 	}
 
@@ -90,7 +86,7 @@ void DormandPrince(double UTC, double h, const int N, double* vec, double a[7][7
 
 }
 
-double** intergrate(double UTC, double h, const int N, double* vec) {
+double** intergrate(double JD, double h, const int N, double* vec) {
 
 	double a[7][7] = { {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
 					   {1.0 / 5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
@@ -117,12 +113,12 @@ double** intergrate(double UTC, double h, const int N, double* vec) {
 	// 86400 секунд в сутках
 	for (int i = 0; i < cnt; i++) {
 		for (int j = 0; j < 2; j++) {
-			DormandPrince(UTC, h, N, vec, a, b, k, j, GradV);
+			DormandPrince(JD, h, N, vec, a, b, k, j, GradV);
 
 		}
 		orbit[i] = new double[4];
-		orbit[i][0] = UTC, orbit[i][1] = vec[0], orbit[i][2] = vec[1], orbit[i][3] = vec[2];
-		UTC += h;
+		orbit[i][0] = JD, orbit[i][1] = vec[0], orbit[i][2] = vec[1], orbit[i][3] = vec[2];
+		JD += h / 86400.0;
 	}
 
 	for (int i = 0; i < N; i++) {

@@ -1,9 +1,7 @@
-// CompMath.cpp: определяет точку входа для приложения.
-//
-
 #include "main.h"
 
-#define JD 86400.0
+#define JD 2451545.0
+#define STEP 60.0
 
 using namespace std;
 
@@ -13,15 +11,18 @@ using namespace std;
 //-4742,49 -4021,92 2939,37
 
 int main()
-{	double UTC_start = JD * 24.0 * 60.0 * 60.0;
+{	double JD_start = JD;
 	double *vec = new double[3];
 	double rotateMatrix[3][3];
 	vec[0] = -4661.36, vec[1] = -3953.12, vec[2] = 3154.59;
-	iauC2t06a(UTC_start + 37 + 32.184, 0, UTC_start, 0, 0, 0, rotateMatrix);
-	
+	iauC2t06a(JD_start + (37.0 + 32.184) / 86400.0, 0, JD_start, 0, 0, 0, rotateMatrix);
+
 	Transposition(rotateMatrix);
 	changeCoords(rotateMatrix, vec);
+	double** res = intergrate(JD, STEP, 3, vec); 
 	
-	double *res = GradV(vec, UTC_start);
-	cout << res[0] << " " << res[1] << " " << res[2] << endl;
+	for(int i = 0; i < 1000; i++){
+		cout << "time: " << res[i][0] << " x: " << res[i][1] << " y: " << res[i][2] << " z: " << res[i][3] << endl;
+	}
+	delete[] vec;
 }

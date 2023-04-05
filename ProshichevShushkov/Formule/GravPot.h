@@ -22,12 +22,12 @@ using namespace std;
 double GravPot(double* vec, ComplexNum(*func)(LegFunc&, int, int, double*));
 
 /* Подсчёт градиента гравитационного потенциала */
-double* GradV(double* vec, double UTC);
+double* GradV(double* vec, double JD);
 
 /* Численное интегрирование методов Дорманда-Принца */
-void DormandPrince(double UTC, double h, const int N, double* vec, double a[7][7], double b[7], double** k, int integrate_numder, double* (*f)(double* vec, double));
+void DormandPrince(double JD, double h, const int N, double* vec, double a[7][7], double b[7], double** k, int integrate_numder, double* (*f)(double* vec, double));
 
 /* Решение систему ОДУ */
-double **intergrate(double UTC_start, double h, const int N, double* vec);
+double **intergrate(double JD_start, double h, const int N, double* vec);
 
 #endif //COMPMATH_GRAVPOT
