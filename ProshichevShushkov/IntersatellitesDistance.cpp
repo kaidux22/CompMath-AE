@@ -4,9 +4,9 @@
 
 #define GENERAL_TIME 86400
 
-void ChangeCoordsTypeToEarth(double** vec, int cnt, double UTC){
+void ChangeCoordsTypeToEarth(double** vec, int cnt, double JD){
     double rotateMatrix[3][3];
-    iauC2t06a(UTC + 37 + 32.184, 0, UTC, 0, 0, 0, rotateMatrix);
+    iauC2t06a(JD + (37.0 + 32.184) / 86400.0, 0, JD, 0, 0, 0, rotateMatrix);
     for(int i = 0; i < cnt; ++i){
         double* newCoords = new double[4];
         newCoords[0] = vec[i][0];
@@ -15,17 +15,18 @@ void ChangeCoordsTypeToEarth(double** vec, int cnt, double UTC){
                     + rotateMatrix[j][1] * vec[i][2]
                     + rotateMatrix[j][2] * vec[i][3];
         }
-        swap(vec[i], newCoords);
+        for(int j = 0; j < 3; ++j)
+            vec[i][j+1] = newCoords[i+1];
         delete newCoords;
     }
 }
 
 
-float** IntersatelliteDistanceChange(double** FirstSatelliteOrbit, double** SecondSatelliteOrbit, double UTC, double h){
+float** IntersatelliteDistanceChange(double** FirstSatelliteOrbit, double** SecondSatelliteOrbit, double JD, double h){
     int cnt = GENERAL_TIME / h;
 
-    ChangeCoordsTypeToEarth(FirstSatelliteOrbit, cnt, UTC);
-    ChangeCoordsTypeToEarth(SecondSatelliteOrbit, cnt, UTC);
+    ChangeCoordsTypeToEarth(FirstSatelliteOrbit, cnt, JD);
+    ChangeCoordsTypeToEarth(SecondSatelliteOrbit, cnt, JD);
 
     float* IntersatelliteDistance = new float[cnt];
     for(int i = 1; i < cnt; ++i){
