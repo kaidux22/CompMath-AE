@@ -1,1 +1,0 @@
-/usr/bin/c++     CMakeFiles/comp_math.dir/DormandPrince.cpp.o CMakeFiles/comp_math.dir/Observatories.cpp.o CMakeFiles/comp_math.dir/Vnm.cpp.o CMakeFiles/comp_math.dir/GravPot.cpp.o CMakeFiles/comp_math.dir/main.cpp.o  -o comp_math 
