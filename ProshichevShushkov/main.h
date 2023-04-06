@@ -8,6 +8,7 @@
 #include "Math/ComplexNums.h"
 #include "Formule/Converter.h"
 #include "sofa/sofa.h"
+#include "DistanceOrbits.h"
 
 /* Юлианская дата */
 #define JD 2451545.0

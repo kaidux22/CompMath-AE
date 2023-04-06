@@ -5,6 +5,7 @@ using namespace std;
 int main()
 {	double JD_start = JD;
 	double *vec = new double[6];
+	int cnt = 86400 / STEP;
 	double rotateMatrix[3][3];
 	//начальное положение в ЗСК
 	vec[0] = START_POINT, vec[1] = 0, vec[2] = 0;
@@ -21,7 +22,7 @@ int main()
 	
 	/*
 	double** res = orbit1;
-	for(int i = 0; i < 1000; i++){
+	for(int i = 0; i < cnt; i++){
 		cout << "time: " << res[i][0] << " x: " << res[i][1] << " y: " << res[i][2] << " z: " << res[i][3] << endl;
 		cout << "Vx: " << res[i][3] << " Vy: " << res[i][4] << " Vz: " << res[i][5] << endl;
 		cout << endl;	
@@ -39,7 +40,12 @@ int main()
 	
 	double **orbit2 = intergrate(JD, STEP, 6, vec);
 	
-	for(int i = 0; i < 86400.0 / STEP; i++){
+	double** res = OrbitDistance(orbit1, orbit2, cnt);
+	
+	
+	
+	for(int i = 0; i < cnt; i++){
+		delete[] res[i];
 		delete[] orbit1[i];
 		delete[] orbit2[i];
 	}
