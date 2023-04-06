@@ -66,18 +66,3 @@ double** intergrate(double JD, double h, const int N, double* vec) {
 
 }
 
-
-
-/*
-int main() {
-
-    int N = 3;
-    auto* y = new double[N];
-    y[0] = 1.0; y[1] = 0.5; y[2] = 0.1;
-    double t = 0.0, h = 0.01;
-    intergrate(t, h, N, y);
-
-
-    return 0;
-}
-*/

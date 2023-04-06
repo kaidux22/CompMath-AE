@@ -1,8 +1,0 @@
-# ninja log v5
-326	402	1680626377026815089	comp_math	4f87470dbb545300
-1	343	1680625934279146871	CMakeFiles/comp_math.dir/Vnm.cpp.o	62b3cab943e74f02
-0	24	1680641927253595056	build.ninja	a8e6ce4d40ecd04d
-1	326	1680626376950812273	CMakeFiles/comp_math.dir/DormandPrince.cpp.o	8e09b3d207261c24
-2	379	1680625934315146635	CMakeFiles/comp_math.dir/GravPot.cpp.o	43c8992ba6bf58b4
-2	26	1680626376646801002	CMakeFiles/comp_math.dir/main.cpp.o	22ad486baec224d3
-0	374	1680625489671405610	CMakeFiles/comp_math.dir/Observatories.cpp.o	48bda46c1b4bc87e

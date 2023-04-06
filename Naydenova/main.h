@@ -12,3 +12,5 @@
 #include "sofa/sofa.h"
 
 using namespace std;
+
+double** create_observatories();
