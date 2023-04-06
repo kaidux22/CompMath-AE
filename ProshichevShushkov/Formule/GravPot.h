@@ -15,6 +15,7 @@
 #define NU_CONST 398600.4415 // км^3/с^2
 #define R_CONST 6378.1363 // км
 #define MAX_ORD 2 //наибольшая степень производной
+#define GENERAL_TIME 86400.0 //сутки в секундах
 
 using namespace std;
 
@@ -22,10 +23,10 @@ using namespace std;
 double GravPot(double* vec, ComplexNum(*func)(LegFunc&, int, int, double*));
 
 /* Подсчёт градиента гравитационного потенциала */
-double* GradV(double* vec, double JD);
+void GradV(double* vec, double JD);
 
 /* Численное интегрирование методов Дорманда-Принца */
-void DormandPrince(double JD, double h, const int N, double* vec, double a[7][7], double b[7], double** k, int integrate_numder, double* (*f)(double* vec, double));
+void DormandPrince(double JD, double h, const int N, double* vec, double a[7][7], double b[7], double** k, void (*f)(double*, double));
 
 /* Решение систему ОДУ */
 double **intergrate(double JD_start, double h, const int N, double* vec);

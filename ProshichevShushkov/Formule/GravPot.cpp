@@ -1,6 +1,6 @@
 #include "GravPot.h"
 
-#define GENERAL_TIME 86400.0
+
 
 double GravPot(double* vec, ComplexNum(*func)(LegFunc&, int, int, double*)) {
 	assert(vec[1] != 0);
@@ -39,12 +39,12 @@ double GravPot(double* vec, ComplexNum(*func)(LegFunc&, int, int, double*)) {
 }
 
 //метод возвращается градиент гравитационного потенциала
-double* GradV(double* vec, double JD) {
+void GradV(double* vec, double JD) {
 	double rotateMatrix[3][3];
 
 	iauC2t06a(JD + (37.0 + 32.184) / 86400.0, 0, JD, 0, 0, 0, rotateMatrix);
 
-	changeCoords(rotateMatrix, vec);
+	changeCoords(rotateMatrix, vec, 0);
 
 	double* grad = new double[3];
 	grad[0] = GravPot(vec, Vdx);
@@ -53,17 +53,17 @@ double* GradV(double* vec, double JD) {
 
 	Transposition(rotateMatrix);
 
-	changeCoords(rotateMatrix, grad);
-
-	return grad;
+	changeCoords(rotateMatrix, grad, 0);
+	
+	for(int i = 0; i < 3; i++){
+		vec[i] = vec[i + 3];
+		vec[i + 3] = grad[i];
+	}
+	
 }
 
-/*
-y'(t) = v(t)
-v'(t) = f
- */
 
-void DormandPrince(double JD, double h, const int N, double* vec, double a[7][7], double b[7], double** k, int integrate_numder, double* (*f)(double* vec, double)) {
+void DormandPrince(double JD, double h, const int N, double* vec, double a[7][7], double b[7], double** k, void (*f)(double*, double)) {
 
 	for (int i = 0; i < 7; i++) {
 		for (int j = 0; j < N; j++) {
@@ -72,9 +72,7 @@ void DormandPrince(double JD, double h, const int N, double* vec, double a[7][7]
 				k[i][j] += a[i][t] * h * k[t][j];
 			}
 		}
-		if (!integrate_numder) {
-			k[i] = f(k[i], JD);
-		}
+		f(k[i], JD);
 	}
 
 	for (int i = 0; i < N; i++) {
@@ -112,12 +110,10 @@ double** intergrate(double JD, double h, const int N, double* vec) {
 
 	// 86400 секунд в сутках
 	for (int i = 0; i < cnt; i++) {
-		for (int j = 0; j < 2; j++) {
-			DormandPrince(JD, h, N, vec, a, b, k, j, GradV);
-
-		}
-		orbit[i] = new double[4];
+		DormandPrince(JD, h, N, vec, a, b, k, GradV);
+		orbit[i] = new double[7];
 		orbit[i][0] = JD, orbit[i][1] = vec[0], orbit[i][2] = vec[1], orbit[i][3] = vec[2];
+		orbit[i][4] = vec[3], orbit[i][5] = vec[4], orbit[i][6] = vec[5];
 		JD += h / 86400.0;
 	}
 

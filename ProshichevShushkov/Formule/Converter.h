@@ -13,6 +13,6 @@ void Transposition(double(*matrix)[3]);
 /*
 Функция применяет матрицу для смены координат
 */
-void changeCoords(double(*rotateMatrix)[3], double* vec);
+void changeCoords(double(*rotateMatrix)[3], double* vec, int idx);
 
 #endif //COMPMATH_CONVERTER

@@ -10,13 +10,13 @@ void Transposition(double(*matrix)[3]) {
 	}
 }
 
-void changeCoords(double(*rotateMatrix)[3], double* vec) {
+void changeCoords(double(*rotateMatrix)[3], double* vec, int idx) {
 	double* newCoords = new double[3];
 	for (int i = 0; i < 3; i++) {
-		newCoords[i] = rotateMatrix[i][0] * vec[0] + rotateMatrix[i][1] * vec[1] + rotateMatrix[i][2] * vec[2];
+		newCoords[i] = rotateMatrix[i][0] * vec[idx] + rotateMatrix[i][1] * vec[idx + 1] + rotateMatrix[i][2] * vec[idx + 2];
 	}
 	
 	for(int i = 0; i < 3; i++)
-		vec[i] = newCoords[i];
+		vec[idx + i] = newCoords[i];
 	delete newCoords;
 }
