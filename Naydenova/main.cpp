@@ -56,8 +56,8 @@ int main(){
 
     for (int i=0; i < cnt; i++) {
         for (int j = 0; j < 8; j++) {
-            cout << sqrt(pow((stations[j][0] - res[i][1]), 2) + pow((stations[j][1] - res[i][2]), 2) +
-                         pow((stations[j][2] - res[i][3]), 2)) << "    ";
+            printf("%lf    ",sqrt(pow((stations[j][0] - res[i][1]), 2) + pow((stations[j][1] - res[i][2]), 2) +
+                         pow((stations[j][2] - res[i][3]), 2)));
         }
         cout << endl;
     }
