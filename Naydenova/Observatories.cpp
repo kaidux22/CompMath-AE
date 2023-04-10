@@ -14,12 +14,13 @@ Z19 342.11094 0.877701 +0.478380 La Palma-TNG
 
 Observatories::Observatories(double longitude, double cos, double sin): longitude(longitude), cos_l(cos), sin_l(sin) {
     vec = new double[3];
+    this->angle = longitude * PI /180;
     CylindrCoordToCartesian();
 };
 
 void Observatories::CylindrCoordToCartesian() {
-    vec[0] = R_CONST * cos(this->longitude) * cos_l;
-    vec[1] = R_CONST * sin(this->longitude) * cos_l;
+    vec[0] = R_CONST * cos(this->angle) * cos_l;
+    vec[1] = R_CONST * sin(this->angle) * cos_l;
     vec[2] = R_CONST * sin_l;
 }
 

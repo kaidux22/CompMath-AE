@@ -2,23 +2,6 @@
 
 
 
-double GravPot(double *vec, ComplexNum(*d)(LegFunc&, int, int, double*)) {
-    assert(vec[1] != 0);
-
-    int N = N_CONST;
-    double nu = NU_CONST, R = R_CONST;
-
-    double J0 = 1.0; double J2 = -0.1082635854e-2;
-
-    LegFunc Pmn = LegFunc(N + MAX_ORD, N + MAX_ORD, sqrt(vec[0] * vec[0] + vec[1] * vec[1]) / sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]));
-    ComplexNum res = ComplexNum(0, 0);
-
-    res = (ComplexNum)J0 * d(Pmn, 0, 0, vec) + (ComplexNum)pow(R, 2) * (ComplexNum)J2 * d(Pmn, 2, 0, vec);
-
-    return res.Real() * (-nu);
-
-}
-
 void GradV(double* vec, double JD) {
 
     double rotateMatrix[3][3];
@@ -27,10 +10,10 @@ void GradV(double* vec, double JD) {
 
     changeCoords(rotateMatrix, vec, 0);
 
-    double* grad = new double[6];
-    grad[0] = GravPot(vec, Vdx);
-    grad[1] = GravPot(vec, Vdy);
-    grad[2] = GravPot(vec, Vdz);
+    double* grad = new double[3];
+    grad[0] = dx(vec);
+    grad[1] = dy(vec);
+    grad[2] = dz(vec);
 
     Transposition(rotateMatrix);
 

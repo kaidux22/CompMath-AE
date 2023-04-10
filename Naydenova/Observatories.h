@@ -2,6 +2,7 @@
 #include <cmath>
 #include <iostream>
 using namespace std;
+#define PI 3.1415926535
 
 #define R_CONST 6378.1363 // км
 
@@ -13,6 +14,7 @@ public:
 private:
     void CylindrCoordToCartesian();
     double longitude;
+    double angle;
     double cos_l;
     double sin_l;
     double* vec;
