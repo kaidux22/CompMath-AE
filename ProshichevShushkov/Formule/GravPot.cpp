@@ -39,10 +39,14 @@ double GravPot(double* vec, ComplexNum(*func)(LegFunc&, int, int, double*)) {
 
 //метод возвращается градиент гравитационного потенциала
 void GradV(double* vec, double JD) {
-	double rotateMatrix[3][3];
+	double rotateMatrix[3][3] = {{1, 0, 0},
+								 {0, 1, 0},
+								 {0, 0, 1}};
 
-	iauC2t06a(JD + (37.0 + 32.184) / 86400.0, 0, JD, 0, 0, 0, rotateMatrix);
 
+	//iauC2t06a(JD + (37.0 + 32.184) / 86400.0, 0, JD, 0, 0, 0, rotateMatrix);
+
+	//перевод из НСК в ЗСК
 	changeCoords(rotateMatrix, vec, 0);
 
 	double* grad = new double[3];
@@ -52,6 +56,7 @@ void GradV(double* vec, double JD) {
 
 	Transposition(rotateMatrix);
 
+	//перевод из ЗСК в НСК
 	changeCoords(rotateMatrix, grad, 0);
 	
 	for(int i = 0; i < 3; i++){

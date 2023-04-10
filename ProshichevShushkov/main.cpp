@@ -7,7 +7,9 @@ int main()
 	double JD_start = JD;
 	double *vec = new double[6];
 	int cnt = 86400 / STEP;
-	double rotateMatrix[3][3];
+	double rotateMatrix[3][3] = {{1, 0, 0},
+								 {0, 1, 0},
+								 {0, 0, 1}};
 	//начальное положение в ЗСК
 	vec[0] = START_POINT, vec[1] = 0, vec[2] = 0;
 
@@ -15,7 +17,7 @@ int main()
 	vec[3] = 0, vec[4] = sqrt(GM / START_POINT), vec[5] = 0;
 
 	//перевод в НСК начальных параметров
-	iauC2t06a(JD_start + (37.0 + 32.184) / 86400.0, 0, JD_start, 0, 0, 0, rotateMatrix);
+	//iauC2t06a(JD_start + (37.0 + 32.184) / 86400.0, 0, JD_start, 0, 0, 0, rotateMatrix);
 	Transposition(rotateMatrix);
 	changeCoords(rotateMatrix, vec, 0); //перевод начальных координат в НСК
 	changeCoords(rotateMatrix, vec, 3); //перевод проекций скоростей в НСК 
@@ -25,10 +27,15 @@ int main()
 	double** res = orbit1;
 	for(int i = 0; i < cnt; i++){
 		cout << "time: " << res[i][0] << " x: " << res[i][1] << " y: " << res[i][2] << " z: " << res[i][3] << endl;
-		cout << "Vx: " << res[i][3] << " Vy: " << res[i][4] << " Vz: " << res[i][5] << endl;
+		cout << "Vx: " << res[i][4] << " Vy: " << res[i][5] << " Vz: " << res[i][6] << endl;
 		cout << endl;	
 	}
 
+	fstream file("result.txt", ios::out);
+	for(int i = 0; i < cnt; i++){
+		file << res[i][1] << " " << res[i][2] << " " << res[i][3] << endl;
+	}
+	file.close();
 	
 
 	/*
