@@ -11,7 +11,7 @@
 #include "Converter.h"
 #include "../sofa/sofa.h"
 
-#define N_CONST 2
+#define N_CONST 4
 #define NU_CONST 398600.4415 // км^3/с^2
 #define R_CONST 6378.1363 // км
 #define MAX_ORD 2 //наибольшая степень производной

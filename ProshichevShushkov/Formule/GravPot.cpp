@@ -3,7 +3,6 @@
 
 
 double GravPot(double* vec, ComplexNum(*func)(LegFunc&, int, int, double*)) {
-	assert(vec[1] != 0);
 	int N = N_CONST;
 	double nu = NU_CONST, R = R_CONST;
 	//первый индекс - m, второй индекс - n
@@ -21,7 +20,7 @@ double GravPot(double* vec, ComplexNum(*func)(LegFunc&, int, int, double*)) {
 					   {0.0, 0.0, 0.0, 0.0, 0.6525605810e-8} };
 
 	//Создаю таблицу значений полиномов Лежандра до N + 2 степени и порядка
-	LegFunc Pmn = LegFunc(N + MAX_ORD, N + MAX_ORD, sqrt(vec[0] * vec[0] + vec[1] * vec[1]) / sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]));
+	LegFunc Pmn = LegFunc(N + MAX_ORD, N + MAX_ORD, vec[2] / sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]));
 	//Pmn.PrintMaxtrix();
 	ComplexNum res = ComplexNum(0, 0);
 
@@ -31,7 +30,7 @@ double GravPot(double* vec, ComplexNum(*func)(LegFunc&, int, int, double*)) {
 			continue;
 		}
 		for (int m = 0; m <= n; m++) {
-			res = res + (ComplexNum)pow(R, n) * ComplexNum(Cmn[m][n], -Smn[m][n]) * func(Pmn, n, m, vec);
+			res = res + (ComplexNum(R, 0).Pow(n) * ComplexNum(Cmn[m][n], -Smn[m][n])) * func(Pmn, n, m, vec);
 		}
 	}
 

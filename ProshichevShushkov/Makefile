@@ -23,4 +23,5 @@ sofa.a:
 
 clean:
 	rm -rf *.o
+	rm CompMath
 	$(MAKE) clean -C ./sofa

@@ -1,9 +1,12 @@
 #include "Vnm.h"
 
 ComplexNum Vnm(LegFunc& Pmn, int n, int m, double* vec) {
+	double r = sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]);
+	double sin = vec[2] / r;
+	double cos = sqrt(vec[0] * vec[0] + vec[1] * vec[1]) / r;
 	double Coef = Pmn.ExtractValue(n, m);
-	Coef /= pow(sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]), (double)(n + m + 1));
-	Coef /= pow(cos(vec[2] / sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2])), m);
+	Coef /= pow(r, (double)(n + m + 1));
+	Coef /= pow(cos, m);
 	return (ComplexNum)(Coef)*ComplexNum(vec[0], vec[1]).Pow(m);
 }
 
