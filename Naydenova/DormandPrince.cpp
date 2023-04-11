@@ -4,16 +4,18 @@ y'(t) = v(t)
 v'(t) = 2
  */
 
-void DormandPrince(double JD, double h, const int N, double* vec, double a[7][7], double b[7], double** k, double c[7], void (*f)(double*, double)) {
+void DormandPrince(double JD, double h, const int N, double* vec, double a[7][7], double b[7], double** k, double c[7], void (*f)(double*, double*, double)) {
+
+    double* x = new double[N];
 
     for (int i = 0 ; i < 7; i++) {
         for (int j = 0; j < N; j++) {
-            k[i][j] = vec[j];
+            x[j] = vec[j];
             for (int t = 0; t < i; t++) {
-                k[i][j] += a[i][t] * h * k[t][j];
+                x[j] += a[i][t] * h * k[t][j];
             }
         }
-        f(k[i], JD + c[i]*h);
+        f(x, k[i], JD + c[i]* h);
     }
 
     for (int i = 0; i < N; i++) {
@@ -48,14 +50,14 @@ double** intergrate(double JD, double h, const int N, double* vec) {
     }
 
     int cnt = GENERAL_TIME / h;
-    double** orbit = new double* [20*cnt];
-
+    double** orbit = new double* [200*cnt];
+    h = h / 86400.0;
     // 86400 секунд в сутках
     for (int i = 0; i < cnt; i++) {
         DormandPrince(JD, h, N, vec, a, b, k, c, GradV);
         orbit[i] = new double[7];
         orbit[i][0] = JD, orbit[i][1] = vec[0], orbit[i][2] = vec[1], orbit[i][3] = vec[2], orbit[i][4] = vec[3], orbit[i][5] = vec[4], orbit[i][6] = vec[5];
-        JD += h / 86400.0;
+        JD += h;
     }
 
     for (int i = 0; i < N; i++) {

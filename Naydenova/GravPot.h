@@ -10,4 +10,4 @@
 
 using namespace std;
 
-void GradV(double* vec, double time) ;
+void GradV(double* x, double* vec, double time) ;

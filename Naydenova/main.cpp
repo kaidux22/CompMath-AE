@@ -44,12 +44,15 @@ int main(){
     vec[0] = START_POINT, vec[1] = 0, vec[2] = 0;
     vec[3] = 0, vec[4] = sqrt(GM / START_POINT), vec[5] = 0;
 
+   // cout << vec[0] <<"   " <<  vec[1] <<"   " << vec[2] <<"   " << vec[3] <<"   " << vec[4] <<"   " << vec[5] <<endl;
+
     iauC2t06a(JD_start + (37.0 + 32.184) / 86400.0, 0, JD_start, 0, 0, 0, rotateMatrix);
     Transposition(rotateMatrix);
     changeCoords(rotateMatrix, vec, 0);
     changeCoords(rotateMatrix, vec, 3);
 
     double** res = intergrate(JD, STEP, 6, vec);
+
 
     for (int i=0; i < cnt; i++) {
         cout << res[i][0] << "    " << res[i][1] << "    " << res[i][2] << "    " << res[i][3] << "    " << res[i][4] << "    " << res[i][5] << "    " << res[i][6] << endl;
@@ -73,11 +76,11 @@ int main(){
     }
      */
 
-
+    /*
     for(int i=0; i < cnt; i++){
         delete[] res[i];
     }
-    delete[] res;
+    delete[] res; */
 
     /*
     for (int i=0; i < 8; i++){
