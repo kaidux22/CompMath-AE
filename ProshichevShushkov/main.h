@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cmath>
 #include <cassert>
+#include <fstream>
 
 #include "Formule/GravPot.h"
 #include "Math/ComplexNums.h"
