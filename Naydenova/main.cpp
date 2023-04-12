@@ -1,7 +1,7 @@
 #include "main.h"
 
 #define JD 2451545.0
-#define STEP 60.0
+#define STEP 30.0
 #define GM 398600.4415 // км^3 / с^2
 #define START_POINT 6878.0 //км
 
@@ -44,16 +44,33 @@ int main(){
     vec[0] = START_POINT, vec[1] = 0, vec[2] = 0;
     vec[3] = 0, vec[4] = sqrt(GM / START_POINT), vec[5] = 0;
 
+    //cout << dx(vec) << " " << dy(vec) << " " << dz(vec) << endl;
+
+   // cout << vec[0] <<"   " <<  vec[1] <<"   " << vec[2] <<"   " << vec[3] <<"   " << vec[4] <<"   " << vec[5] <<endl;
+
     iauC2t06a(JD_start + (37.0 + 32.184) / 86400.0, 0, JD_start, 0, 0, 0, rotateMatrix);
     Transposition(rotateMatrix);
     changeCoords(rotateMatrix, vec, 0);
     changeCoords(rotateMatrix, vec, 3);
 
-    double** res = intergrate(JD, STEP, 6, vec);
-
-    double** stations = create_observatories();
+    double** res = integrate(JD, STEP, 6, vec);
 
 
+    for (int i=0; i < cnt; i++) {
+        cout << res[i][0] << "    " << res[i][1] << "    " << res[i][2] << "    " << res[i][3] << "    " << res[i][4] << "    " << res[i][5] << "    " << res[i][6] << endl;
+    }
+
+
+    fstream file("file.txt");
+    for (int i=0; i < cnt; i++) {
+        file <<  res[i][1] << " " << res[i][2] << " " << res[i][3]  << endl;
+    }
+
+    file.close();
+
+    //double** stations = create_observatories();
+
+    /*
     for (int i=0; i < cnt; i++) {
         for (int j = 0; j < 8; j++) {
             printf("%lf    ",sqrt(pow((stations[j][0] - res[i][1]), 2) + pow((stations[j][1] - res[i][2]), 2) +
@@ -61,16 +78,20 @@ int main(){
         }
         cout << endl;
     }
+     */
 
+    /*
     for(int i=0; i < cnt; i++){
         delete[] res[i];
     }
-    delete[] res;
+    delete[] res; */
 
+    /*
     for (int i=0; i < 8; i++){
         delete[] stations[i];
     }
-    delete[] stations;
+    delete[] stations;*/
 
     delete[] vec;
+
 }

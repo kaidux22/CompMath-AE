@@ -2,43 +2,32 @@
 
 
 
-double GravPot(double *vec, ComplexNum(*d)(LegFunc&, int, int, double*)) {
-    assert(vec[1] != 0);
+void GradV(double* x, double* vec, double JD) {
 
-    int N = N_CONST;
-    double nu = NU_CONST, R = R_CONST;
-
-    double J0 = 1.0; double J2 = -0.1082635854e-2;
-
-    LegFunc Pmn = LegFunc(N + MAX_ORD, N + MAX_ORD, sqrt(vec[0] * vec[0] + vec[1] * vec[1]) / sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]));
-    ComplexNum res = ComplexNum(0, 0);
-
-    res = (ComplexNum)J0 * d(Pmn, 0, 0, vec) + (ComplexNum)pow(R, 2) * (ComplexNum)J2 * d(Pmn, 2, 0, vec);
-
-    return res.Real() * (-nu);
-
-}
-
-void GradV(double* vec, double JD) {
+    vec[0] = x[3];
+    vec[1] = x[4];
+    vec[2] = x[5];
+    vec[3] = 0;
+    vec[4] = 0;
+    vec[5] = 0;
 
     double rotateMatrix[3][3];
 
     iauC2t06a(JD + (37.0 + 32.184) / 86400.0, 0, JD, 0, 0, 0, rotateMatrix);
 
-    changeCoords(rotateMatrix, vec, 0);
+    changeCoords(rotateMatrix, x, 0);
 
-    double* grad = new double[6];
-    grad[0] = GravPot(vec, Vdx);
-    grad[1] = GravPot(vec, Vdy);
-    grad[2] = GravPot(vec, Vdz);
+    double *grad = new double[3];
+    grad[0] = -dx(x);
+    grad[1] = -dy(x);
+    grad[2] = -dz(x);
 
     Transposition(rotateMatrix);
 
     changeCoords(rotateMatrix, grad, 0);
 
-    for (int i=0; i < 3; i++) {
-        vec[i] = vec[i+3];
-        vec[i+3] = grad[i];
+    for (int i = 0; i < 3; i++) {
+        vec[i + 3] = grad[i];
     }
-
 }
+
