@@ -23,10 +23,10 @@ def animate(i):
     ax.clear()
     ax.plot(xs, ys, zs)
 
-    plt.xlabel('x')
-    plt.ylabel('y')
-    #plt.zlabel('z')
-    plt.title('Orbit')
+    plt.xlabel('x [км]')
+    plt.ylabel('y [км]')
+    #plt.zlabel('z [км]')
+    plt.title('Орбита')
 
 
 ani = animation.FuncAnimation(fig, animate, interval=10)

@@ -15,7 +15,7 @@
 #define JD 2451545.0
 
 /* Шаг в 1 минуту */
-#define STEP 3600.0 //с
+#define STEP 30.0 //с
 
 /* G * m */
 #define GM 398600.4415 // км^3 / с^2
