@@ -6,16 +6,17 @@
 #define START_POINT 6878.0 //км
 
 
-double** create_observatories(){
+double** create_observatories(double JD_start){
 
-    Observatories initial_coord[8] = {Observatories(2.33675, 0.659470, 0.749223),
-                                      Observatories(359.1083,  0.70862,  0.70323),
-                                      Observatories(28.9667, 0.75566, 0.65278),
-                                      Observatories(260.8053,  0.94388,  0.33026),
-                                      Observatories(9.10031, 0.698332, 0.713430),
-                                      Observatories(149.0642,  0.85563,  0.51621),
-                                      Observatories(117.5750,  0.76278,  0.64470),
-                                      Observatories(342.11094, 0.877701, 0.478380),
+    Observatories initial_coord[8] = {
+                                      Observatories(281.5075,  1.00045,  -0.00405),
+                                      Observatories(260.8053,  0.94388,  +0.33026),
+                                      Observatories(42.5008,  0.72958,  0.68232 ),
+                                      Observatories(281.65,    0.999,    +0.000),
+                                      Observatories(321.3126,  0.98840,  -0.15179),
+                                      Observatories(299.99039, 0.998647, -0.051941),
+                                      Observatories(101.43942, 0.998617, +0.052565),
+                                      Observatories(282.70896, 1.000183, +0.021030),
                                       };
 
     double** station = new double *[8];
@@ -23,8 +24,8 @@ double** create_observatories(){
         station[i] = initial_coord[i].get_coords();
     }
 
+
     double rotateMatrix[3][3];
-    double JD_start = JD;
     iauC2t06a(JD_start + (37.0 + 32.184) / 86400.0, 0, JD_start, 0, 0, 0, rotateMatrix);
     Transposition(rotateMatrix);
     for (int i=0; i < 8; i++){
@@ -44,10 +45,6 @@ int main(){
     vec[0] = START_POINT, vec[1] = 0, vec[2] = 0;
     vec[3] = 0, vec[4] = sqrt(GM / START_POINT), vec[5] = 0;
 
-    //cout << dx(vec) << " " << dy(vec) << " " << dz(vec) << endl;
-
-   // cout << vec[0] <<"   " <<  vec[1] <<"   " << vec[2] <<"   " << vec[3] <<"   " << vec[4] <<"   " << vec[5] <<endl;
-
     iauC2t06a(JD_start + (37.0 + 32.184) / 86400.0, 0, JD_start, 0, 0, 0, rotateMatrix);
     Transposition(rotateMatrix);
     changeCoords(rotateMatrix, vec, 0);
@@ -55,10 +52,10 @@ int main(){
 
     double** res = integrate(JD, STEP, 6, vec);
 
-
+    /*
     for (int i=0; i < cnt; i++) {
         cout << res[i][0] << "    " << res[i][1] << "    " << res[i][2] << "    " << res[i][3] << "    " << res[i][4] << "    " << res[i][5] << "    " << res[i][6] << endl;
-    }
+    }*/
 
 
     fstream file("file.txt");
@@ -68,29 +65,29 @@ int main(){
 
     file.close();
 
-    //double** stations = create_observatories();
 
-    /*
+    fstream file_station("stations.txt");
     for (int i=0; i < cnt; i++) {
+        double** stations = create_observatories(res[i][0]);
+        double distance = pow(res[i][1],2) + pow(res[i][2],2) + pow(res[i][3],2);
+        double max_distance = sqrt(distance - pow(R_CONST,2));
         for (int j = 0; j < 8; j++) {
-            printf("%lf    ",sqrt(pow((stations[j][0] - res[i][1]), 2) + pow((stations[j][1] - res[i][2]), 2) +
-                         pow((stations[j][2] - res[i][3]), 2)));
-        }
-        cout << endl;
-    }
-     */
+            double r = sqrt(pow((stations[j][0] - res[i][1]), 2) + pow((stations[j][1] - res[i][2]), 2) +
+                              pow((stations[j][2] - res[i][3]), 2));
+            if (r <= max_distance){
+               file_station << res[i][0] - JD_start << " " << j << " "<< r << endl;
+               //cout << res[i][0] - JD_start << " " << j << " "<< r << endl;
 
-    /*
+            }
+        }
+    }
+    file_station.close();
+
+
     for(int i=0; i < cnt; i++){
         delete[] res[i];
     }
-    delete[] res; */
-
-    /*
-    for (int i=0; i < 8; i++){
-        delete[] stations[i];
-    }
-    delete[] stations;*/
+    delete[] res;
 
     delete[] vec;
 

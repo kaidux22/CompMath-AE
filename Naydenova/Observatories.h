@@ -12,7 +12,7 @@ public:
     double* get_coords();
 
 private:
-    void CylindrCoordToCartesian();
+    void SphericalCoordToCartesian();
     double longitude;
     double angle;
     double cos_l;
