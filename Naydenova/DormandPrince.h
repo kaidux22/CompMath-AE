@@ -6,4 +6,4 @@ using namespace std;
 
 void DormandPrince(double UTC, double h, const int N, double* vec, double a[7][7], double b[7], double** k, double c[7], void (*f)(double*, double*, double));
 
-double** intergrate(double UTC_start, double h, const int N, double* vec);
+double** integrate(double UTC_start, double h, const int N, double* vec);

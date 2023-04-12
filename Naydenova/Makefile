@@ -6,7 +6,7 @@ comp_math: sofa.a main.o Observatories.o DormandPrince.o GravPot.o Derivatives.o
 Converter.o: Converter.cpp Converter.h
 	g++ -c Converter.cpp
 
-Derivatives.o: Derivatives.h Derivatives.cpp LegFunc.h
+Derivatives.o: Derivatives.h Derivatives.cpp
 	g++ -c Derivatives.cpp
 
 GravPot.o: GravPot.h GravPot.cpp Converter.h Derivatives.h sofa/sofa.h

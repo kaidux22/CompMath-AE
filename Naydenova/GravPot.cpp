@@ -18,9 +18,9 @@ void GradV(double* x, double* vec, double JD) {
     changeCoords(rotateMatrix, x, 0);
 
     double *grad = new double[3];
-    grad[0] = dx(x);
-    grad[1] = dy(x);
-    grad[2] = dz(x);
+    grad[0] = -dx(x);
+    grad[1] = -dy(x);
+    grad[2] = -dz(x);
 
     Transposition(rotateMatrix);
 

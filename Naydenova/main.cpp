@@ -1,7 +1,7 @@
 #include "main.h"
 
 #define JD 2451545.0
-#define STEP 60.0
+#define STEP 30.0
 #define GM 398600.4415 // км^3 / с^2
 #define START_POINT 6878.0 //км
 
@@ -44,6 +44,8 @@ int main(){
     vec[0] = START_POINT, vec[1] = 0, vec[2] = 0;
     vec[3] = 0, vec[4] = sqrt(GM / START_POINT), vec[5] = 0;
 
+    //cout << dx(vec) << " " << dy(vec) << " " << dz(vec) << endl;
+
    // cout << vec[0] <<"   " <<  vec[1] <<"   " << vec[2] <<"   " << vec[3] <<"   " << vec[4] <<"   " << vec[5] <<endl;
 
     iauC2t06a(JD_start + (37.0 + 32.184) / 86400.0, 0, JD_start, 0, 0, 0, rotateMatrix);
@@ -51,7 +53,7 @@ int main(){
     changeCoords(rotateMatrix, vec, 0);
     changeCoords(rotateMatrix, vec, 3);
 
-    double** res = intergrate(JD, STEP, 6, vec);
+    double** res = integrate(JD, STEP, 6, vec);
 
 
     for (int i=0; i < cnt; i++) {
@@ -63,6 +65,8 @@ int main(){
     for (int i=0; i < cnt; i++) {
         file <<  res[i][1] << " " << res[i][2] << " " << res[i][3]  << endl;
     }
+
+    file.close();
 
     //double** stations = create_observatories();
 
