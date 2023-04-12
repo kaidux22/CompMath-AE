@@ -19,7 +19,6 @@ def animate(i):
         xs.append(float(x))
         ys.append(float(y))
         zs.append(float(z))
-
     ax.clear()
     ax.plot(xs, ys, zs)
 
