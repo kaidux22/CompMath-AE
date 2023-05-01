@@ -10,6 +10,7 @@
 #include "Converter.h"
 #include "sofa/sofa.h"
 #include <fstream>
+#include "SLE.h"
 
 using namespace std;
 
