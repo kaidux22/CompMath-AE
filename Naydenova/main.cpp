@@ -4,7 +4,7 @@
 #define STEP 60.0
 #define GM 398600.4415 // км^3 / с^2
 #define START_POINT 6878.0 //км
-#define GM_VAR 398650.4415 // км^3/с^2
+#define GM_VAR 398605.4415 // км^3/с^2
 #define J2_VAR 1.75553e10
 
 
@@ -68,7 +68,76 @@ int main(){
     }
 
 
-    //double** new_res = integrate_for_inverse(JD, STEP, 54, states, J2_VAR, GM_VAR);
+    double** new_res = integrate_for_inverse(JD, STEP, 54, states, J2_VAR, GM_VAR);
+    double** res = integrate(JD, STEP, 6, vec);
+
+    /*
+    for (int i=0; i < cnt; i++){
+        for (int j=0; j < 55; j++){
+            cout << new_res[i][j] << " ";
+        }
+        cout << endl << endl;
+    }
+    */
+
+    vector<vector<double>> A;
+
+    vector<double> r;
+
+    int station_number = 7;
+
+    for (int i=0; i < cnt; i++) {
+
+        double** stations = create_observatories(new_res[i][0]);
+        double distance = pow(new_res[i][1],2) + pow(new_res[i][2],2) + pow(new_res[i][3],2);
+        double max_distance = sqrt(distance - pow(R_CONST,2));
+        double r_var = sqrt(pow((stations[station_number][0] - new_res[i][1]), 2) + pow((stations[station_number][1] - new_res[i][2]), 2) +
+                            pow((stations[station_number][2] - new_res[i][3]), 2));
+        double r_original = sqrt(pow((stations[station_number][0] - res[i][1]), 2) + pow((stations[station_number][1] - res[i][2]), 2) +
+                        pow((stations[station_number][2] - res[i][3]), 2));
+
+        if (r_var <= max_distance && r_original <= max_distance){
+            double *dg_dX = new double [6];
+            for (int j =3; j < 6; j++){
+                dg_dX[j] = 0;
+            }
+            dg_dX[0] = dg_dx(new_res[i], stations[station_number]);
+            dg_dX[1] = dg_dy(new_res[i], stations[station_number]);
+            dg_dX[2] = dg_dz(new_res[i], stations[station_number]);
+
+            vector<double> current_r;
+
+            for (int k=0; k < 8; k++){
+                double res = 0;
+                for (int t=0; t < 6; t++){
+                    res += dg_dX[t] * new_res[i][6 + 6*k +t];
+                }
+                current_r.push_back(-res);
+            }
+            A.push_back(current_r);
+            r.push_back(r_var - r_original); ///?
+        }
+    }
+
+    double** AtA = multiplication_AtA(A);
+    double* Atr = multiplication_Atr(A, r);
+
+    double* x = Cholesky_decomposition(AtA, 8, Atr);
+
+    double *b = new double[8];
+
+    for(int i=0; i < 8; i++){
+        b[i] = states[i] - x[i];
+    }
+
+    for(int i=0; i < 8; i++){
+        cout << b[i] << "  ";
+    }
+
+
+
+
+
 
 
     /*
@@ -79,7 +148,7 @@ int main(){
     */
 
 
-    //double** res = integrate(JD, STEP, 6, vec);
+    //
 
     /*
       for (int i=0; i < cnt; i++) {

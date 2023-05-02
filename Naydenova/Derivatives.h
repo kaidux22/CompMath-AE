@@ -9,3 +9,7 @@ double dx(double* vec) ;
 double dy(double* vec) ;
 
 double dz(double* vec) ;
+
+double dg_dx(double* vec, double* coords);
+double dg_dy(double* vec, double* coords);
+double dg_dz(double* vec, double* coords);

@@ -52,6 +52,7 @@ double** integrate(double JD, double h, const int N, double* vec) {
     int cnt = GENERAL_TIME / h;
     double** orbit = new double* [cnt];
 
+
     // 86400 секунд в сутках
     for (int i = 0; i < cnt; i++) {
         DormandPrince(JD, h, N, 0, 0, vec, a, b, k, c, GradV);
@@ -106,13 +107,7 @@ double** integrate_for_inverse(double JD, double h, const int N, double* vec, do
         JD += h/86400.0;
     }
 
-    for (int i = 0; i < N; i++) {
-        delete[] k[i];
-    }
-    delete[] k;
-
     return states;
-
 }
 
 

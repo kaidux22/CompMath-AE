@@ -22,6 +22,7 @@ double** create_matrix_df_dx(double* x, double mu, double J){
     df_dx[5][0] = -duz_dx(x, mu, J);
     df_dx[5][1] = -duz_dy(x, mu, J);
     df_dx[5][2] = -duz_dz(x, mu, J);
+
     return df_dx;
 }
 
@@ -32,6 +33,7 @@ void function(double* x, double* vec, double JD, double J, double mu){
     vec[3] = 0;
     vec[4] = 0;
     vec[5] = 0;
+
 
     double rotateMatrix[3][3];
 
@@ -53,7 +55,7 @@ void function(double* x, double* vec, double JD, double J, double mu){
        for (int j = 0; j < 8; j++){
            double res = 0;
            for (int k = 0; k < 6; k++){
-               res += df_dx[i][k] + x[6 + 6*j + k];
+               res += df_dx[i][k] * x[6 + 6*j + k];
            }
            states[6*j + i] = res;
        }
@@ -70,7 +72,7 @@ void function(double* x, double* vec, double JD, double J, double mu){
 
     changeCoords(rotateMatrix, grad, 0);
 
-    for (int i=0; i < 16;i++){  ///?
+    for (int i=0; i < 16; i++){  ///?
         changeCoords(rotateMatrix, states, 3*i);
     }
 
