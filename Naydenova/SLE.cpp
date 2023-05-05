@@ -17,7 +17,6 @@ double* Cholesky_decomposition(double** A, int size, double* b){
             for (int k = 0; k < j; k++) {
                 sum += L[i][k] * L[j][k];
             }
-
             if (i == j) {
                 L[i][j] = sqrt(A[i][i] - sum);
             } else {
@@ -26,6 +25,15 @@ double* Cholesky_decomposition(double** A, int size, double* b){
 
         }
     }
+    cout << endl;
+    for(int i=0; i < 8; i++){
+        for(int j=0; j < 8; j++){
+            cout << L[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+
     double* x = new double[size];
 
     //  L*y=b

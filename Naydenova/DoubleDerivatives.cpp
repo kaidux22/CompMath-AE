@@ -4,7 +4,7 @@
 double dux_dx(double* vec, double mu, double J){
     double sum_sqrs = pow(vec[0],2) + pow(vec[1],2) + pow(vec[2],2);
     double res = -mu * ((2* pow(vec[0],2) - pow(vec[1],2) - pow(vec[2], 2))/pow(sum_sqrs,2.5)) +
-                 J * 1.5 * (((35 * pow(vec[0],2) *pow(vec[1],2) *
+                 J * 1.5 * (((35 * pow(vec[0],2) *pow(vec[2],2) * pow(sum_sqrs, 0.5) *
                  (pow(vec[0],4) + pow(vec[1],4) + pow(vec[2],4) + 2*pow(vec[0],2)*pow(vec[1],2) + 2*pow(vec[0],2)*pow(vec[2],2)
                  + 2*pow(vec[1],2)*pow(vec[2],2)) - 5*pow(vec[2],2)* pow(sum_sqrs,3.5)) / pow(sum_sqrs,7))
                  - (1.0/3.0)* ((15*pow(vec[0],2) * pow(sum_sqrs,0.5) - 3* pow(sum_sqrs, 1.5)) / pow(sum_sqrs,4)));
@@ -41,7 +41,7 @@ double duy_dx(double* vec, double mu, double J){
 double duy_dy(double* vec, double mu, double J){
     double sum_sqrs = pow(vec[0],2) + pow(vec[1],2) + pow(vec[2],2);
     double res = -mu * ((2* pow(vec[1],2) - pow(vec[0],2) - pow(vec[2], 2))/pow(sum_sqrs,2.5)) +
-                 J * 1.5 * (((35 * pow(vec[1],2) *pow(vec[2],2) *
+                 J * 1.5 * (((35 * pow(vec[1],2) *pow(vec[2],2) * pow(sum_sqrs, 0.5) *
                  (pow(vec[0],4) + pow(vec[1],4) + pow(vec[2],4) + 2*pow(vec[0],2)*pow(vec[1],2) + 2*pow(vec[0],2)*pow(vec[2],2)
                  + 2*pow(vec[1],2)*pow(vec[2],2)) - 5*pow(vec[2],2)* pow(sum_sqrs,3.5)) / pow(sum_sqrs,7))
                  - (1.0/3.0)* ((15*pow(vec[1],2) * pow(sum_sqrs,0.5) - 3* pow(sum_sqrs, 1.5)) / pow(sum_sqrs,4)));
@@ -90,19 +90,19 @@ double duz_dz(double* vec, double mu, double J){
 
 double dux_dmu(double* vec){
     double sum_sqrs = pow(vec[0],2) + pow(vec[1],2) + pow(vec[2],2);
-    double res = -vec[0] / pow(sum_sqrs, 1.5);
+    double res = vec[0] / pow(sum_sqrs, 1.5);
     return res;
 }
 
 double duy_dmu(double* vec){
     double sum_sqrs = pow(vec[0],2) + pow(vec[1],2) + pow(vec[2],2);
-    double res = -vec[1] / pow(sum_sqrs, 1.5);
+    double res = vec[1] / pow(sum_sqrs, 1.5);
     return res;
 }
 
 double duz_dmu(double* vec){
     double sum_sqrs = pow(vec[0],2) + pow(vec[1],2) + pow(vec[2],2);
-    double res = -vec[2] / pow(sum_sqrs, 1.5);
+    double res = vec[2] / pow(sum_sqrs, 1.5);
     return res;
 }
 

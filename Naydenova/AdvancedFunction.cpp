@@ -2,7 +2,7 @@
 
 double** create_matrix_df_dx(double* x, double mu, double J){
     double **df_dx = new double*[6];
-    for(int i=0; i < 6;i++){
+    for(int i=0; i < 6; i++){
         df_dx[i] = new double[6];
         for (int j = 0; j < 6; j++){
             df_dx[i][j] = 0;
@@ -34,6 +34,27 @@ void function(double* x, double* vec, double JD, double J, double mu){
     vec[4] = 0;
     vec[5] = 0;
 
+    double *states = new double[48];
+
+    double **df_dx = create_matrix_df_dx(x, mu, J);
+
+    for (int i=0; i < 6; i++){
+        for (int j = 0; j < 8; j++){
+            double res = 0;
+            for (int k = 0; k < 6; k++){
+                res += df_dx[i][k] * x[6 + 6*j + k];
+            }
+            states[6*j + i] = res;
+        }
+    }
+
+    states[39] += -dux_dmu(x);
+    states[40] += -duy_dmu(x);
+    states[41] += -duz_dmu(x);
+    states[45] += -dux_dJ(x);
+    states[46] += -duy_dJ(x);
+    states[47] += -duz_dJ(x);
+
 
     double rotateMatrix[3][3];
 
@@ -46,35 +67,14 @@ void function(double* x, double* vec, double JD, double J, double mu){
     grad[1] = -dy(x);
     grad[2] = -dz(x);
 
-    double *states = new double[48];
-
-    double **df_dx = create_matrix_df_dx(x, mu, J);
-
-
-   for (int i=0; i < 6; i++){
-       for (int j = 0; j < 8; j++){
-           double res = 0;
-           for (int k = 0; k < 6; k++){
-               res += df_dx[i][k] * x[6 + 6*j + k];
-           }
-           states[6*j + i] = res;
-       }
-   }
-
-   states[39] += -dux_dmu(x);
-   states[40] += -duy_dmu(x);
-   states[41] += -duz_dmu(x);
-   states[45] += -dux_dJ(x);
-   states[46] += -duy_dJ(x);
-   states[47] += -duz_dJ(x);
 
     Transposition(rotateMatrix);
 
     changeCoords(rotateMatrix, grad, 0);
 
-    for (int i=0; i < 16; i++){  ///?
+    /*for (int i=0; i < 16; i++){  ///?
         changeCoords(rotateMatrix, states, 3*i);
-    }
+    }*/
 
     for (int i = 0; i < 3; i++) {
         vec[i + 3] = grad[i];
