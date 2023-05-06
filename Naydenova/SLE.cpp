@@ -13,46 +13,38 @@ double* Cholesky_decomposition(double** A, int size, double* b){
 
     for (int i=0; i < size; i++){
         for (int j = 0; j < (i + 1); j++){
-            double sum = 0;
+            double res = 0;
             for (int k = 0; k < j; k++) {
-                sum += L[i][k] * L[j][k];
+                res += L[i][k] * L[j][k];
             }
             if (i == j) {
-                L[i][j] = sqrt(A[i][i] - sum);
+                L[i][j] = sqrt(A[i][i] - res);
             } else {
-                L[i][j] = (1.0 / L[j][j] * (A[i][j] - sum));
+                L[i][j] = (1.0 / L[j][j] * (A[i][j] - res));
             }
 
         }
     }
-    cout << endl;
-    for(int i=0; i < 8; i++){
-        for(int j=0; j < 8; j++){
-            cout << L[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl;
 
     double* x = new double[size];
 
     //  L*y=b
     double* y = new double[size];
     for (int i = 0; i < size; i++){
-        double sum = 0;
+        double res = 0;
         for (int j = 0; j < i; j++){
-            sum += L[i][j] * y[j];
+            res += L[i][j] * y[j];
         }
-        y[i] = (1.0 / L[i][i]) * (b[i] - sum);
+        y[i] = (1.0 / L[i][i]) * (b[i] - res);
     }
 
     //  L^t*x=y
     for (int i = size-1; i >= 0; i--){
-        double sum = 0;
+        double res = 0;
         for (int j = i+1; j < size; j++){
-            sum += L[j][i] * x[j];
+            res += L[j][i] * x[j];
         }
-        x[i] = (1.0 / L[i][i]) * (y[i] - sum);
+        x[i] = (1.0 / L[i][i]) * (y[i] - res);
     }
 
     delete[] y;

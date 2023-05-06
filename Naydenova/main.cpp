@@ -1,11 +1,11 @@
 #include "main.h"
 
 #define JD 2451545.0
-#define STEP 60.0
+#define STEP 30.0
 #define GM 398600.4415 // км^3 / с^2
 #define START_POINT 6878.0 //км
 #define START_POINT_VAR 6878.0 //км
-#define GM_VAR 398650.4415 // км^3/с^2
+#define GM_VAR 398601.45 // км^3/с^2
 #define J2_VAR 1.75553e10
 
 
@@ -78,21 +78,21 @@ int main(){
     double** new_res = integrate_for_inverse(JD, STEP, 54, states, J2_VAR, GM_VAR);
     double** res = integrate(JD, STEP, 6, vec);
 
-
+    /*
     for (int i=0; i < cnt; i++){
         for (int j=0; j < 55; j++){
             cout << new_res[i][j] << " ";
         }
         cout << endl << endl;
     }
-    cout << endl << endl;
+    cout << endl << endl; */
 
     vector<vector<double>> A;
 
     vector<double> r_b;
 
 
-    for (int i=0; i < cnt; i++) {
+    for (int i=0; i < 2 * cnt; i++) {
         double **stations = create_observatories(res[i][0]);
         double distance = pow(res[i][1], 2) + pow(res[i][2], 2) + pow(res[i][3], 2);
         double max_distance = sqrt(distance - pow(R_CONST, 2));
@@ -125,33 +125,16 @@ int main(){
                     current_r.push_back(-result);
                 }
                 A.push_back(current_r);
-                for (int r=0; r < current_r.size(); r++){
-                    cout << current_r[r] << " ";
-                }
-                cout << endl;
                 r_b.push_back(r_var - r_original);
             }
 
         }
     }
 
-    cout << endl;
 
     double** AtA = multiplication_AtA(A);
     double* Atr = multiplication_Atr(A, r_b);
 
-    for (int i= 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
-            cout << AtA[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl;
-    for (int i= 0; i < 8; i++) {
-        cout << Atr[i] << " ";
-    }
-
-    cout << endl;
 
     double* x = Cholesky_decomposition(AtA, 8, Atr);
 
@@ -162,7 +145,6 @@ int main(){
         b_new[i] = b[i] - x[i];
     }
 
-    cout << endl;
 
     for(int i=0; i < 8; i++){
         cout << b[i] << "  ";
@@ -175,22 +157,6 @@ int main(){
     cout << endl;
 
 
-    /*
-    for (int i=0; i < 54; i++){
-        cout << states[i] << " ";
-    }
-    cout << endl;
-    */
-
-
-    //
-
-    /*
-      for (int i=0; i < cnt; i++) {
-          cout << res[i][0] << "    " << res[i][1] << "    " << res[i][2] << "    " << res[i][3] << "    " << res[i][4] << "    " << res[i][5] << "    " << res[i][6] << endl;
-      }
-    */
-
 
     fstream file("file.txt");
     for (int i=0; i < cnt; i++) {
@@ -200,29 +166,18 @@ int main(){
     file.close();
 
 
-    /*
-    fstream file_station("stations.txt");
-    for (int i=0; i < cnt; i++) {
-        double** stations = create_observatories(res[i][0]);
-        double distance = pow(res[i][1],2) + pow(res[i][2],2) + pow(res[i][3],2);
-        double max_distance = sqrt(distance - pow(R_CONST,2));
-        for (int j = 0; j < 8; j++) {
-            double r_b = sqrt(pow((stations[j][0] - res[i][1]), 2) + pow((stations[j][1] - res[i][2]), 2) +
-                              pow((stations[j][2] - res[i][3]), 2));
-            if (r_b <= max_distance){
-               file_station << res[i][0] - JD_start << " " << j << " "<< r_b << endl;
-            }
-        }
-    }
-    file_station.close();
 
 
-    for(int i=0; i < cnt; i++){
+
+    for(int i=0; i < 2* cnt; i++){
         delete[] res[i];
+        delete[] new_res[i];
     }
     delete[] res;
+    delete[] new_res;
 
     delete[] vec;
+    delete[] states;
 
-    */
+
 }
