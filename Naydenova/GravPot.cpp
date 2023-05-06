@@ -2,7 +2,7 @@
 
 
 
-void GradV(double* x, double* vec, double JD) {
+void GradV(double* x, double* vec, double JD, double J, double mu) {
 
     vec[0] = x[3];
     vec[1] = x[4];
@@ -15,7 +15,7 @@ void GradV(double* x, double* vec, double JD) {
 
     iauC2t06a(JD + (37.0 + 32.184) / 86400.0, 0, JD, 0, 0, 0, rotateMatrix);
 
-    changeCoords(rotateMatrix, x, 0);
+    changeCoords(rotateMatrix, x, 0);   //ЗСК
 
     double *grad = new double[3];
     grad[0] = -dx(x);
