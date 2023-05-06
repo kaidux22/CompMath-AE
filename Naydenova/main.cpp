@@ -4,9 +4,7 @@
 #define STEP 30.0
 #define GM 398600.4415 // км^3 / с^2
 #define START_POINT 6878.0 //км
-#define START_POINT_VAR 6878.0 //км
-#define GM_VAR 398601.45 // км^3/с^2
-#define J2_VAR 1.75553e10
+#define J2 1.75553e10
 
 
 double** create_observatories(double JD_start){
@@ -49,8 +47,8 @@ int main(){
 
 
     double *states = new double[54];
-    states[0] = START_POINT_VAR, states[1] = 0, states[2] = 0;
-    states[3] = 0, states[4] = sqrt(GM_VAR / START_POINT_VAR), states[5] = 0;
+    states[0] = START_POINT + 0.00001, states[1] = 0, states[2] = 0;
+    states[3] = 0, states[4] = sqrt((GM - 0.00001) / (START_POINT + 0.00001)), states[5] = 0;
     for(int i=6; i < 54; i++){
         states[i] = 0;
     }
@@ -71,11 +69,11 @@ int main(){
     for (int i=0; i < 6; i++){
         b[i] = states[i];
     }
-    b[6] = GM_VAR;
-    b[7] = J2_VAR;
+    b[6] = GM - 0.00001;
+    b[7] = J2 + 0.00001;
 
 
-    double** new_res = integrate_for_inverse(JD, STEP, 54, states, J2_VAR, GM_VAR);
+    double** new_res = integrate_for_inverse(JD, STEP, 54, states, J2 + 0.00001, GM - 0.00001);
     double** res = integrate(JD, STEP, 6, vec);
 
     /*
@@ -164,9 +162,6 @@ int main(){
     }
 
     file.close();
-
-
-
 
 
     for(int i=0; i < 2* cnt; i++){
