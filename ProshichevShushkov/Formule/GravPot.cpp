@@ -129,6 +129,7 @@ double** intergrate(double UTC, double h, const int N, double* vec) {
 		for (int j = 0; j < 2; j++) {
 			DormandPrince(UTC, h, N, vec, a, b, k, j, GradV);
 
+<<<<<<< Updated upstream
 		}
 		orbit[i] = new double[4];
 		orbit[i][0] = UTC, orbit[i][1] = vec[0], orbit[i][2] = vec[1], orbit[i][3] = vec[2];
@@ -141,3 +142,24 @@ double** intergrate(double UTC, double h, const int N, double* vec) {
 	delete[] k;
 	return orbit;
 }
+=======
+    return orbit;
+}
+
+double DerivativedVdC(double* vec, int n, int m, ComplexNum(*func)(LegFunc&, int, int, double*)){
+    LegFunc Pmn = LegFunc(N + MAX_ORD, N + MAX_ORD, vec[2] / sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]));
+    ComplexNum res = ComplexNum(R_CONST,0).Pow(n) * func(Pmn, n, m, vec);
+    return res.Real();
+}
+
+double DerivativedVdS(double* vec, int n, int m, ComplexNum(*func)(LegFunc&, int, int, double*)){
+    LegFunc Pmn = LegFunc(N + MAX_ORD, N + MAX_ORD, vec[2] / sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]));
+    ComplexNum res = ComplexNum(0,-1) * ComplexNum(R_CONST,0).Pow(n) * func(Pmn, n, m, vec);
+    return res.Real();
+}
+
+double DerivativedVdM(double* vec, ComplexNum(*func)(LegFunc&, int, int, double*)){
+    ComplexNum res = (NU_CONST/M_CONST) * GravPot(vec, func);
+    return res.Real();
+}
+>>>>>>> Stashed changes

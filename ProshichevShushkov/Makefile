@@ -6,13 +6,13 @@ CompMath: sofa.a main.o GravPot.o Converter.o Vnm.o
 main.o: main.cpp main.h Math/ComplexNums.h 
 	g++ -c main.cpp
 
-GravPot.o: Formule/GravPot.cpp Formule/GravPot.h Math/LegFunc.h Math/ComplexNums.h Formule/Vnm.h Formule/Converter.h
+GravPot.o: Formule/GravPot.cpp Formule/GravPot.h Math/LegFunc.h Math/ComplexNums.h Formule/DerivativesV.h Formule/Converter.h
 	g++ -c Formule/GravPot.cpp
  
 Converter.o: Formule/Converter.cpp Formule/Converter.h
 	g++ -c Formule/Converter.cpp
 
-Vnm.o: Formule/Vnm.cpp Formule/Vnm.h Math/ComplexNums.h Math/LegFunc.h
+Vnm.o: Formule/DerivativesV.cpp Formule/DerivativesV.h Math/ComplexNums.h Math/LegFunc.h
 	g++ -c Formule/Vnm.cpp
 
 sofa.a:
