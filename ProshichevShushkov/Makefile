@@ -1,7 +1,7 @@
 all: CompMath
 
-CompMath: sofa.a main.o GravPot.o Converter.o Vnm.o DistanceOrbits.o
-	g++ main.o GravPot.o Converter.o DerivativesV.o DistanceOrbits.o sofa/libsofa_c.a -o CompMath
+CompMath: sofa.a main.o GravPot.o Converter.o DerivativesV.o DistanceOrbits.o SupportMath.o
+	g++ main.o GravPot.o Converter.o DerivativesV.o DistanceOrbits.o SupportMath.o sofa/libsofa_c.a -o CompMath
 
 main.o: main.cpp main.h Math/ComplexNums.h Formule/Converter.h
 	g++ -c main.cpp
@@ -12,11 +12,14 @@ GravPot.o: Formule/GravPot.cpp Formule/GravPot.h Math/LegFunc.h Math/ComplexNums
 Converter.o: Formule/Converter.cpp Formule/Converter.h
 	g++ -c Formule/Converter.cpp
 
-DerivativesV.o: Formule/DerivativesV.cpp Formule/DerivativesV.h Math/ComplexNums.h Math/LegFunc.h
+DerivativesV.o: Formule/DerivativesV.cpp Formule/DerivativesV.h Math/ComplexNums.h Math/LegFunc.h Math/SupportMath.h
 	g++ -c Formule/DerivativesV.cpp
 
 DistanceOrbits.o: DistanceOrbits.cpp DistanceOrbits.h
 	g++ -c DistanceOrbits.cpp
+
+SupportMath.o: Math/SupportMath.h Math/SupportMath.cpp
+	g++ -c Math/SupportMath.cpp
 
 sofa.a:
 	$(MAKE) -C ./sofa

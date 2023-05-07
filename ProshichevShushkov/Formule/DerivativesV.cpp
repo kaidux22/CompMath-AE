@@ -35,83 +35,83 @@ ComplexNum Vdz(LegFunc& Pmn, int n, int m, double* vec) {
 }
 
 ComplexNum Vdxdx(LegFunc& Pmn, int n, int m, double* vec){
-    ComplexNum res;
+    ComplexNum res = ComplexNum(0, 0);
     if(m > 1){
-        res = 0.25 * Vnm(Pmn, n+2, m+2, vec);
-        res -= 0.5 * (n-m+1) * (n-m+2) * Vnm(Pmn, n+2, m, vec);
-        res += 0.25 * (n-m+1) * (n-m+2) * (n-m+3) * (n-m+4) * Vnm(Pmn, n+2, m-2, vec);
+        res = (ComplexNum)0.25 * Vnm(Pmn, n+2, m+2, vec);
+        res = res - (ComplexNum)(0.5 * (n-m+1) * (n-m+2)) * Vnm(Pmn, n+2, m, vec);
+        res = res + (ComplexNum)(0.25 * (n-m+1) * (n-m+2) * (n-m+3) * (n-m+4)) * Vnm(Pmn, n+2, m-2, vec);
         return res;
     } else if(m == 1){
-        res = 0.25 * Vnm(Pmn, n+2, 3, vec);
-        res -= 0.5 * n * (n+1) * Vnm(Pmn, n+2, 1, vec);
-        res -= 0.25 * n * (n+1) * Vnm(Pmn, n+2, 1, vec).Conj();
+        res = (ComplexNum)0.25 * Vnm(Pmn, n+2, 3, vec);
+        res = res - (ComplexNum)(0.5 * n * (n+1)) * Vnm(Pmn, n+2, 1, vec);
+        res = res - (ComplexNum)(0.25 * n * (n+1)) * Vnm(Pmn, n+2, 1, vec).Conj();
         return res;
     }
-    res = 0.25 * Vnm(Pmn, n+2, 2, vec);
-    res -= (factorial(n+2) / factorial(2*n)) * Vnm(Pmn, n+2, 0, vec);
-    res += 0.25 * Vnm(Pmn, n+2, 2, vec).Conj();
+    res = (ComplexNum)0.25 * Vnm(Pmn, n+2, 2, vec);
+    res = res - (ComplexNum)(Factorial(n+2) / Factorial(2*n)) * Vnm(Pmn, n+2, 0, vec);
+    res = res + (ComplexNum)0.25 * Vnm(Pmn, n+2, 2, vec).Conj();
     return res;
 }
 
 ComplexNum Vdydy(LegFunc& Pmn, int n, int m, double* vec){
-    ComplexNum res;
+    ComplexNum res = ComplexNum(0, 0);
     if(m > 1){
-        res = -0.25 * Vnm(Pmn, n+2, m+2, vec);
-        res -= 0.5 * (n-m+1) * (n-m+2) * Vnm(Pmn, n+2, m, vec);
-        res -= 0.25 * (n-m+1) * (n-m+2) * (n-m+3) * (n-m+4) * Vnm(Pmn, n+2, m-2, vec);
+        res = (ComplexNum)-0.25 * Vnm(Pmn, n+2, m+2, vec);
+        res = res - (ComplexNum)(0.5 * (n-m+1) * (n-m+2)) * Vnm(Pmn, n+2, m, vec);
+        res = res - (ComplexNum)(0.25 * (n-m+1) * (n-m+2) * (n-m+3) * (n-m+4)) * Vnm(Pmn, n+2, m-2, vec);
         return res;
     } else if(m == 1){
-        res = -0.25 * Vnm(Pmn, n+2, 3, vec);
-        res -= 0.5 * n * (n+1) * Vnm(Pmn, n+2, 1, vec);
-        res += 0.25 * n * (n+1) * Vnm(Pmn, n+2, 1, vec).Conj();
+        res = (ComplexNum)-0.25 * Vnm(Pmn, n+2, 3, vec);
+        res = res - (ComplexNum)(0.5 * n * (n+1)) * Vnm(Pmn, n+2, 1, vec);
+        res = res + (ComplexNum)(0.25 * n * (n+1)) * Vnm(Pmn, n+2, 1, vec).Conj();
         return res;
     }
-    res = -0.25 * Vnm(Pmn, n+2, 2, vec);
-    res -= (factorial(n+2) / factorial(2*n)) * Vnm(Pmn, n+2, 0, vec);
-    res -= 0.25 * Vnm(Pmn, n+2, 2, vec).Conj();
+    res = (ComplexNum)-0.25 * Vnm(Pmn, n+2, 2, vec);
+    res = res - (ComplexNum)(Factorial(n+2) / Factorial(2*n)) * Vnm(Pmn, n+2, 0, vec);
+    res = res - (ComplexNum)0.25 * Vnm(Pmn, n+2, 2, vec).Conj();
     return res;
 }
 
 ComplexNum Vdzdz(LegFunc& Pmn, int n, int m, double* vec){
-    return (n-m+1) * (n-m+2) * Vnm(Pmn, n+2, m, vec);
+    return (ComplexNum)((n-m+1) * (n-m+2)) * Vnm(Pmn, n+2, m, vec);
 }
 
 ComplexNum Vdxdy(LegFunc& Pmn, int n, int m, double* vec){
-    ComplexNum res;
+    ComplexNum res = ComplexNum(0, 0);
     if(m > 1){
         res = Vnm(Pmn, n+2, m+2, vec) * ComplexNum(0,-0.25);
-        res += ComplexNum(0,0.25) * (n-m+1) * (n-m+2) * (n-m+3) * (n-m+4) * Vnm(Pmn, n+2, m-2, vec);
+        res = res + ComplexNum(0,0.25) * (ComplexNum)((n-m+1) * (n-m+2) * (n-m+3) * (n-m+4)) * Vnm(Pmn, n+2, m-2, vec);
         return res;
     } else if(m == 1){
         res = Vnm(Pmn, n+2, 3, vec) * ComplexNum(0,-0.25);
-        res -= ComplexNum(0,0.25) * n * (n-m+1) * Vnm(Pmn, n+2, 1, vec).Conj();
+        res = res - ComplexNum(0,0.25) * (ComplexNum)(n * (n-m+1)) * Vnm(Pmn, n+2, 1, vec).Conj();
         return res;
     }
     res = ComplexNum(0,-0.25) * Vnm(Pmn, n+2, 2, vec);
-    res += ComplexNum(0,0.25) * Vnm(Pmn, n+2, 2, vec).Conj();
+    res = res + ComplexNum(0,0.25) * Vnm(Pmn, n+2, 2, vec).Conj();
     return res;
 }
 
 ComplexNum Vdxdz(LegFunc& Pmn, int n, int m, double* vec){
-    ComplexNum res;
+    ComplexNum res = ComplexNum(0, 0);
     if(m > 0){
-        res = 0.5 * (n-m+1) * Vnm(Pmn, n+2, m+1, vec);
-        res -= 0.5 * (n-m+1) * (n-m+2) * (n-m+3) * Vnm(Pmn, n+2, m-1, vec);
+        res = (ComplexNum)(0.5 * (n-m+1)) * Vnm(Pmn, n+2, m+1, vec);
+        res = res - (ComplexNum)(0.5 * (n-m+1) * (n-m+2) * (n-m+3)) * Vnm(Pmn, n+2, m-1, vec);
         return res;
     }
-    res = 0.5 * (n+1) * Vnm(Pmn, n+2, 1, vec);
-    res += 0.5 * (n+1) * Vnm(Pmn, n+2, 1, vec).Conj();
+    res = (ComplexNum)(0.5 * (n+1)) * Vnm(Pmn, n+2, 1, vec);
+    res = res + (ComplexNum)(0.5 * (n+1)) * Vnm(Pmn, n+2, 1, vec).Conj();
     return res;
 }
 
 ComplexNum Vdydz(LegFunc& Pmn, int n, int m, double* vec){
-    ComplexNum res;
+    ComplexNum res = ComplexNum(0, 0);
     if(m > 0){
-        res = ComplexNum(0,-0.5) * (n-m+1) * Vnm(Pmn, n+2, m+1, vec);
-        res -= ComplexNum(0,0.5) * (n-m+1) * (n-m+2) * (n-m+3) * Vnm(Pmn, n+2, m-1, vec);
+        res = ComplexNum(0,-0.5) * (ComplexNum)(n-m+1) * Vnm(Pmn, n+2, m+1, vec);
+        res = res - ComplexNum(0,0.5) * (ComplexNum)((n-m+1) * (n-m+2) * (n-m+3)) * Vnm(Pmn, n+2, m-1, vec);
         return res;
     }
-    res = ComplexNum(0,-0.5) * (n+1) * Vnm(Pmn, n+2, 1, vec);
-    res += ComplexNum(0,0.5) * (n+1) * Vnm(Pmn, n+2, 1, vec).Conj();
+    res = ComplexNum(0,-0.5) * (ComplexNum)(n+1) * Vnm(Pmn, n+2, 1, vec);
+    res = res + ComplexNum(0,0.5) * (ComplexNum)(n+1) * Vnm(Pmn, n+2, 1, vec).Conj();
     return res;
 }

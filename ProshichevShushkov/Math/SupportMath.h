@@ -1,13 +1,6 @@
-#ifndef COMPMATH_FACTORIAL
-#define COMPMATH_FACTORIAL
+#ifndef COMPMATH_FACT
+#define COMPMATH_FACT
 
-double factorial(int N){
-    if(N < 0)
-        return 0.0;
-    if (N == 0)
-        return 1.0;
-    else
-        return (double)N * fact(N - 1);
-}
+double Factorial(int N);
 
-#endif
+#endif //COMPMATH_FACT
