@@ -63,7 +63,11 @@
   <component name="RunManager">
     <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
+<<<<<<< Updated upstream
         <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+=======
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+>>>>>>> Stashed changes
       </method>
     </configuration>
     <configuration name="Unnamed" type="CppFileRunConfiguration" factoryName="CppFileRunConfiguration" nameIsGenerated="true" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
@@ -81,8 +85,13 @@
       <option name="presentableId" value="Default" />
       <updated>1680639140533</updated>
       <workItem from="1680639141924" duration="5902000" />
+<<<<<<< Updated upstream
       <workItem from="1680722711300" duration="295000" />
       <workItem from="1683463942444" duration="35000" />
+=======
+      <workItem from="1680722711300" duration="895000" />
+      <workItem from="1681047081078" duration="16000" />
+>>>>>>> Stashed changes
     </task>
     <servers />
   </component>
