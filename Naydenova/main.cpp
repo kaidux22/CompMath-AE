@@ -39,8 +39,8 @@ double** create_observatories(double JD_start){
 
 int main(){
 
-    //double noise[8] = {10,-5,1,0.005,-0.005,0.000003,50, 10};
-    double noise[8] = {0,0,0,0,0,0,0, 0};
+    double noise[8] = {10,-5,1,0.005,-0.005,0.000003,50, 10};
+    //double noise[8] = {0,0,0,0,0,0,0, 0};
 
     int cnt = GENERAL_TIME / STEP;
     double JD_start = JD;
@@ -118,12 +118,14 @@ int main(){
 
                     vector<double> current_r;
 
+                    double var = 1.0/(pow(0.00001, 2));
+
                     for (int k = 0; k < 8; k++) {
                         double result = 0;
                         for (int t = 0; t < 6; t++) {
                             result += dg_dX[t] * new_res[i][7 + 6 * k + t];
                         }
-                        current_r.push_back(-result);
+                        current_r.push_back(-result * var);
                     }
                     /*
                     for (int r=0; r < 8; r++){
