@@ -57,9 +57,13 @@ public:
 		return ComplexNum(mReal, -mImg);
 	}
 	
-	/* Формула Муавра */
+	/* Формула НеМуавра */
 	ComplexNum Pow(double k) {
-		return ((ComplexNum)pow(Module(), k)) * ComplexNum(cos(Arg() * k), sin(Arg() * k));
+		ComplexNum res = ComplexNum(1, 0);
+		for(int i = 0; i < k; i++){
+			res = res * ComplexNum(mReal, mImg);
+		}
+		return res;
 	}
 
 	/* Вывод комплексного числа в формате a+bi */

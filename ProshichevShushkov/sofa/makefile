@@ -376,6 +376,7 @@ installcheck test: $(SOFA_TEST_NAME) $(SOFA_INC) $(SOFA_LIB)
 # Delete object files.
 clean :
 	- $(RM) $(SOFA_OBS)
+	rm libsofa_c.a
 
 # Delete all generated binaries in the current directory.
 realclean distclean : clean
