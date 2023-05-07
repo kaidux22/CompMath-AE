@@ -6,6 +6,7 @@
 // Ly = b
 
 double* Cholesky_decomposition(double** A, int size, double* b){
+
     double **L = new double* [size];
     for (int i=0; i < size; i++){
         L[i] = new double [size];
@@ -18,13 +19,13 @@ double* Cholesky_decomposition(double** A, int size, double* b){
                 res += L[i][k] * L[j][k];
             }
             if (i == j) {
-                L[i][j] = sqrt(A[i][i] - res);
+                L[i][j] = sqrt( (A[i][i] - res));
             } else {
                 L[i][j] = (1.0 / L[j][j] * (A[i][j] - res));
             }
-
         }
     }
+
 
     double* x = new double[size];
 
@@ -35,6 +36,7 @@ double* Cholesky_decomposition(double** A, int size, double* b){
         for (int j = 0; j < i; j++){
             res += L[i][j] * y[j];
         }
+
         y[i] = (1.0 / L[i][i]) * (b[i] - res);
     }
 
@@ -44,7 +46,9 @@ double* Cholesky_decomposition(double** A, int size, double* b){
         for (int j = i+1; j < size; j++){
             res += L[j][i] * x[j];
         }
+
         x[i] = (1.0 / L[i][i]) * (y[i] - res);
+
     }
 
     delete[] y;

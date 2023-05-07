@@ -34,6 +34,20 @@ void function(double* x, double* vec, double JD, double J, double mu){
     vec[4] = 0;
     vec[5] = 0;
 
+    double rotateMatrix[3][3];
+
+    iauC2t06a(JD + (37.0 + 32.184) / 86400.0, 0, JD, 0, 0, 0, rotateMatrix);
+
+    //changeCoords(rotateMatrix, x, 0);
+    for (int i=0; i < 18; i++){  ///?
+        changeCoords(rotateMatrix, x, 3*i);
+    }
+
+    double *grad = new double[3];
+    grad[0] = -dx(x);
+    grad[1] = -dy(x);
+    grad[2] = -dz(x);
+
     double *states = new double[48];
 
     double **df_dx = create_matrix_df_dx(x, mu, J);
@@ -55,26 +69,14 @@ void function(double* x, double* vec, double JD, double J, double mu){
     states[46] += -duy_dJ(x);
     states[47] += -duz_dJ(x);
 
-
-    double rotateMatrix[3][3];
-
-    iauC2t06a(JD + (37.0 + 32.184) / 86400.0, 0, JD, 0, 0, 0, rotateMatrix);
-
-    changeCoords(rotateMatrix, x, 0);
-
-    double *grad = new double[3];
-    grad[0] = -dx(x);
-    grad[1] = -dy(x);
-    grad[2] = -dz(x);
-
-
     Transposition(rotateMatrix);
 
     changeCoords(rotateMatrix, grad, 0);
 
-    /*for (int i=0; i < 16; i++){  ///?
+
+    for (int i=0; i < 16; i++){  ///?
         changeCoords(rotateMatrix, states, 3*i);
-    }*/
+    }
 
     for (int i = 0; i < 3; i++) {
         vec[i + 3] = grad[i];
