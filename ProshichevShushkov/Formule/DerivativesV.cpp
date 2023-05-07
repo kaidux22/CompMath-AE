@@ -116,7 +116,3 @@ ComplexNum Vdydz(LegFunc& Pmn, int n, int m, double* vec){
     return res;
 }
 
-ComplexNum VdC(LegFunc& Pmn, int n, int m, double* vec){
-
-}
-
