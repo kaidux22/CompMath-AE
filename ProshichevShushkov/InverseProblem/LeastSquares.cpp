@@ -25,7 +25,7 @@ LeastSquare::LeastSquare(double *measure, int measureCnt){
 						0, 0, 0, 0, 0, 0};
 
     // Вектор состояния для одного спутника (начальных 6 параметров | единичная матрица 6х6 | нулевые столбцы для оставшихся 25ти коэффициентов)
-    mStates = new double[6 + 6 * 6 + 25 * 6];
+    mStates = new double[6 + 6 * 6 + 22 * 6];
     mParams = new Matrix<double>(UNKNOWN_PARAM, 1);
     mResiduals = new Matrix<double>(mMeasureCount, 1);
     mMatrixA = new Matrix<double>(mMeasureCount, UNKNOWN_PARAM);
@@ -59,7 +59,7 @@ LeastSquare::LeastSquare(double *measure, int measureCnt){
 
 void LeastSquare::Iteration(int steps){
     for(int step = 0 ; step < steps; step++){
-        for(int i = 6; i < 192; i++)
+        for(int i = 6; i < 174; i++)
             mStates[i] = 0;
 
         for(int i = 0; i < 6; i++){
@@ -67,7 +67,7 @@ void LeastSquare::Iteration(int steps){
             mStates[6 + i * 7] = 1;
         }
 
-        
+        ConditionVectorIntegrate(JD, STEP, 174, mStates, mParams);
         
     }
 }

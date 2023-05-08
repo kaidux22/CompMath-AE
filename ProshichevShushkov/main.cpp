@@ -20,7 +20,7 @@ int main()
 	Transposition(rotateMatrix);
 	changeCoords(rotateMatrix, vec, 0); //перевод начальных координат в НСК
 	changeCoords(rotateMatrix, vec, 3); //перевод проекций скоростей в НСК 
-	double** orbit1 = intergrate(JD, STEP, 6, vec); 
+	double** orbit1 = Integrate(JD, STEP, 6, vec); 
 	
 
 	/*
@@ -48,7 +48,7 @@ int main()
 	vec[0] = 1472.62, vec[1] = -6718.5, vec[2] = -0.148523;
 	vec[3] = 7.43608, vec[4] = 1.63027, vec[5] = 0.000242242;
 	
-	double **orbit2 = intergrate(JD, STEP, 6, vec);
+	double **orbit2 = Integrate(JD, STEP, 6, vec);
 	
 	/*
 	fstream file("orbit.txt", ios::out);

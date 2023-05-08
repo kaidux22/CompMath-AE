@@ -1,12 +1,12 @@
 all: CompMath
 
-CompMath: sofa.a main.o GravPot.o Converter.o DerivativesV.o DistanceOrbits.o SupportMath.o LeastSquares.o IntegrateFunc.o
-	g++ main.o GravPot.o Converter.o DerivativesV.o DistanceOrbits.o SupportMath.o LeastSquares.o IntegrateFunc.o sofa/libsofa_c.a -o CompMath
+CompMath: sofa.a main.o GravPot.o Converter.o DerivativesV.o DistanceOrbits.o SupportMath.o LeastSquares.o IntegrateFunc.o RightPart.o
+	g++ main.o GravPot.o Converter.o DerivativesV.o DistanceOrbits.o SupportMath.o LeastSquares.o IntegrateFunc.o RightPart.o sofa/libsofa_c.a -o CompMath
 
 main.o: main.cpp main.h Math/ComplexNums.h Formule/Converter.h Math/Matrix.h
 	g++ -c main.cpp
 
-GravPot.o: Formule/GravPot.cpp Formule/GravPot.h Math/LegFunc.h Math/ComplexNums.h Formule/DerivativesV.h Formule/Converter.h
+GravPot.o: Formule/GravPot.cpp Formule/GravPot.h Math/LegFunc.h Math/ComplexNums.h Formule/DerivativesV.h Formule/Converter.h Math/Matrix.h
 	g++ -c Formule/GravPot.cpp
  
 Converter.o: Formule/Converter.cpp Formule/Converter.h
@@ -21,11 +21,14 @@ DistanceOrbits.o: InverseProblem/DistanceOrbits.cpp InverseProblem/DistanceOrbit
 SupportMath.o: Math/SupportMath.h Math/SupportMath.cpp
 	g++ -c Math/SupportMath.cpp
 
-LeastSquares.o: InverseProblem/LeastSquares.cpp InverseProblem/LeastSquares.h Math/Matrix.h
+LeastSquares.o: InverseProblem/LeastSquares.cpp InverseProblem/LeastSquares.h Math/Matrix.h NumIntegrate/IntegrateFunc.h
 	g++ -c InverseProblem/LeastSquares.cpp
 
-IntegrateFunc.o: NumIntegrate/IntegrateFunc.cpp NumIntegrate/IntegrateFunc.h Formule/GravPot.h
+IntegrateFunc.o: NumIntegrate/IntegrateFunc.cpp NumIntegrate/IntegrateFunc.h Formule/GravPot.h Math/Matrix.h InverseProblem/RightPart.h
 	g++ -c NumIntegrate/IntegrateFunc.cpp
+
+RightPart.o: InverseProblem/RightPart.h InverseProblem/RightPart.cpp Math/Matrix.h sofa/sofa.h Formule/Converter.h Formule/GravPot.h
+	g++ -c InverseProblem/RightPart.cpp
 
 sofa.a:
 	$(MAKE) -C ./sofa

@@ -10,6 +10,7 @@
 #include "DerivativesV.h"
 #include "Converter.h"
 #include "../sofa/sofa.h"
+#include "../Math/Matrix.h"
 
 #define N_CONST 4
 #define NU_CONST 398600.4415 // км^3/с^2
@@ -33,6 +34,6 @@ double DerivativedVdS(double* vec, int n, int m, ComplexNum(*func)(LegFunc&, int
 double DerivativedVdM(double* vec, ComplexNum(*func)(LegFunc&, int, int, double*));
 
 /* Подсчёт градиента гравитационного потенциала */
-void GradV(double* x, double* vec, double JD);
+void GradV(double* x, double* vec, double JD, Matrix<double> *params);
 
 #endif //COMPMATH_GRAVPOT

@@ -5,7 +5,7 @@
 #include <cmath>
 
 #include "../Math/Matrix.h"
-
+#include "../NumIntegrate/IntegrateFunc.h"
 
 /* 
 В прямой задаче использовались первые 4 члена ряда гравитационного потенцила.

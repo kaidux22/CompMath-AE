@@ -56,7 +56,7 @@ double DerivativedVdM(double* vec, ComplexNum(*func)(LegFunc&, int, int, double*
 }
 
 //метод возвращается градиент гравитационного потенциала
-void GradV(double* x, double* vec, double JD) {
+void GradV(double* x, double* vec, double JD, Matrix<double> *params) {
 
     vec[0] = x[3];
     vec[1] = x[4];
