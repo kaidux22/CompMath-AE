@@ -31,7 +31,7 @@ double DerivativedVdC(double* vec, int n, int m, ComplexNum(*func)(LegFunc&, int
 double DerivativedVdS(double* vec, int n, int m, ComplexNum(*func)(LegFunc&, int, int, double*));
 
 /* Производная по M */
-double DerivativedVdM(double* vec, ComplexNum(*func)(LegFunc&, int, int, double*));
+double DerivativedVdGM(double* vec, ComplexNum(*func)(LegFunc&, int, int, double*));
 
 /* Подсчёт градиента гравитационного потенциала */
 void GradV(double* x, double* vec, double JD, Matrix<double> *params);

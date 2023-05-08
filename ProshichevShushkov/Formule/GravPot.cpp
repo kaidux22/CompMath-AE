@@ -34,25 +34,25 @@ double GravPot(double* vec, ComplexNum(*func)(LegFunc&, int, int, double*)) {
 		}
 	}
 
-	return res.Real();
+	return NU_CONST * res.Real();
 }
 
 double DerivativedVdC(double* vec, int n, int m, ComplexNum(*func)(LegFunc&, int, int, double*)){
     int N = N_CONST;
     LegFunc Pmn = LegFunc(N + MAX_ORD, N + MAX_ORD, vec[2] / sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]));
     ComplexNum res = ComplexNum(R_CONST,0).Pow(n) * func(Pmn, n, m, vec);
-    return res.Real();
+    return NU_CONST * res.Real();
 }
 
 double DerivativedVdS(double* vec, int n, int m, ComplexNum(*func)(LegFunc&, int, int, double*)){
     int N = N_CONST;
     LegFunc Pmn = LegFunc(N + MAX_ORD, N + MAX_ORD, vec[2] / sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]));
     ComplexNum res = ComplexNum(0,-1) * ComplexNum(R_CONST,0).Pow(n) * func(Pmn, n, m, vec);
-    return res.Real();
+    return NU_CONST * res.Real();
 }
 
-double DerivativedVdM(double* vec, ComplexNum(*func)(LegFunc&, int, int, double*)){
-    return (NU_CONST/M_CONST) * GravPot(vec, func);
+double DerivativedVdGM(double* vec, ComplexNum(*func)(LegFunc&, int, int, double*)){
+    return  GravPot(vec, func) / NU_CONST;
 }
 
 //метод возвращается градиент гравитационного потенциала
@@ -72,9 +72,9 @@ void GradV(double* x, double* vec, double JD, Matrix<double> *params) {
     changeCoords(rotateMatrix, x, 0);
 
     double *grad = new double[3];
-    grad[0] = -NU_CONST * GravPot(x, Vdx);
-    grad[1] = -NU_CONST * GravPot(x, Vdy);
-    grad[2] = -NU_CONST * GravPot(x, Vdz);
+    grad[0] = -GravPot(x, Vdx);
+    grad[1] = -GravPot(x, Vdy);
+    grad[2] = -GravPot(x, Vdz);
 
     Transposition(rotateMatrix);
 
