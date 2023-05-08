@@ -1,7 +1,7 @@
 all: CompMath
 
-CompMath: sofa.a main.o GravPot.o Converter.o DerivativesV.o DistanceOrbits.o SupportMath.o LeastSquares.o
-	g++ main.o GravPot.o Converter.o DerivativesV.o DistanceOrbits.o SupportMath.o LeastSquares.o sofa/libsofa_c.a -o CompMath
+CompMath: sofa.a main.o GravPot.o Converter.o DerivativesV.o DistanceOrbits.o SupportMath.o LeastSquares.o IntegrateFunc.o
+	g++ main.o GravPot.o Converter.o DerivativesV.o DistanceOrbits.o SupportMath.o LeastSquares.o IntegrateFunc.o sofa/libsofa_c.a -o CompMath
 
 main.o: main.cpp main.h Math/ComplexNums.h Formule/Converter.h Math/Matrix.h
 	g++ -c main.cpp
@@ -23,6 +23,9 @@ SupportMath.o: Math/SupportMath.h Math/SupportMath.cpp
 
 LeastSquares.o: InverseProblem/LeastSquares.cpp InverseProblem/LeastSquares.h Math/Matrix.h
 	g++ -c InverseProblem/LeastSquares.cpp
+
+IntegrateFunc.o: NumIntegrate/IntegrateFunc.cpp NumIntegrate/IntegrateFunc.h Formule/GravPot.h
+	g++ -c NumIntegrate/IntegrateFunc.cpp
 
 sofa.a:
 	$(MAKE) -C ./sofa
