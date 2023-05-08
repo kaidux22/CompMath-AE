@@ -24,20 +24,20 @@ public:
 	/* получить элемент по строке и столбцу */
 	Type Get(int i, int j) const{
 		assert(i < mRows && j < mColumn);
-		return mMatrix[i * mRows + j];
+		return mMatrix[j * mColumn + i];
 	}
 
 	/* записать элемент по строке и столбцу */
 	void Set(int i, int j, Type value) {
 		assert(i < mRows && j < mColumn);
-		mMatrix[i * mRows + j] = value;
+		mMatrix[j * mColumn + i] = value;
 	}
 
 	/* транспонирование матрицы */
 	 void Transposition() {
 		for (int i = 0; i < mRows; i++) {
 			for (int j = i; j < mColumn; j++) {
-				swap(mMatrix[i * mRows + j], mMatrix[j * mRows + i]);
+				swap(mMatrix[j * mColumn + i], mMatrix[i * mColumn + j]);
 			}
 		}
 	}
@@ -46,7 +46,7 @@ public:
 	void Print() {
 		for (int i = 0; i < mRows; i++) {
 			for (int j = 0; j < mColumn; j++) {
-				cout << mMatrix[i * mRows + j] << " ";
+				cout << mMatrix[j * mColumn + i] << " ";
 			}
 			cout << endl;
 		}
@@ -64,7 +64,7 @@ public:
 
 				newMatrix.Set(i, j, 0);
 				for (int k = 0; k < mColumn; k++) {
-					newMatrix.Set(i, j, newMatrix.Get(i, j) + mMatrix[i * mColumn + k] * other.mMatrix[k * other.mColumn + j]);
+					newMatrix.Set(i, j, newMatrix.Get(i, j) + Get(i, k) * other.Get(k, j));
 				}
 			}
 		}
@@ -92,7 +92,7 @@ public:
 
 		for (int i = 0; i < mRows; i++) {
 			for (int j = 0; j < mColumn; j++) {
-				mMatrix[i * mRows + j] *= num;
+				mMatrix[j * mColumn + i] *= num;
 			}
 		}
 	}
@@ -103,7 +103,7 @@ public:
 
 		for (int i = 0; i < mRows; i++) {
 			for (int j = 0; j < mColumn; j++) {
-				mMatrix[i * mRows + j] = matrix.Get(i, j);
+				mMatrix[j * mColumn + i] = matrix.Get(i, j);
 			}
 		}
 		return *this;
@@ -113,7 +113,7 @@ public:
 	Matrix<Type> ExtractRow(int rowNum) {
 		Matrix<Type> vector(1, mColumn);
 
-		for (int i = 0; i < mColunm; i++) {
+		for (int i = 0; i < mColumn; i++) {
 			vector.Set(i, 0, Get(rowNum, i));
 		}
 

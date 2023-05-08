@@ -73,6 +73,11 @@ int main()
 	dist.close();
 
 
+	LeastSquare* solve = new LeastSquare(res, cnt);
+	solve->Iteration();
+	delete solve;
+
+
 	for(int i = 0; i < cnt; i++){
 		delete[] orbit1[i];
 		delete[] orbit2[i];

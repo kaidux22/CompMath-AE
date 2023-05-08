@@ -9,7 +9,9 @@
 #include "Math/ComplexNums.h"
 #include "Formule/Converter.h"
 #include "sofa/sofa.h"
-#include "DistanceOrbits.h"
+#include "InverseProblem/DistanceOrbits.h"
+#include "InverseProblem/LeastSquares.h"
+#include "Math/Matrix.h"
 
 /* Юлианская дата */
 #define JD 2451545.0
