@@ -55,6 +55,7 @@ LeastSquare::LeastSquare(double *measure, int measureCnt){
             cnt += 2;
         }
     }
+
 }
 
 void LeastSquare::Iteration(int steps){
@@ -67,8 +68,7 @@ void LeastSquare::Iteration(int steps){
             mStates[6 + i * 7] = 1;
         }
 
-        ConditionVectorIntegrate(JD, STEP, 174, mStates, mParams);
-        
+        double **orbit1 = ConditionVectorIntegrate(JD, STEP, 174, mStates, mParams);
     }
 }
 
