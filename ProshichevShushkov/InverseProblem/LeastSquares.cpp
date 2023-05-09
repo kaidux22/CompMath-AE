@@ -80,10 +80,55 @@ void LeastSquare::Iteration(int steps){
         }
 
         double **orbits = ConditionVectorIntegrate(JD, STEP, 12 + 12 * UNKNOWN_PARAM, mVec, mParams);
+        double *distance = OrbitDistance(orbits, mMeasureCount); //кринжовые расстояния
 
+        for(int i = 0; i < mMeasureCount; i++){
+            for(int j = 0; j < 12; j++){
+                mVec[j] = orbits[i][j + 1];
+            }
+
+            for(int j = 0; j < UNKNOWN_PARAM * 12; j++){
+                mStates->TransToVector()[j] = orbits[i][13 + j];
+            }
+            Matrix<double> *dGdX = MatrixdGdX();
+
+            double *res = (*dGdX * *mStates).TransToVector();
+            
+            for(int j = 0; j < UNKNOWN_PARAM; j++){
+                mMatrixA->Set(i, j, res[j]);
+            }
+
+            mResiduals->Set(i, 0, abs(mMeasure[2 * i + 1] - distance[2 * i + 1]));
+        
+        }
     }
 }
 
+Matrix<double>* LeastSquare::MatrixdGdX(){
+    Matrix<double> *dGdX = new Matrix<double>(1, 12);
+
+    for(int i = 0; i < 3; i++){
+        dGdX->Set(0, i, 1/sqrt(pow(mVec[0] - mVec[6], 2.0) +
+                               pow(mVec[1] - mVec[7], 2.0) +
+                               pow(mVec[2] - mVec[8], 2.0)
+        ));
+        dGdX->Set(0, i + 6, 1/sqrt(pow(mVec[0] - mVec[6], 2.0) +
+                               pow(mVec[1] - mVec[7], 2.0) +
+                               pow(mVec[2] - mVec[8], 2.0)
+        ));
+        dGdX->Set(0, i + 3, 0);
+        dGdX->Set(0, i + 9, 0);
+    }
+
+    for(int i = 0; i < 3; i++){
+        dGdX->Set(0, i, dGdX->Get(0, i) * (mVec[i] - mVec[6 + i]));
+        dGdX->Set(0, i, dGdX->Get(0, i) * (mVec[6 + i] - mVec[i]));
+    }
+
+    dGdX->Product(-1.0);
+
+    return dGdX;
+}
 
 LeastSquare::~LeastSquare(){
     /*

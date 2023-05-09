@@ -49,6 +49,8 @@ public:
 
     ~LeastSquare();
 private:
+    Matrix<double> *MatrixdGdX();
+
     int mMeasureCount;
 
     double *mMeasure;
