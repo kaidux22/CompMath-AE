@@ -8,6 +8,9 @@
 /* Построение матрицы dF/dX для численного интегрирования */
 Matrix<double> *MatrixdFdX(double *x, Matrix<double> *params);
 
+/* Построение матрицы dF / dParams для численного интегрирования */
+Matrix<double> *MatrixdFdParam(double *x, Matrix<double> *params);
+
 /* Правая часть ОДУ второго порядка */
 void RightPart(double* x, double* vec, double JD, Matrix<double> *params);
 

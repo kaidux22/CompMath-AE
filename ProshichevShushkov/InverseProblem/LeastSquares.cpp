@@ -25,8 +25,8 @@ LeastSquare::LeastSquare(double *measure, int measureCnt){
 						0, 0, 0, 0, 0, 0};
 
     // Вектор состояния для одного спутника (начальных 6 параметров | единичная матрица 6х6 | нулевые столбцы для оставшихся 25ти коэффициентов)
-    mVec = new double[6 + 6 * (UNKNOWN_PARAM - 6)];
-    mStates = new Matrix<double>(6, UNKNOWN_PARAM - 6);
+    mVec = new double[12 + 6 * UNKNOWN_PARAM];
+    mStates = new Matrix<double>(12, UNKNOWN_PARAM);
     mParams = new Matrix<double>(UNKNOWN_PARAM, 1);
     mResiduals = new Matrix<double>(mMeasureCount, 1);
     mMatrixA = new Matrix<double>(mMeasureCount, UNKNOWN_PARAM);
@@ -61,8 +61,8 @@ LeastSquare::LeastSquare(double *measure, int measureCnt){
 
 void LeastSquare::Iteration(int steps){
     for(int step = 0 ; step < steps; step++){
-        for(int i = 0; i < 6; i++){
-            for(int j = 0; j < UNKNOWN_PARAM - 6; j++){
+        for(int i = 0; i < 12; i++){
+            for(int j = 0; j < UNKNOWN_PARAM; j++){
                 if(i == j){
                     mStates->Set(i, j, 1);
                     continue;
@@ -71,41 +71,15 @@ void LeastSquare::Iteration(int steps){
             }
         }
 
-        for(int i = 0; i < 6; i++){
+        for(int i = 0; i < 12; i++){
             mVec[i] = mParams->Get(i, 0);
         }
         
-        for(int i = 6; i < 6 + 6 * (UNKNOWN_PARAM - 6); i++){
-            mVec[i] = mStates->TransToVector()[i - 6];
+        for(int i = 12; i < 12 + 12 * UNKNOWN_PARAM; i++){
+            mVec[i] = mStates->TransToVector()[i - 12];
         }
 
-        double **orbit1 = ConditionVectorIntegrate(JD, STEP, 6 + 6 * (UNKNOWN_PARAM - 1), mVec, mParams);
-
-        for(int i = 0; i < 6; i++){
-            for(int j = 0; j < UNKNOWN_PARAM - 6; j++){
-                if(i == j){
-                    mStates->Set(i, j, 1);
-                    continue;
-                }
-                mStates->Set(i, j, 0);
-            }
-        }
-
-        for(int i = 6; i < 12; i++){
-            mVec[i] = mParams->Get(i, 0);
-        }
-        
-        for(int i = 6; i < 6 + 6 * (UNKNOWN_PARAM - 6); i++){
-            mVec[i] = mStates->TransToVector()[i - 6];
-        }
-
-        double **orbit2 = ConditionVectorIntegrate(JD, STEP, 6 + 6 * (UNKNOWN_PARAM - 1), mVec, mParams);
-
-        double *res = OrbitDistance(orbit1, orbit2, mMeasureCount);
-
-        for(int i = 0; i < mMeasureCount; i++){
-            cout << res[2 * i] << ' ' << res[2 * i + 1] << endl;
-        }
+        double **orbits = ConditionVectorIntegrate(JD, STEP, 12 + 12 * UNKNOWN_PARAM, mVec, mParams);
 
     }
 }

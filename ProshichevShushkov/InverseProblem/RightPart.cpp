@@ -36,33 +36,43 @@ double GravPotWithParams(double* vec, Matrix<double> *params, ComplexNum(*func)(
 }
 
 Matrix<double> *MatrixdFdX(double *x, Matrix<double> *params){
-    Matrix<double> *dFdX = new Matrix<double>(6, 6);
-    for(int i = 0; i < 3; i++){
-        dFdX->Set(i, i + 3, 1);
+    Matrix<double> *dFdX = new Matrix<double>(12, 12);
+    for(int i = 0; i < 6; i++){
+        dFdX->Set(i, i + 6, 1);
     }
 
-    dFdX->Set(3, 0, -GravPotWithParams(x, params, Vdxdx)), dFdX->Set(3, 1, -GravPotWithParams(x, params, Vdxdy)), dFdX->Set(3, 2, -GravPotWithParams(x, params, Vdxdz));
-    dFdX->Set(4, 0, -GravPotWithParams(x, params, Vdxdy)), dFdX->Set(4, 1, -GravPotWithParams(x, params, Vdydy)), dFdX->Set(4, 2, -GravPotWithParams(x, params, Vdydz));
-    dFdX->Set(5, 0, -GravPotWithParams(x, params, Vdxdz)), dFdX->Set(5, 1, -GravPotWithParams(x, params, Vdydz)), dFdX->Set(5, 2, -GravPotWithParams(x, params, Vdzdz));
-    return dFdX;
+    dFdX->Set(6, 0, -GravPotWithParams(x, params, Vdxdx)), dFdX->Set(6, 1, -GravPotWithParams(x, params, Vdxdy)), dFdX->Set(6, 2, -GravPotWithParams(x, params, Vdxdz));
+    dFdX->Set(7, 0, -GravPotWithParams(x, params, Vdxdy)), dFdX->Set(7, 1, -GravPotWithParams(x, params, Vdydy)), dFdX->Set(7, 2, -GravPotWithParams(x, params, Vdydz));
+    dFdX->Set(8, 0, -GravPotWithParams(x, params, Vdxdz)), dFdX->Set(8, 1, -GravPotWithParams(x, params, Vdydz)), dFdX->Set(8, 2, -GravPotWithParams(x, params, Vdzdz));
+
+	dFdX->Set(9, 0, -GravPotWithParams(x + 6, params, Vdxdx)), dFdX->Set(9, 1, -GravPotWithParams(x + 6, params, Vdxdy)), dFdX->Set(9, 2, -GravPotWithParams(x + 6, params, Vdxdz));
+    dFdX->Set(10, 0, -GravPotWithParams(x + 6, params, Vdxdy)), dFdX->Set(10, 1, -GravPotWithParams(x + 6, params, Vdydy)), dFdX->Set(10, 2, -GravPotWithParams(x + 6, params, Vdydz));
+    dFdX->Set(11, 0, -GravPotWithParams(x + 6, params, Vdxdz)), dFdX->Set(11, 1, -GravPotWithParams(x + 6, params, Vdydz)), dFdX->Set(11, 2, -GravPotWithParams(x + 6, params, Vdzdz));	
+
+	return dFdX;
 }
 
 Matrix<double> *MatrixdFdParam(double *x, Matrix<double> *params){
-	Matrix<double> *dFdParam = new Matrix<double>(6, 28);
+	Matrix<double> *dFdParam = new Matrix<double>(12, 34);
 
-    dFdParam->Set(3, 6, -DerivativedVdGM(x, params, Vdx)), dFdParam->Set(4, 6, -DerivativedVdGM(x, params, Vdy)), dFdParam->Set(5, 6, -DerivativedVdGM(x, params, Vdz));
+    dFdParam->Set(6, 12, -DerivativedVdGM(x, params, Vdx)), dFdParam->Set(7, 12, -DerivativedVdGM(x, params, Vdy)), dFdParam->Set(8, 12, -DerivativedVdGM(x, params, Vdz));
+	dFdParam->Set(9, 12, -DerivativedVdGM(x + 12, params, Vdx)), dFdParam->Set(10, 12, -DerivativedVdGM(x + 12, params, Vdy)), dFdParam->Set(11, 12, -DerivativedVdGM(x + 6, params, Vdz));
 
 	for(int i = 0; i < 3; i++){
-		dFdParam->Set(3, 7 + i, -DerivativedVdC(x, params, 2 + i, 0, Vdx)), dFdParam->Set(4, 7 + i, -DerivativedVdC(x, params, 2 + i, 0, Vdy)), dFdParam->Set(5, 7 + i, -DerivativedVdC(x, params, 2 + i, 0, Vdz));
+		dFdParam->Set(6, 13 + i, -DerivativedVdC(x, params, 2 + i, 0, Vdx)), dFdParam->Set(7, 13 + i, -DerivativedVdC(x, params, 2 + i, 0, Vdy)), dFdParam->Set(8, 13 + i, -DerivativedVdC(x, params, 2 + i, 0, Vdz));
+		dFdParam->Set(9, 13 + i, -DerivativedVdC(x + 12, params, 2 + i, 0, Vdx)), dFdParam->Set(10, 13 + i, -DerivativedVdC(x + 12, params, 2 + i, 0, Vdy)), dFdParam->Set(11, 13 + i, -DerivativedVdC(x + 12, params, 2 + i, 0, Vdz));
 	}
 
-	int cnt = 10;
+	
+	int cnt = 16;
+	
 	for(int n = 2; n < 5; n++){
         for(int m = 1; m <= n; m++){
-			dFdParam->Set(3, cnt, -DerivativedVdC(x, params, n, m, Vdx)), dFdParam->Set(4, cnt, -DerivativedVdC(x, params, n, m, Vdy)), dFdParam->Set(5, cnt, -DerivativedVdC(x, params, n, m, Vdz));
-			dFdParam->Set(3, cnt + 1, -DerivativedVdS(x, params, n, m, Vdx)), dFdParam->Set(4, cnt + 1, -DerivativedVdS(x, params, n, m, Vdy)), dFdParam->Set(5, cnt + 1, -DerivativedVdS(x, params, n, m, Vdz));
-            //mParams->Set(cnt, 0, Cmn[m][n] + mNoise[cnt]);
-            //mParams->Set(cnt + 1, 0, Smn[m][n] + mNoise[cnt + 1]);
+			dFdParam->Set(6, cnt, -DerivativedVdC(x, params, n, m, Vdx)), dFdParam->Set(7, cnt, -DerivativedVdC(x, params, n, m, Vdy)), dFdParam->Set(8, cnt, -DerivativedVdC(x, params, n, m, Vdz));
+			dFdParam->Set(9, cnt, -DerivativedVdC(x + 12, params, n, m, Vdx)), dFdParam->Set(10, cnt, -DerivativedVdC(x + 12, params, n, m, Vdy)), dFdParam->Set(11, cnt, -DerivativedVdC(x + 12, params, n, m, Vdz));
+
+			dFdParam->Set(6, cnt + 1, -DerivativedVdS(x, params, n, m, Vdx)), dFdParam->Set(7, cnt + 1, -DerivativedVdS(x, params, n, m, Vdy)), dFdParam->Set(8, cnt + 1, -DerivativedVdS(x + 12, params, n, m, Vdz));
+			dFdParam->Set(9, cnt + 1, -DerivativedVdS(x + 12, params, n, m, Vdx)), dFdParam->Set(10, cnt + 1, -DerivativedVdS(x + 12, params, n, m, Vdy)), dFdParam->Set(11, cnt + 1, -DerivativedVdS(x + 12, params, n, m, Vdz));
             cnt += 2;
         }
     }
@@ -78,27 +88,36 @@ void RightPart(double* x, double* vec, double JD, Matrix<double> *params) {
     vec[4] = 0;
     vec[5] = 0;
 
+	vec[6] = x[9];
+	vec[7] = x[10];
+	vec[8] = x[11];
+	vec[9] = 0;
+	vec[10] = 0;
+	vec[11] = 0;
+
     double rotateMatrix[3][3];
 
     iauC2t06a(JD + (37.0 + 32.184) / 86400.0, 0, JD, 0, 0, 0, rotateMatrix);
 
-    for(int i = 0; i < 174 / 3; i++)
+    for(int i = 0; i <  420 / 3; i++)
         changeCoords(rotateMatrix, x, 3 * i);
-    
-	
 
-    double *grad = new double[3];
+    double *grad = new double[6];
     grad[0] = -GravPotWithParams(x, params, Vdx);
     grad[1] = -GravPotWithParams(x, params, Vdy);
     grad[2] = -GravPotWithParams(x, params, Vdz);
+	
+	grad[3] = -GravPotWithParams(x + 6, params, Vdx);
+	grad[4] = -GravPotWithParams(x + 6, params, Vdy);
+	grad[5] = -GravPotWithParams(x + 6, params, Vdz);
 
 	Matrix<double> *dFdX = MatrixdFdX(x, params);
-	Matrix<double> *dXdParam = new Matrix<double>(vec + 6, 6, 28);
+	Matrix<double> *dXdParam = new Matrix<double>(vec + 12, 12, 34);
     Matrix<double> *dFdParam = MatrixdFdParam(x, params);
 
 	double *res = (*dFdX * *dXdParam + *dFdParam).TransToVector();
-	for(int i = 7; i < 6 * 28; i++){
-		vec[i] = res[i - 7];
+	for(int i = 12; i < 12 * 34; i++){
+		vec[i] = res[i - 12];
 	}
 
 	delete dFdX;
@@ -111,7 +130,7 @@ void RightPart(double* x, double* vec, double JD, Matrix<double> *params) {
         vec[i + 3] = grad[i];
     }
 
-	for(int i = 0; i < 174 / 3; i++){
+	for(int i = 0; i < 12 * 34 / 3; i++){
 		changeCoords(rotateMatrix, vec, 3 * i);
 	}
 }
