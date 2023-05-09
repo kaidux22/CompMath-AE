@@ -47,6 +47,29 @@ Matrix<double> *MatrixdFdX(double *x, Matrix<double> *params){
     return dFdX;
 }
 
+Matrix<double> *MatrixdFdParam(double *x, Matrix<double> *params){
+	Matrix<double> *dFdParam = new Matrix<double>(6, 28);
+
+    dFdParam->Set(3, 6, -DerivativedVdGM(x, params, Vdx)), dFdParam->Set(4, 6, -DerivativedVdGM(x, params, Vdy)), dFdParam->Set(5, 6, -DerivativedVdGM(x, params, Vdz));
+
+	for(int i = 0; i < 3; i++){
+		dFdParam->Set(3, 7 + i, -DerivativedVdC(x, params, 2 + i, 0, Vdx)), dFdParam->Set(4, 7 + i, -DerivativedVdC(x, params, 2 + i, 0, Vdy)), dFdParam->Set(5, 7 + i, -DerivativedVdC(x, params, 2 + i, 0, Vdz));
+	}
+
+	int cnt = 10;
+	for(int n = 2; n < 5; n++){
+        for(int m = 1; m <= n; m++){
+			dFdParam->Set(3, cnt, -DerivativedVdC(x, params, n, m, Vdx)), dFdParam->Set(4, cnt, -DerivativedVdC(x, params, n, m, Vdy)), dFdParam->Set(5, cnt, -DerivativedVdC(x, params, n, m, Vdz));
+			dFdParam->Set(3, cnt + 1, -DerivativedVdS(x, params, n, m, Vdx)), dFdParam->Set(4, cnt + 1, -DerivativedVdS(x, params, n, m, Vdy)), dFdParam->Set(5, cnt + 1, -DerivativedVdS(x, params, n, m, Vdz));
+            //mParams->Set(cnt, 0, Cmn[m][n] + mNoise[cnt]);
+            //mParams->Set(cnt + 1, 0, Smn[m][n] + mNoise[cnt + 1]);
+            cnt += 2;
+        }
+    }
+
+    return dFdParam;
+}
+
 void RightPart(double* x, double* vec, double JD, Matrix<double> *params) {
     vec[0] = x[3];
     vec[1] = x[4];
@@ -62,16 +85,33 @@ void RightPart(double* x, double* vec, double JD, Matrix<double> *params) {
     for(int i = 0; i < 174 / 3; i++)
         changeCoords(rotateMatrix, x, 3 * i);
     
+	
+
     double *grad = new double[3];
     grad[0] = -GravPotWithParams(x, params, Vdx);
     grad[1] = -GravPotWithParams(x, params, Vdy);
     grad[2] = -GravPotWithParams(x, params, Vdz);
 
-    Transposition(rotateMatrix);
+	Matrix<double> *dFdX = MatrixdFdX(x, params);
+	Matrix<double> *dXdParam = new Matrix<double>(vec + 6, 6, 28);
+    Matrix<double> *dFdParam = MatrixdFdParam(x, params);
 
-    changeCoords(rotateMatrix, grad, 0);
+	double *res = (*dFdX * *dXdParam + *dFdParam).TransToVector();
+	for(int i = 7; i < 6 * 28; i++){
+		vec[i] = res[i - 7];
+	}
+
+	delete dFdX;
+	delete dXdParam;
+	delete dFdParam;
+
+    Transposition(rotateMatrix);
 
     for (int i = 0; i < 3; i++) {
         vec[i + 3] = grad[i];
     }
+
+	for(int i = 0; i < 174 / 3; i++){
+		changeCoords(rotateMatrix, vec, 3 * i);
+	}
 }

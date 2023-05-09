@@ -24,14 +24,17 @@ using namespace std;
 /* Вычисление гравитационного потенциала */
 double GravPot(double* vec, ComplexNum(*func)(LegFunc&, int, int, double*));
 
+/* Гравитационный потенцил с кастомизацией параметров */
+double GravPotWithParams(double* vec, Matrix<double> *params, ComplexNum(*func)(LegFunc&, int, int, double*));
+
 /* Производная по Cnm */
-double DerivativedVdC(double* vec, int n, int m, ComplexNum(*func)(LegFunc&, int, int, double*));
+double DerivativedVdC(double* vec, Matrix<double> *params, int n, int m, ComplexNum(*func)(LegFunc&, int, int, double*));
 
 /* Производная по Snm */
-double DerivativedVdS(double* vec, int n, int m, ComplexNum(*func)(LegFunc&, int, int, double*));
+double DerivativedVdS(double* vec, Matrix<double> *params, int n, int m, ComplexNum(*func)(LegFunc&, int, int, double*));
 
 /* Производная по M */
-double DerivativedVdGM(double* vec, ComplexNum(*func)(LegFunc&, int, int, double*));
+double DerivativedVdGM(double* vec, Matrix<double> *params, ComplexNum(*func)(LegFunc&, int, int, double*));
 
 /* Подсчёт градиента гравитационного потенциала */
 void GradV(double* x, double* vec, double JD, Matrix<double> *params);

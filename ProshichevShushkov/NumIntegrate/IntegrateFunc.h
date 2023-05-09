@@ -1,7 +1,6 @@
 #ifndef COMPMATH_INTEGRATEFUNC
 #define COMPMATH_INTEGRATEFUNC
 
-#include "../Formule/GravPot.h"
 #include "../Math/Matrix.h"
 #include "../InverseProblem/RightPart.h"
 

@@ -3,7 +3,6 @@
 
 #include "../Math/ComplexNums.h"
 #include "../Math/LegFunc.h"
-#include "../Math/SupportMath.h"
 
 /* функция, для подсчёта градиента */
 ComplexNum Vnm(LegFunc& Pmn, int n, int m, double* vec);

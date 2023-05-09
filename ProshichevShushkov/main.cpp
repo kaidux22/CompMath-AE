@@ -77,11 +77,9 @@ int main()
 	solve->Iteration();
 	delete solve;
 
-
 	for(int i = 0; i < cnt; i++){
 		delete[] orbit1[i];
 		delete[] orbit2[i];
 	}
 	delete[] vec;			
-	delete[] res;
 }

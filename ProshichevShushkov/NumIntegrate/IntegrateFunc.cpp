@@ -92,9 +92,9 @@ double** ConditionVectorIntegrate(double JD, double h, const int N, double* vec,
     // 86400 секунд в сутках
     for (int i = 0; i < cnt; i++) {
         DormandPrince(JD, h, N, vec, a, b, k, c, params, RightPart);
-        states[i] = new double[7 + 168];
+        states[i] = new double[1 + N];
         states[i][0] = JD;
-        for(int j = 1; j < 175; j++)
+        for(int j = 1; j < N + 1; j++)
             states[i][j] = vec[j - 1];
         
         JD += h / 86400.0;

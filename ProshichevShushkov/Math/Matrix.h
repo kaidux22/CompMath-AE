@@ -18,35 +18,54 @@ public:
 		mMatrix = new Type[n * m];
 		
 		for (int i = 0; i < n * m; i++)
-			mMatrix[i] = (Type)0;
+			mMatrix[i] = 0;
+	}
+
+	Matrix(Type *vec, int n, int m){
+		mRows = n;
+		mColumn = m;
+		mMatrix = new Type[n * m];
+
+		for(int i = 0; i < n * m; i++){
+			mMatrix[i] = vec[i];
+		}
+
 	}
 
 	/* получить элемент по строке и столбцу */
 	Type Get(int i, int j) const{
 		assert(i < mRows && j < mColumn);
-		return mMatrix[j * mColumn + i];
+		return mMatrix[j * mRows + i];
 	}
 
 	/* записать элемент по строке и столбцу */
 	void Set(int i, int j, Type value) {
 		assert(i < mRows && j < mColumn);
-		mMatrix[j * mColumn + i] = value;
+		mMatrix[j * mRows + i] = value;
 	}
 
 	/* транспонирование матрицы */
 	 void Transposition() {
-		for (int i = 0; i < mRows; i++) {
-			for (int j = i; j < mColumn; j++) {
-				swap(mMatrix[j * mColumn + i], mMatrix[i * mColumn + j]);
+		int len = mRows;
+		mRows =  mColumn;
+		mColumn = len;
+
+		Type *vec = new Type(mRows * mColumn);
+		for(int i = 0; i < mColumn; i++){
+			for(int j = 0; j < mRows; j++){
+				vec[i * mRows + j] = mMatrix[j * mColumn + i];
 			}
 		}
+		delete mMatrix;
+		mMatrix = vec;
+		
 	}
 
 	/* вывод матрицы */
 	void Print() {
 		for (int i = 0; i < mRows; i++) {
 			for (int j = 0; j < mColumn; j++) {
-				cout << mMatrix[j * mColumn + i] << " ";
+				cout << mMatrix[j * mRows + i] << " ";
 			}
 			cout << endl;
 		}
@@ -92,7 +111,7 @@ public:
 
 		for (int i = 0; i < mRows; i++) {
 			for (int j = 0; j < mColumn; j++) {
-				mMatrix[j * mColumn + i] *= num;
+				mMatrix[j * mRows + i] *= num;
 			}
 		}
 	}
@@ -103,32 +122,36 @@ public:
 
 		for (int i = 0; i < mRows; i++) {
 			for (int j = 0; j < mColumn; j++) {
-				mMatrix[j * mColumn + i] = matrix.Get(i, j);
+				mMatrix[j * mRows + i] = matrix.Get(i, j);
 			}
 		}
 		return *this;
 	}
 
 	/* извлечение строки */
-	Matrix<Type> ExtractRow(int rowNum) {
-		Matrix<Type> vector(1, mColumn);
+	Matrix<Type> *ExtractRow(int rowNum) {
+		Matrix<Type> *vector = new Matrix<Type>(1, mColumn);
 
 		for (int i = 0; i < mColumn; i++) {
-			vector.Set(i, 0, Get(rowNum, i));
+			vector->Set(i, 0, Get(rowNum, i));
 		}
 
 		return vector;
 	}
 
 	/* извлечение столбца */
-	Matrix<Type> ExctractColunm(int columnNum) {
-		Matrix<Type> vector(1, mRows);
+	Matrix<Type> *ExctractColunm(int columnNum) {
+		Matrix<Type> *vector = new Matrix<Type>(1, mRows);
 
 		for (int i = 0; i < mRows; i++) {
-			vector.Set(i, 0, Get(columnNum, i));
+			vector->Set(i, 0, Get(columnNum, i));
 		}
 		
 		return vector;
+	}
+	
+	Type *TransToVector(){
+		return mMatrix;
 	}
 
 	~Matrix() {

@@ -48,7 +48,7 @@ ComplexNum Vdxdx(LegFunc& Pmn, int n, int m, double* vec){
         return res;
     }
     res = (ComplexNum)0.25 * Vnm(Pmn, n+2, 2, vec);
-    res = res - (ComplexNum)(Factorial(n+2) / Factorial(2*n)) * Vnm(Pmn, n+2, 0, vec);
+    res = res - (ComplexNum)((n + 2)*(n + 1) / 2.0 ) * Vnm(Pmn, n+2, 0, vec);
     res = res + (ComplexNum)0.25 * Vnm(Pmn, n+2, 2, vec).Conj();
     return res;
 }
@@ -67,7 +67,7 @@ ComplexNum Vdydy(LegFunc& Pmn, int n, int m, double* vec){
         return res;
     }
     res = (ComplexNum)-0.25 * Vnm(Pmn, n+2, 2, vec);
-    res = res - (ComplexNum)(Factorial(n+2) / Factorial(2*n)) * Vnm(Pmn, n+2, 0, vec);
+    res = res - (ComplexNum)((n + 2) * (n + 1) / 2.0) * Vnm(Pmn, n+2, 0, vec);
     res = res - (ComplexNum)0.25 * Vnm(Pmn, n+2, 2, vec).Conj();
     return res;
 }
