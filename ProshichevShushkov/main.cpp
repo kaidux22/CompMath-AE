@@ -74,7 +74,7 @@ int main()
 
 
 	LeastSquare* solve = new LeastSquare(res, cnt);
-	solve->Iteration();
+	solve->Iteration(2);
 	delete solve;
 
 	for(int i = 0; i < cnt; i++){

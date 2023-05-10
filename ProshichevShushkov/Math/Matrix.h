@@ -45,20 +45,16 @@ public:
 	}
 
 	/* транспонирование матрицы */
-	 void Transposition() {
-		int len = mRows;
-		mRows =  mColumn;
-		mColumn = len;
+	Matrix<double> Transposition() {
+		Matrix<double> newMatrix(mColumn, mRows);
 
-		Type *vec = new Type(mRows * mColumn);
-		for(int i = 0; i < mColumn; i++){
-			for(int j = 0; j < mRows; j++){
-				vec[i * mRows + j] = mMatrix[j * mColumn + i];
+		for(int i = 0; i < mRows; i++){
+			for(int j = 0; j < mColumn; j++){
+				newMatrix.Set(j, i, Get(i, j));
 			}
 		}
-		delete mMatrix;
-		mMatrix = vec;
-		
+
+		return newMatrix;
 	}
 
 	/* вывод матрицы */
@@ -117,7 +113,7 @@ public:
 	}
 		
 	/* перегрузка оператора присваивания */
-	Matrix<Type>& operator=(Matrix<Type>& matrix) {
+	Matrix<double>& operator=(Matrix<double> matrix) {
 		assert(mRows == matrix.mRows && mColumn == matrix.mColumn);
 
 		for (int i = 0; i < mRows; i++) {

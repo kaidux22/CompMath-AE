@@ -101,6 +101,21 @@ void LeastSquare::Iteration(int steps){
             mResiduals->Set(i, 0, abs(mMeasure[2 * i + 1] - distance[2 * i + 1]));
         
         }
+
+        Matrix<double> MatrixAtA(UNKNOWN_PARAM, UNKNOWN_PARAM);
+        MatrixAtA = (mMatrixA->Transposition() * *mMatrixA);
+
+        Matrix<double> MatrixArb(UNKNOWN_PARAM, 1);
+        MatrixArb = mMatrixA->Transposition() * *mResiduals;
+
+        Matrix<double> *Vectorx = CholeskyDecomposition(&MatrixAtA, &MatrixArb);
+
+        for(int i = 0; i < UNKNOWN_PARAM; i++){
+            mParams->Set(i, 0, mParams->Get(i, 0) - Vectorx->Get(i, 0));
+        }
+
+        mParams->Print();
+
     }
 }
 
@@ -128,6 +143,52 @@ Matrix<double>* LeastSquare::MatrixdGdX(){
     dGdX->Product(-1.0);
 
     return dGdX;
+}
+
+Matrix<double>* LeastSquare::CholeskyDecomposition(Matrix<double> *MatrixA, Matrix<double> *Vectorb){
+    Matrix<double> *MatrixL = new Matrix<double>(UNKNOWN_PARAM, UNKNOWN_PARAM);
+
+    for (int i = 0; i < UNKNOWN_PARAM; i++){
+        for (int j = 0; j < (i + 1); j++){
+            double res = 0;
+            for (int k = 0; k < j; k++) {
+                res += MatrixL->Get(i, k) * MatrixL->Get(j, k);
+            }
+            if (i == j) {
+                MatrixL->Set(i, j, sqrt(MatrixA->Get(i, i) - res));
+            } else {
+                MatrixL->Set(i, j, (1.0 / MatrixL->Get(j, j)) * (MatrixA->Get(i, j) - res));
+            }
+        }
+    }
+
+    Matrix<double> *Vectorx = new Matrix<double>(UNKNOWN_PARAM, 1);
+    Matrix<double> *Vectory = new Matrix<double>(UNKNOWN_PARAM, 1);
+
+    //  L*y=b
+    for (int i = 0; i < UNKNOWN_PARAM; i++){
+        double res = 0;
+        for (int j = 0; j < i; j++){
+            res += MatrixL->Get(i, j) * Vectory->Get(j, 0);
+        }
+
+        Vectory->Set(i, 0, (1.0 / MatrixL->Get(i, i)) * (Vectorb->Get(i, 0) - res));
+    }
+
+    //  L^t*x=y
+    for (int i = UNKNOWN_PARAM - 1; i >= 0; i--){
+        double res = 0;
+        for (int j = i+1; j < UNKNOWN_PARAM; j++){
+            res += MatrixL->Get(j, i) * Vectorx->Get(j, 0);
+        }
+
+        Vectorx->Set(i, 0, (1.0 / MatrixL->Get(i, i)) * (Vectory->Get(i, 0) - res));
+
+    }
+
+    delete Vectory;
+    delete MatrixL;
+    return Vectorx;
 }
 
 LeastSquare::~LeastSquare(){

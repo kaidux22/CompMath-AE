@@ -50,6 +50,7 @@ public:
     ~LeastSquare();
 private:
     Matrix<double> *MatrixdGdX();
+    Matrix<double> *CholeskyDecomposition(Matrix<double> *MatrixA, Matrix<double> *Vectorb);
 
     int mMeasureCount;
 
