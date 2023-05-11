@@ -20,7 +20,7 @@ void DormandPrince(double JD, double h, const int N, double J, double mu, double
 
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < 7; j++) {
-            vec[i] += b[j] * k[j][i] *h ;
+            vec[i] += b[j] * k[j][i] * h ;
         }
     }
 
