@@ -12,8 +12,9 @@
 #include <fstream>
 #include "SLE.h"
 #include "Derivatives.h"
+#include <random>
 #include <vector>
 
 using namespace std;
 
-double** create_observatories();
+double** create_observatories(double JD_start);

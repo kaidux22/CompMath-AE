@@ -39,8 +39,7 @@ double** create_observatories(double JD_start){
 
 int main(){
 
-    double noise[8] = {10,-5,1,0.005,-0.005,0.000003,50, 10};
-    //double noise[8] = {0,0,0,0,0,0,0, 0};
+    double noise[8] = {0.0005,-0.0005,0.0002,0.0000005,-0.0000005,0.00000003,2, 10};
 
     int cnt = GENERAL_TIME / STEP;
     double JD_start = JD;
@@ -58,6 +57,13 @@ int main(){
     }
     states[6] = 1; states[13] = 1; states[20] = 1; states[27] = 1; states[34] = 1; states[41] = 1;
 
+    double *init = new double[8];
+    for (int i=0; i < 6; i++){
+        init[i] = states[i];
+    }
+    init[6] = GM;
+    init[7] = J2;
+
     for (int i=0; i < 6; i++){
         states[i] += noise[i];
     }
@@ -66,6 +72,13 @@ int main(){
     Transposition(rotateMatrix);
     changeCoords(rotateMatrix, vec, 0);
     changeCoords(rotateMatrix, vec, 3);
+    changeCoords(rotateMatrix, init, 0);
+    changeCoords(rotateMatrix, init, 3);
+
+    for (int i=0; i < 8; i++){
+        cout << init[i] << "  ";
+    }
+    cout << endl << endl;
 
 
     for (int i=0; i < 18; i++){ ///?
@@ -85,15 +98,12 @@ int main(){
     double** res = integrate(JD, STEP, 6, vec);
 
 
-    for(int iter = 0; iter < 8; iter++) {
-
+    for(int iter = 0; iter < 4; iter++) {
         double **new_res = integrate_for_inverse(JD, STEP, 54, states, b[7], b[6]);
-
         vector<vector<double>> A;
         vector<double> r_b;
 
         for (int i = 0; i <  cnt; i++) {
-
             double **stations = create_observatories(res[i][0]);
             double distance = pow(res[i][1], 2) + pow(res[i][2], 2) + pow(res[i][3], 2);
             double max_distance = sqrt(distance - pow(R_CONST, 2));
@@ -107,6 +117,8 @@ int main(){
                         pow((stations[station_number][1] - res[i][2]), 2) +
                         pow((stations[station_number][2] - res[i][3]), 2));
 
+                double r_original_var = r_original * 1.0;
+
                 if (r_original <= max_distance) {
                     double *dg_dX = new double[6];
                     for (int t = 3; t < 6; t++) {
@@ -118,14 +130,12 @@ int main(){
 
                     vector<double> current_r;
 
-                    double var = 1.0/(pow(0.00001, 2));
-
                     for (int k = 0; k < 8; k++) {
                         double result = 0;
                         for (int t = 0; t < 6; t++) {
                             result += dg_dX[t] * new_res[i][7 + 6 * k + t];
                         }
-                        current_r.push_back(-result * var);
+                        current_r.push_back(-result);
                     }
                     /*
                     for (int r=0; r < 8; r++){
@@ -134,16 +144,26 @@ int main(){
                     cout << endl; */
 
                     A.push_back(current_r);
-                    r_b.push_back(abs(r_var - r_original));
+                    r_b.push_back(r_var - r_original_var);
                 }
 
             }
         }
 
+        double var = 1.0/(pow(0.00001, 2));
 
         double **AtA = multiplication_AtA(A);
 
+        for (int i=0; i < 8; i++){
+            for (int j=0; j < 8; j++){
+                AtA[i][j] *= var;
+            }
+        }
+
         double *Atr = multiplication_Atr(A, r_b);
+        for (int i=0; i < 8; i++){
+            Atr[i] *= var;
+        }
 
 
         double *x = Cholesky_decomposition(AtA, 8, Atr);
