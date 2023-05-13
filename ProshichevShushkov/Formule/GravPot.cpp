@@ -83,4 +83,5 @@ void GradV(double* x, double* vec, double JD, Matrix<double> *params) {
     for (int i = 0; i < 3; i++) {
         vec[i + 3] = grad[i];
     }
+
 }

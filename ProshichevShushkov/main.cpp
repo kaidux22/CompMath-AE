@@ -20,6 +20,7 @@ int main()
 	Transposition(rotateMatrix);
 	changeCoords(rotateMatrix, vec, 0); //перевод начальных координат в НСК
 	changeCoords(rotateMatrix, vec, 3); //перевод проекций скоростей в НСК 
+
 	double** orbit1 = Integrate(JD, STEP, 6, vec); 
 	
 

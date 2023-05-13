@@ -137,6 +137,7 @@ void RightPart(double* x, double* vec, double JD, Matrix<double> *params) {
         changeCoords(rotateMatrix, x, 3 * i);
 
     double *grad = new double[6];
+	
     grad[0] = -GravPotWithParams(x, params, Vdx);
     grad[1] = -GravPotWithParams(x, params, Vdy);
     grad[2] = -GravPotWithParams(x, params, Vdz);
@@ -144,7 +145,7 @@ void RightPart(double* x, double* vec, double JD, Matrix<double> *params) {
 	grad[3] = -GravPotWithParams(x + 3, params, Vdx);
 	grad[4] = -GravPotWithParams(x + 3, params, Vdy);
 	grad[5] = -GravPotWithParams(x + 3, params, Vdz);
-
+	
 	Matrix<double> *dFdX = MatrixdFdX(x, params);
 	Matrix<double> *dXdParam = new Matrix<double>(vec + 12, 12, 34);
     Matrix<double> *dFdParam = MatrixdFdParam(x, params);
@@ -164,14 +165,8 @@ void RightPart(double* x, double* vec, double JD, Matrix<double> *params) {
         vec[i + 6] = grad[i];
     }
 
-	for(int i = 6; i < 12 * 35 / 3; i++){
+	for(int i = 2; i < 12 * 35 / 3; i++){
 		changeCoords(rotateMatrix, vec, 3 * i);
 	}
-
-	/*
-	for(int i = 0; i < 12; i++){
-		cout << vec[i] << endl;
-	}
-	*/
 
 }

@@ -32,11 +32,11 @@ LeastSquare::LeastSquare(double *measure, int measureCnt){
     mMatrixA = new Matrix<double>(mMeasureCount, UNKNOWN_PARAM);
 
     // координаты первого и второго спутников
-    mParams->Set(0, 0, 6878.0 + mNoise[0]), mParams->Set(1, 0, mNoise[1]), mParams->Set(2, 0, mNoise[2]);
+    mParams->Set(0, 0, 1248.77 + mNoise[0]), mParams->Set(1, 0, -6763.69 + mNoise[1]), mParams->Set(2, 0, -0.155766 + mNoise[2]);
     mParams->Set(3, 0, 1472.62 + mNoise[6]), mParams->Set(4, 0, -6718.5 + mNoise[7]), mParams->Set(5, 0, -0.148523 + mNoise[8]);
 
     //скорости первого и второго спутников
-    mParams->Set(6, 0, mNoise[3]), mParams->Set(7, 0, sqrt(398600.4415 / 6878.0) + mNoise[4]), mParams->Set(8, 0, mNoise[5]);
+    mParams->Set(6, 0, 7.48616 + mNoise[3]), mParams->Set(7, 0, 1.38216 + mNoise[4]), mParams->Set(8, 0, 0.00024043 + mNoise[5]);
     mParams->Set(9, 0, 7.43608 + mNoise[9]), mParams->Set(10, 0, 1.63027 + mNoise[10]), mParams->Set(11, 0, 0.000242242 + mNoise[11]);
     
     //Нахождение параметра массы
@@ -84,8 +84,25 @@ void LeastSquare::Iteration(int steps){
 
         double **orbits = ConditionVectorIntegrate(JD, STEP, 12 + 12 * UNKNOWN_PARAM, mVec, mParams);
 
+        /*
+        for(int t = 0; t < mMeasureCount; t++){
+            for(int i = 0; i < 13; i++){
+               cout << orbits[t][i] << " ";
+            }
+            cout << endl;
+        }
+        cout << endl;
         assert(false);
+        */
+
         double *distance = OrbitDistance(orbits, mMeasureCount); //кринжовые расстояния
+
+        /*
+        for(int i = 0; i < mMeasureCount; i++){
+            cout << distance[2 * i] << " " << distance[2 * i + 1] << endl;
+        }
+        assert(false);
+        */
 
         for(int i = 0; i < mMeasureCount; i++){
             for(int j = 0; j < 12; j++){
@@ -98,7 +115,8 @@ void LeastSquare::Iteration(int steps){
             Matrix<double> *dGdX = MatrixdGdX();
 
             double *res = (*dGdX * *mStates).TransToVector();
-            
+
+
             for(int j = 0; j < UNKNOWN_PARAM; j++){
                 mMatrixA->Set(i, j, res[j]);
             }
@@ -112,7 +130,7 @@ void LeastSquare::Iteration(int steps){
 
         Matrix<double> MatrixArb(UNKNOWN_PARAM, 1);
         MatrixArb = mMatrixA->Transposition() * *mResiduals;
-
+        
         Matrix<double> *Vectorx = CholeskyDecomposition(&MatrixAtA, &MatrixArb);
 
         for(int i = 0; i < UNKNOWN_PARAM; i++){
