@@ -147,7 +147,7 @@ void RightPart(double* x, double* vec, double JD, Matrix<double> *params) {
 	grad[5] = -GravPotWithParams(x + 3, params, Vdz);
 	
 	Matrix<double> *dFdX = MatrixdFdX(x, params);
-	Matrix<double> *dXdParam = new Matrix<double>(x, 12, 34);
+	Matrix<double> *dXdParam = new Matrix<double>(x + 12, 12, 34);
     Matrix<double> *dFdParam = MatrixdFdParam(x, params);
 
 	double *res = (*dFdX * *dXdParam + *dFdParam).TransToVector();

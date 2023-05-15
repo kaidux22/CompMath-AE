@@ -112,17 +112,17 @@ void LeastSquare::Iteration(int steps){
             for(int j = 0; j < UNKNOWN_PARAM * 12; j++){
                 mStates->TransToVector()[j] = orbits[i][13 + j];
             }
-            Matrix<double> *dGdX = MatrixdGdX();
 
+            Matrix<double> *dGdX = MatrixdGdX();
             double *res = (*dGdX * *mStates).TransToVector();
 
 
             for(int j = 0; j < UNKNOWN_PARAM; j++){
                 mMatrixA->Set(i, j, res[j]);
             }
+
             //разобраться со слау
-            mResiduals->Set(i, 0, 0); //abs(mMeasure[2 * i + 1] - distance[2 * i + 1]));
-        
+            mResiduals->Set(i, 0, 0); //abs(mMeasure[2 * i + 1] - distance[2 * i + 1]));        
         }
 
         Matrix<double> MatrixAtA(UNKNOWN_PARAM, UNKNOWN_PARAM);
@@ -146,25 +146,10 @@ Matrix<double>* LeastSquare::MatrixdGdX(){
     Matrix<double> *dGdX = new Matrix<double>(1, 12);
 
     for(int i = 0; i < 3; i++){
-        dGdX->Set(0, i, 1/sqrt(pow(mVec[0] - mVec[6], 2.0) +
-                               pow(mVec[1] - mVec[7], 2.0) +
-                               pow(mVec[2] - mVec[8], 2.0)
-        ));
-        dGdX->Set(0, i + 6, 1/sqrt(pow(mVec[0] - mVec[6], 2.0) +
-                               pow(mVec[1] - mVec[7], 2.0) +
-                               pow(mVec[2] - mVec[8], 2.0)
-        ));
-        dGdX->Set(0, i + 3, 0);
-        dGdX->Set(0, i + 9, 0);
+        dGdX->Set(0, i, (mVec[i] - mVec[i + 3]) / sqrt(pow(mVec[0] - mVec[3], 2) + pow(mVec[1] - mVec[4], 2) + pow(mVec[2] - mVec[5], 2)));
+        dGdX->Set(0, i + 3, (mVec[i + 3] - mVec[i]) / sqrt(pow(mVec[0] - mVec[3], 2) + pow(mVec[1] - mVec[4], 2) + pow(mVec[2] - mVec[5], 2)));
     }
-
-    for(int i = 0; i < 3; i++){
-        dGdX->Set(0, i, dGdX->Get(0, i) * (mVec[i] - mVec[6 + i]));
-        dGdX->Set(0, i, dGdX->Get(0, i) * (mVec[6 + i] - mVec[i]));
-    }
-
-    dGdX->Product(-1.0);
-
+    dGdX->Product(-1);
     return dGdX;
 }
 

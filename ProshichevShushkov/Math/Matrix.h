@@ -129,7 +129,7 @@ public:
 		Matrix<Type> *vector = new Matrix<Type>(1, mColumn);
 
 		for (int i = 0; i < mColumn; i++) {
-			vector->Set(i, 0, Get(rowNum, i));
+			vector->Set(0, i, Get(rowNum, i));
 		}
 
 		return vector;
@@ -140,7 +140,7 @@ public:
 		Matrix<Type> *vector = new Matrix<Type>(1, mRows);
 
 		for (int i = 0; i < mRows; i++) {
-			vector->Set(i, 0, Get(columnNum, i));
+			vector->Set(0, i, Get(i, columnNum));
 		}
 		
 		return vector;
