@@ -120,8 +120,8 @@ void LeastSquare::Iteration(int steps){
             for(int j = 0; j < UNKNOWN_PARAM; j++){
                 mMatrixA->Set(i, j, res[j]);
             }
-
-            mResiduals->Set(i, 0, abs(mMeasure[2 * i + 1] - distance[2 * i + 1]));
+            //разобраться со слау
+            mResiduals->Set(i, 0, 0); //abs(mMeasure[2 * i + 1] - distance[2 * i + 1]));
         
         }
 
@@ -130,7 +130,7 @@ void LeastSquare::Iteration(int steps){
 
         Matrix<double> MatrixArb(UNKNOWN_PARAM, 1);
         MatrixArb = mMatrixA->Transposition() * *mResiduals;
-        
+
         Matrix<double> *Vectorx = CholeskyDecomposition(&MatrixAtA, &MatrixArb);
 
         for(int i = 0; i < UNKNOWN_PARAM; i++){
@@ -169,9 +169,11 @@ Matrix<double>* LeastSquare::MatrixdGdX(){
 }
 
 Matrix<double>* LeastSquare::CholeskyDecomposition(Matrix<double> *MatrixA, Matrix<double> *Vectorb){
-    Matrix<double> *MatrixL = new Matrix<double>(UNKNOWN_PARAM, UNKNOWN_PARAM);
+    assert(MatrixA->RowsCount() == MatrixA->ColumnCount());
+    assert(MatrixA->RowsCount() == Vectorb->RowsCount());
+    Matrix<double> *MatrixL = new Matrix<double>(MatrixA->RowsCount(), MatrixA->ColumnCount());
 
-    for (int i = 0; i < UNKNOWN_PARAM; i++){
+    for (int i = 0; i < MatrixA->RowsCount(); i++){
         for (int j = 0; j < (i + 1); j++){
             double res = 0;
             for (int k = 0; k < j; k++) {
@@ -185,11 +187,11 @@ Matrix<double>* LeastSquare::CholeskyDecomposition(Matrix<double> *MatrixA, Matr
         }
     }
 
-    Matrix<double> *Vectorx = new Matrix<double>(UNKNOWN_PARAM, 1);
-    Matrix<double> *Vectory = new Matrix<double>(UNKNOWN_PARAM, 1);
+    Matrix<double> *Vectorx = new Matrix<double>(Vectorb->RowsCount(), 1);
+    Matrix<double> *Vectory = new Matrix<double>(Vectorb->RowsCount(), 1);
 
     //  L*y=b
-    for (int i = 0; i < UNKNOWN_PARAM; i++){
+    for (int i = 0; i < Vectorb->RowsCount(); i++){
         double res = 0;
         for (int j = 0; j < i; j++){
             res += MatrixL->Get(i, j) * Vectory->Get(j, 0);
@@ -199,9 +201,9 @@ Matrix<double>* LeastSquare::CholeskyDecomposition(Matrix<double> *MatrixA, Matr
     }
 
     //  L^t*x=y
-    for (int i = UNKNOWN_PARAM - 1; i >= 0; i--){
+    for (int i = Vectorb->RowsCount() - 1; i >= 0; i--){
         double res = 0;
-        for (int j = i+1; j < UNKNOWN_PARAM; j++){
+        for (int j = i+1; j < Vectorb->RowsCount(); j++){
             res += MatrixL->Get(j, i) * Vectorx->Get(j, 0);
         }
 

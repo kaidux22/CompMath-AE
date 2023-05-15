@@ -150,6 +150,14 @@ public:
 		return mMatrix;
 	}
 
+	int RowsCount() const{
+		return mRows;
+	}
+
+	int ColumnCount() const{
+		return mColumn;
+	}
+
 	~Matrix() {
 		delete[] mMatrix;
 	}
