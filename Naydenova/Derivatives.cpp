@@ -29,17 +29,17 @@ double dz(double* vec) {
     return res;
 }
 
-double dg_dx(double* vec, double* coord){
+double dg_dx(double* vec, double* coord, double time){
     double res = (vec[1] - coord[0])/( sqrt(pow(vec[1] - coord[0], 2) + pow(vec[2] - coord[1], 2) + pow(vec[3] - coord[2], 2) ));
     return res;
 }
 
-double dg_dy(double* vec, double* coord){
+double dg_dy(double* vec, double* coord, double time){
     double res = (vec[2] - coord[1])/( sqrt(pow(vec[1] - coord[0], 2) + pow(vec[2] - coord[1], 2) + pow(vec[3] - coord[2], 2) ));
     return res;
 }
 
-double dg_dz(double* vec, double* coord){
+double dg_dz(double* vec, double* coord, double time){
     double res = (vec[3] - coord[2])/( sqrt(pow(vec[1] - coord[0], 2) + pow(vec[2] - coord[1], 2) + pow(vec[3] - coord[2], 2) ));
     return res;
 }

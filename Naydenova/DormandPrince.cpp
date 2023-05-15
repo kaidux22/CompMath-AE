@@ -94,7 +94,7 @@ double** integrate_for_inverse(double JD, double h, const int N, double* vec, do
     }
 
     int cnt = GENERAL_TIME / h;
-    double** states = new double* [ cnt];
+    double** states = new double* [cnt];
 
     // 86400 секунд в сутках
     for (int i = 0; i <  cnt; i++) {

@@ -10,5 +10,5 @@
 
 using namespace std;
 
-double** create_matrix_df_dx(double* x, double mu, double J);
+double** create_matrix_df_dx(double* x, double mu, double J, double JD);
 void function(double* x, double* vec, double time, double J, double mu) ;

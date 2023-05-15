@@ -67,8 +67,7 @@ double duz_dx(double* vec, double mu, double J){
     //                        - (1.0/3.0)* ((15*vec[0]*vec[2] ) / pow(sum_sqrs,3.5)));
 
     double res = -mu * ((3*vec[0] * vec[2])/pow(sum_sqrs,2.5)) +
-                 J * 1.5 * ((( -10 * pow(vec[0],5) * vec[2] - 20*pow(vec[0], 3) * pow(vec[1], 2) * vec[2] + 15*pow(vec[0], 3) * pow(vec[2], 3)
-                 -10*vec[0]* pow(vec[1], 4)* vec[2] + 15*vec[0]* pow(vec[1], 2)* pow(vec[2], 3) + 25*vec[0]* pow(vec[2], 5)) / pow(sum_sqrs, 5.5))
+                 J * 1.5 * (((-5*vec[0]*vec[2]* (2 * pow(vec[0], 2) + 2*pow(vec[1],2) - 5*pow(vec[2], 2))) / pow(sum_sqrs, 4.5))
                  - (1.0/3.0)* ((15*vec[0]*vec[2] ) / pow(sum_sqrs,3.5)));
 
     return res;
@@ -82,8 +81,7 @@ double duz_dy(double* vec, double mu, double J){
    //                         - (1.0/3.0)* ((15*vec[1]*vec[2] ) / pow(sum_sqrs,3.5)));
 
     double res = -mu * ((3*vec[1] * vec[2])/pow(sum_sqrs,2.5)) +
-                  J * 1.5 * (((-10 * pow(vec[1],5) * vec[2] - 20*pow(vec[1], 3) * pow(vec[0], 2) * vec[2] + 15*pow(vec[1], 3) * pow(vec[2], 3)
-                  -10*vec[1]* pow(vec[0], 4)* vec[2] + 15*vec[1]* pow(vec[0], 2)* pow(vec[2], 3) + 25*vec[1]* pow(vec[2], 5)) / pow(sum_sqrs, 5.5))
+                  J * 1.5 * (((-5*vec[1]*vec[2]* (2 * pow(vec[0], 2) + 2*pow(vec[1],2) - 5*pow(vec[2], 2))) / pow(sum_sqrs, 4.5))
                   - (1.0/3.0)* ((15*vec[1]*vec[2] ) / pow(sum_sqrs,3.5)));
     return res;
 }
@@ -97,10 +95,8 @@ double duz_dz(double* vec, double mu, double J){
     //             - (1.0/3.0)* ((15*pow(vec[2],2) * pow(sum_sqrs,0.5) - 3* pow(sum_sqrs, 1.5)) / pow(sum_sqrs,4)));
 
     double res = -mu * ((2* pow(vec[2],2) - pow(vec[0],2) - pow(vec[1], 2))/pow(sum_sqrs,2.5)) +
-                 J * 1.5 * (( ((2* pow(sum_sqrs, 1.5) - 10* pow(vec[2], 2)*pow(sum_sqrs,0.5)) / pow(sum_sqrs,4)) +
-                  ((35 *pow(vec[2],4) * pow(sum_sqrs, 0.5) *
-                  (pow(vec[0],4) + pow(vec[1],4) + pow(vec[2],4) + 2*pow(vec[0],2)*pow(vec[1],2) + 2*pow(vec[0],2)*pow(vec[2],2)
-                   + 2*pow(vec[1],2)*pow(vec[2],2)) - 15* pow(vec[2],2) * pow(sum_sqrs, 3.5))/pow(sum_sqrs,7)) )
+                 J * 1.5 * (((2 * pow(vec[0], 4) + pow(vec[0], 2)* (4*pow(vec[1], 2) - 21 * pow(vec[2], 2)) +
+                 2*pow(vec[1], 4) - 21*pow(vec[1], 2) * pow(vec[2], 2) + 12* pow(vec[2], 4))/ pow(sum_sqrs, 4.5)  )
                  - (1.0/3.0)* ((15*pow(vec[2],2) * pow(sum_sqrs,0.5) - 3* pow(sum_sqrs, 1.5)) / pow(sum_sqrs,4)));
     return res;
 

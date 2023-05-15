@@ -21,6 +21,17 @@ void changeCoords(double(*rotateMatrix)[3], double* vec, int idx) {
     delete newCoords;
 }
 
+void changeCoordsRight(double(*rotateMatrix)[3], double* vec, int idx) {
+    double* newCoords = new double[3];
+    for (int i = 0; i < 3; i++) {
+        newCoords[i] = rotateMatrix[0][i] * vec[idx] + rotateMatrix[1][i] * vec[idx + 1] + rotateMatrix[2][i] * vec[idx + 2];
+    }
+
+    for(int i = 0; i < 3; i++)
+        vec[idx + i] = newCoords[i];
+    delete newCoords;
+}
+
 double** multiplication_AtA(vector<vector<double>> &A){
     double** AtA = new double * [8];
     for (int i=0 ; i < 8; i++){

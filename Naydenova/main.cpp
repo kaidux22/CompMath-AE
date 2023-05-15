@@ -39,7 +39,7 @@ double** create_observatories(double JD_start){
 
 int main(){
 
-    double noise[8] = {0.0005,-0.0005,0.0002,0.0000005,-0.0000005,0.00000003,2, 10};
+    double noise[8] = {0.0005,-0.0005,0.0000002,0.0000005,-0.0000005,0.0000002,2, -10};
 
     int cnt = GENERAL_TIME / STEP;
     double JD_start = JD;
@@ -81,7 +81,7 @@ int main(){
     cout << endl << endl;
 
 
-    for (int i=0; i < 18; i++){ ///?
+    for (int i=0; i < 2; i++){ ///?
         changeCoords(rotateMatrix, states, 3*i);  //НСК
     }
 
@@ -96,19 +96,23 @@ int main(){
 
 
     double** res = integrate(JD, STEP, 6, vec);
+    double **new_res;
 
 
     for(int iter = 0; iter < 4; iter++) {
-        double **new_res = integrate_for_inverse(JD, STEP, 54, states, b[7], b[6]);
+        new_res = integrate_for_inverse(JD, STEP, 54, states, b[7], b[6]);
+
         vector<vector<double>> A;
         vector<double> r_b;
 
         for (int i = 0; i <  cnt; i++) {
+
             double **stations = create_observatories(res[i][0]);
             double distance = pow(res[i][1], 2) + pow(res[i][2], 2) + pow(res[i][3], 2);
             double max_distance = sqrt(distance - pow(R_CONST, 2));
 
             for (int station_number = 0; station_number < 8; station_number++) {
+
                 double r_var = sqrt(pow((stations[station_number][0] - new_res[i][1]), 2) +
                                     pow((stations[station_number][1] - new_res[i][2]), 2) +
                                     pow((stations[station_number][2] - new_res[i][3]), 2));
@@ -117,16 +121,20 @@ int main(){
                         pow((stations[station_number][1] - res[i][2]), 2) +
                         pow((stations[station_number][2] - res[i][3]), 2));
 
-                double r_original_var = r_original * 1.0;
+                random_device rd;
+                mt19937 gen(rd());
+                uniform_real_distribution<double> dist(-r_original * 0.02, r_original * 0.02);
+                double r_original_var = r_original + dist(gen);
 
                 if (r_original <= max_distance) {
+
                     double *dg_dX = new double[6];
                     for (int t = 3; t < 6; t++) {
                         dg_dX[t] = 0;
                     }
-                    dg_dX[0] = dg_dx(new_res[i], stations[station_number]);
-                    dg_dX[1] = dg_dy(new_res[i], stations[station_number]);
-                    dg_dX[2] = dg_dz(new_res[i], stations[station_number]);
+                    dg_dX[0] = dg_dx(new_res[i], stations[station_number], new_res[i][0]);
+                    dg_dX[1] = dg_dy(new_res[i], stations[station_number], new_res[i][0]);
+                    dg_dX[2] = dg_dz(new_res[i], stations[station_number], new_res[i][0]);
 
                     vector<double> current_r;
 
@@ -137,11 +145,6 @@ int main(){
                         }
                         current_r.push_back(-result);
                     }
-                    /*
-                    for (int r=0; r < 8; r++){
-                        cout << current_r[r] << " ";
-                    }
-                    cout << endl; */
 
                     A.push_back(current_r);
                     r_b.push_back(r_var - r_original_var);
@@ -167,6 +170,11 @@ int main(){
 
 
         double *x = Cholesky_decomposition(AtA, 8, Atr);
+        /*cout << "X: ";
+        for (int t=0; t < 8; t++){
+            cout << x[t] << " ";
+        }
+        cout << endl; */
 
         double *b_new = new double[8];
 
@@ -197,10 +205,9 @@ int main(){
     }
 
 
-
     fstream file("file.txt");
     for (int i=0; i < cnt; i++) {
-        file <<  res[i][1] << " " << res[i][2] << " " << res[i][3]  << endl;
+        file <<  res[i][1] << " " << res[i][2] << " " << res[i][3] << endl;
     }
 
     file.close();
