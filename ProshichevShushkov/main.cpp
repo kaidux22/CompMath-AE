@@ -2,8 +2,7 @@
 
 using namespace std;
 
-int main()
-{	
+int main(){
 	double JD_start = JD;
 	double *vec = new double[6];
 	int cnt =  86400.0 / STEP;

@@ -6,12 +6,13 @@ void DormandPrince(double JD, double h, const int N, double* vec, double a[7][7]
 
     for (int i = 0 ; i < 7; i++) {
         for (int j = 0; j < N; j++) {
+            
             x[j] = vec[j];
-            for (int t = 0; t < i; t++) {
+            for (int t = 0; t < 7; t++) {
                 x[j] += a[i][t] * h * k[t][j];
             }
         }
-        f(x, k[i], JD + c[i]* h, params);
+        f(x, k[i], JD + c[i]* (h / 86400.0), params);
     }
 
     for (int i = 0; i < N; i++) {

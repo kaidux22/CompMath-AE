@@ -41,18 +41,18 @@ double DerivativedVdC(double* vec, Matrix<double> *params, int n, int m, Complex
     int N = N_CONST;
     LegFunc Pmn = LegFunc(N + MAX_ORD, N + MAX_ORD, vec[2] / sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]));
     ComplexNum res = ComplexNum(R_CONST,0).Pow(n) * func(Pmn, n, m, vec);
-    return NU_CONST * res.Real();
+    return params->Get(12, 0) * res.Real();
 }
 
 double DerivativedVdS(double* vec, Matrix<double> *params, int n, int m, ComplexNum(*func)(LegFunc&, int, int, double*)){
     int N = N_CONST;
     LegFunc Pmn = LegFunc(N + MAX_ORD, N + MAX_ORD, vec[2] / sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]));
     ComplexNum res = ComplexNum(0,-1) * ComplexNum(R_CONST,0).Pow(n) * func(Pmn, n, m, vec);
-    return NU_CONST * res.Real();
+    return params->Get(12, 0) * res.Real();
 }
 
 double DerivativedVdGM(double* vec, Matrix<double> *params, ComplexNum(*func)(LegFunc&, int, int, double*)){
-    return GravPotWithParams(vec, params, func) / NU_CONST;
+    return GravPotWithParams(vec, params, func) / params->Get(12, 0);
 }
 
 //метод возвращается градиент гравитационного потенциала

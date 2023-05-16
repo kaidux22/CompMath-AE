@@ -86,7 +86,7 @@ void LeastSquare::Iteration(int steps){
 
         /*
         for(int t = 0; t < mMeasureCount; t++){
-            for(int i = 0; i < 13; i++){
+            for(int i = 12; i < 12 + 12 * 34; i++){
                cout << orbits[t][i] << " ";
             }
             cout << endl;

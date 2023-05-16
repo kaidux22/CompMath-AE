@@ -97,6 +97,8 @@ Matrix<double> *MatrixdFdX(double *x, Matrix<double> *params, double JD){
 			dFdX->Set(9 + i, 3 + j, saveRes.Get(i, j));
 		}
 	}
+	delete rotateMatrix;
+	delete direvMatrix;
 
 	return dFdX;
 }
@@ -111,7 +113,9 @@ Matrix<double> *MatrixdFdParam(double *x, Matrix<double> *params, double JD){
 	Transposition(matrix);
 
 	vec[0] = -DerivativedVdGM(x, params, Vdx), vec[1] = -DerivativedVdGM(x, params, Vdy), vec[2] = -DerivativedVdGM(x, params, Vdz);
+
 	changeCoords(matrix, vec, 0);
+
     dFdParam->Set(6, 12, vec[0]), dFdParam->Set(7, 12, vec[1]), dFdParam->Set(8, 12, vec[2]);
 
 	vec[0] = -DerivativedVdGM(x + 3, params, Vdx), vec[1] = -DerivativedVdGM(x + 3, params, Vdy), vec[2] = -DerivativedVdGM(x + 3, params, Vdz);
@@ -192,12 +196,13 @@ void RightPart(double* x, double* vec, double JD, Matrix<double> *params) {
 	Matrix<double> *dFdX = MatrixdFdX(x, params, JD);
 	Matrix<double> *dXdParam = new Matrix<double>(x + 12, 12, 34);
     Matrix<double> *dFdParam = MatrixdFdParam(x, params, JD);
+	Matrix<double> prod = *dFdX * *dXdParam + *dFdParam;
+	//prod.Print();
 
-	(*dFdX * *dXdParam + *dFdParam).Print();
-	assert(false);
 
-	double *res = (*dFdX * *dXdParam + *dFdParam).TransToVector();
-	for(int i = 12; i < 12 * 34; i++){
+	double *res = prod.TransToVector();
+
+	for(int i = 12; i < 12 + 12 * 34; i++){
 		vec[i] = res[i - 12];
 	}
 
