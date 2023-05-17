@@ -95,7 +95,7 @@ void LeastSquare::Iteration(int steps){
         assert(false);
         */
 
-        double *distance = OrbitDistance(orbits, mMeasureCount); //кринжовые расстояния
+        double *distance = OrbitDistance(orbits, mMeasureCount);
 
         /*
         for(int i = 0; i < mMeasureCount; i++){
@@ -114,11 +114,11 @@ void LeastSquare::Iteration(int steps){
             }
 
             Matrix<double> *dGdX = MatrixdGdX();
-            double *res = (*dGdX * *mStates).TransToVector();
-
+            Matrix<double> prod = (*dGdX * *mStates);                                         
+            double *res = prod.TransToVector();
 
             for(int j = 0; j < UNKNOWN_PARAM; j++){
-                mMatrixA->Set(i, j, res[j]);
+                mMatrixA->Set(i, j, -res[j]);
             }
 
             //разобраться со слау
@@ -127,6 +127,7 @@ void LeastSquare::Iteration(int steps){
 
         Matrix<double> MatrixAtA(UNKNOWN_PARAM, UNKNOWN_PARAM);
         MatrixAtA = (mMatrixA->Transposition() * *mMatrixA);
+ 
 
         Matrix<double> MatrixArb(UNKNOWN_PARAM, 1);
         MatrixArb = mMatrixA->Transposition() * *mResiduals;
@@ -149,7 +150,6 @@ Matrix<double>* LeastSquare::MatrixdGdX(){
         dGdX->Set(0, i, (mVec[i] - mVec[i + 3]) / sqrt(pow(mVec[0] - mVec[3], 2) + pow(mVec[1] - mVec[4], 2) + pow(mVec[2] - mVec[5], 2)));
         dGdX->Set(0, i + 3, (mVec[i + 3] - mVec[i]) / sqrt(pow(mVec[0] - mVec[3], 2) + pow(mVec[1] - mVec[4], 2) + pow(mVec[2] - mVec[5], 2)));
     }
-    dGdX->Product(-1);
     return dGdX;
 }
 
@@ -158,7 +158,7 @@ Matrix<double>* LeastSquare::CholeskyDecomposition(Matrix<double> *MatrixA, Matr
     assert(MatrixA->RowsCount() == Vectorb->RowsCount());
     Matrix<double> *MatrixL = new Matrix<double>(MatrixA->RowsCount(), MatrixA->ColumnCount());
 
-    for (int i = 0; i < MatrixA->RowsCount(); i++){
+     for (int i=0; i < MatrixA->RowsCount(); i++){
         for (int j = 0; j < (i + 1); j++){
             double res = 0;
             for (int k = 0; k < j; k++) {
@@ -167,10 +167,18 @@ Matrix<double>* LeastSquare::CholeskyDecomposition(Matrix<double> *MatrixA, Matr
             if (i == j) {
                 MatrixL->Set(i, j, sqrt(MatrixA->Get(i, i) - res));
             } else {
-                MatrixL->Set(i, j, (1.0 / MatrixL->Get(j, j)) * (MatrixA->Get(i, j) - res));
+                if (MatrixL->Get(j, j) == 0){
+                    MatrixL->Set(i, j, 0);
+                }
+                else {
+                    MatrixL->Set(i, j, (1.0 / MatrixL->Get(j, j) * (MatrixA->Get(i, j) - res)));
+                }
             }
         }
     }
+
+    MatrixL->Print();
+    assert(false);
 
     Matrix<double> *Vectorx = new Matrix<double>(Vectorb->RowsCount(), 1);
     Matrix<double> *Vectory = new Matrix<double>(Vectorb->RowsCount(), 1);
@@ -181,8 +189,12 @@ Matrix<double>* LeastSquare::CholeskyDecomposition(Matrix<double> *MatrixA, Matr
         for (int j = 0; j < i; j++){
             res += MatrixL->Get(i, j) * Vectory->Get(j, 0);
         }
-
-        Vectory->Set(i, 0, (1.0 / MatrixL->Get(i, i)) * (Vectorb->Get(i, 0) - res));
+        if (MatrixL->Get(i, i) == 0){
+            Vectory->Set(i, 0, 0);
+        }
+        else {
+            Vectory->Set(i, 0, (1.0 / MatrixL->Get(i, i)) * (Vectorb->Get(i, 0) - res));
+        }
     }
 
     //  L^t*x=y
@@ -194,6 +206,21 @@ Matrix<double>* LeastSquare::CholeskyDecomposition(Matrix<double> *MatrixA, Matr
 
         Vectorx->Set(i, 0, (1.0 / MatrixL->Get(i, i)) * (Vectory->Get(i, 0) - res));
 
+    }
+
+    for (int i = Vectorb->RowsCount() - 1; i >= 0; i--){
+        double res = 0;
+        for (int j = i+1; j < Vectorb->RowsCount(); j++){
+            res += MatrixL->Get(j, i) * Vectorx->Get(j, 0);
+        }
+        if (MatrixL->Get(i, i) == 0){
+            Vectorx->Set(i, 0, 0);
+        }
+        else {
+            Vectorx->Set(i, 0, (1.0 / MatrixL->Get(i, i) * (Vectory->Get(i, 0) - res)));
+        }
+ 
+ 
     }
 
     delete Vectory;
