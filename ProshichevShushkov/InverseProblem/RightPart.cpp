@@ -119,6 +119,7 @@ Matrix<double> *MatrixdFdParam(double *x, Matrix<double> *params, double JD){
     dFdParam->Set(6, 12, vec[0]), dFdParam->Set(7, 12, vec[1]), dFdParam->Set(8, 12, vec[2]);
 
 	vec[0] = -DerivativedVdGM(x + 3, params, Vdx), vec[1] = -DerivativedVdGM(x + 3, params, Vdy), vec[2] = -DerivativedVdGM(x + 3, params, Vdz);
+	
 	changeCoords(matrix, vec, 0);
 	dFdParam->Set(9, 12, vec[0]), dFdParam->Set(10, 12, vec[1]), dFdParam->Set(11, 12, vec[2]);
 
