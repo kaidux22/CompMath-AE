@@ -81,7 +81,7 @@ Matrix<double> *MatrixdFdX(double *x, Matrix<double> *params, double JD){
 	for(int i = 0; i < 3; i++){
 		for(int j = 0; j < 3; j++){
 			dFdX->Set(6 + i, j, saveRes.Get(i, j));
-			dFdX->Set(6 + i, 3 + j, saveRes.Get(i, j));
+			dFdX->Set(6 + i, 3 + j, 0);
 		}
 	}
 
@@ -93,7 +93,7 @@ Matrix<double> *MatrixdFdX(double *x, Matrix<double> *params, double JD){
 
 	for(int i = 0; i < 3; i++){
 		for(int j = 0; j < 3; j++){
-			dFdX->Set(9 + i, j, saveRes.Get(i, j));
+			dFdX->Set(9 + i, j, 0);
 			dFdX->Set(9 + i, 3 + j, saveRes.Get(i, j));
 		}
 	}
