@@ -22,7 +22,7 @@ LeastSquare::LeastSquare(double *measure, int measureCnt){
     srand(time(0));
 
     for(int i = 0; i < 34; i++){
-        mNoise[i] = 1.0; //(double)(rand() % (int)2e9 - 1e9) / 1e9 / 2e2 + 1;
+        mNoise[i] = (double)(rand() % (int)2e9 - 1e9) / 1e9 / 2e3 + 1;
     }
 
     // Вектор состояния для одного спутника (начальных 12 параметров | единичная матрица 12х12 | нулевые столбцы для оставшихся 22ух коэффициентов)
@@ -34,12 +34,12 @@ LeastSquare::LeastSquare(double *measure, int measureCnt){
     mTruth = new Matrix<double>(UNKNOWN_PARAM, 1);
 
     // координаты первого и второго спутников
-    mParams->Set(0, 0, 1248.77 * mNoise[0]), mParams->Set(1, 0, -6763.69 * mNoise[1]), mParams->Set(2, 0, -0.155766 * mNoise[2]);
-    mParams->Set(3, 0, 1472.62 * mNoise[6]), mParams->Set(4, 0, -6718.5 * mNoise[7]), mParams->Set(5, 0, -0.148523 * mNoise[8]);
+    mParams->Set(0, 0, 1248.77), mParams->Set(1, 0, -6763.69), mParams->Set(2, 0, -0.155766);
+    mParams->Set(3, 0, 1472.62), mParams->Set(4, 0, -6718.5), mParams->Set(5, 0, -0.148523);
 
     //скорости первого и второго спутников
-    mParams->Set(6, 0, 7.48616 * mNoise[3]), mParams->Set(7, 0, 1.38216 * mNoise[4]), mParams->Set(8, 0, 0.00024043 * mNoise[5]);
-    mParams->Set(9, 0, 7.43608 * mNoise[9]), mParams->Set(10, 0, 1.63027 * mNoise[10]), mParams->Set(11, 0, 0.000242242 * mNoise[11]);
+    mParams->Set(6, 0, 7.48616), mParams->Set(7, 0, 1.38216), mParams->Set(8, 0, 0.00024043);
+    mParams->Set(9, 0, 7.43608), mParams->Set(10, 0, 1.63027), mParams->Set(11, 0, 0.000242242);
     
     //Нахождение параметра массы
     //mParams->Set(12, 0, 398600.4415 + mNoise[12]);
@@ -62,12 +62,21 @@ LeastSquare::LeastSquare(double *measure, int measureCnt){
         }
     }
     
-    for(int i = 0; i < UNKNOWN_PARAM; i++)
+    
+    for(int i = 0; i < UNKNOWN_PARAM; i++){
         mTruth->Set(i, 0, mParams->Get(i, 0));
+        mParams->Set(i, 0, mParams->Get(i, 0) * mNoise[i]);
+    }
+
+    for(int i = 0; i < UNKNOWN_PARAM; i++)
+        cout << mParams->Get(i, 0) << "\t\t" << mTruth->Get(i, 0) << endl;
+    cout << endl;
 
 }
 
 void LeastSquare::Iteration(int steps){
+
+
     for(int step = 0 ; step < steps; step++){
         for(int i = 0; i < 12; i++){
             for(int j = 0; j < UNKNOWN_PARAM; j++){
@@ -144,8 +153,9 @@ void LeastSquare::Iteration(int steps){
             mParams->Set(i, 0, mParams->Get(i, 0) - Vectorx->Get(i, 0));
         }
 
-        cout << "Step\n";
-        mParams->Print();
+        for(int i = 0; i < UNKNOWN_PARAM; i++)
+            cout << mParams->Get(i, 0) << "\t\t" << mTruth->Get(i, 0) << endl;
+        cout << endl;
         //mTruth->Print();
 
     }
