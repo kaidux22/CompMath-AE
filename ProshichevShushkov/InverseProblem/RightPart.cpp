@@ -104,7 +104,7 @@ Matrix<double> *MatrixdFdX(double *x, Matrix<double> *params, double JD){
 }
 
 Matrix<double> *MatrixdFdParam(double *x, Matrix<double> *params, double JD){
-	Matrix<double> *dFdParam = new Matrix<double>(12, 34);
+	Matrix<double> *dFdParam = new Matrix<double>(12, UNKNOWN_PARAM);
 
 	double matrix[3][3], vec[3];
 
@@ -195,7 +195,7 @@ void RightPart(double* x, double* vec, double JD, Matrix<double> *params) {
 	grad[5] = -GravPotWithParams(x + 3, params, Vdz);
 	
 	Matrix<double> *dFdX = MatrixdFdX(x, params, JD);
-	Matrix<double> *dXdParam = new Matrix<double>(x + 12, 12, 34);
+	Matrix<double> *dXdParam = new Matrix<double>(x + 12, 12, UNKNOWN_PARAM);
     Matrix<double> *dFdParam = MatrixdFdParam(x, params, JD);
 	Matrix<double> prod = *dFdX * *dXdParam + *dFdParam;
 	//prod.Print();
@@ -203,7 +203,7 @@ void RightPart(double* x, double* vec, double JD, Matrix<double> *params) {
 
 	double *res = prod.TransToVector();
 
-	for(int i = 12; i < 12 + 12 * 34; i++){
+	for(int i = 12; i < 12 + 12 * UNKNOWN_PARAM; i++){
 		vec[i] = res[i - 12];
 	}
 

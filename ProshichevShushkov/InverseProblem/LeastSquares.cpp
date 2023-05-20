@@ -177,9 +177,6 @@ Matrix<double>* LeastSquare::CholeskyDecomposition(Matrix<double> *MatrixA, Matr
         }
     }
 
-    MatrixL->Print();
-    assert(false);
-
     Matrix<double> *Vectorx = new Matrix<double>(Vectorb->RowsCount(), 1);
     Matrix<double> *Vectory = new Matrix<double>(Vectorb->RowsCount(), 1);
 
