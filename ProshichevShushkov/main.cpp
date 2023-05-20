@@ -4,23 +4,23 @@ using namespace std;
 
 int main(){
 	double JD_start = JD;
-	double *vec = new double[6];
+	double *vec = new double[12];
 	int cnt =  86400.0 / STEP;
 	double rotateMatrix[3][3];
 
-	//начальное положение в ЗСК
-	vec[0] = START_POINT, vec[1] = 0, vec[2] = 0;
+	//начальное положение в НСК первого спутника
+	vec[0] = 1248.77, vec[1] = -6763.69, vec[2] = -0.155766;
 
-	// начальная скорость в ЗСК
-	vec[3] = 0, vec[4] = sqrt(GM / START_POINT), vec[5] = 0;
+	//начальное положение в НСК второго спутника
+	vec[3] = 1472.62, vec[4] = -6718.5, vec[5] = -0.148523;
 
-	//перевод в НСК начальных параметров
-	iauC2t06a(JD_start + (37.0 + 32.184) / 86400.0, 0, JD_start, 0, 0, 0, rotateMatrix);
-	Transposition(rotateMatrix);
-	changeCoords(rotateMatrix, vec, 0); //перевод начальных координат в НСК
-	changeCoords(rotateMatrix, vec, 3); //перевод проекций скоростей в НСК 
+	// начальная скорость в НСК первого спутника
+	vec[6] = 7.48616, vec[7] = 1.38216, vec[8] = 0.00024043;
 
-	double** orbit1 = Integrate(JD, STEP, 6, vec); 
+	//начальная скорость в НСК второго спутника
+	vec[9] = 7.43608, vec[10] = 1.63027, vec[11] = 0.000242242;
+
+	double** orbits = Integrate(JD, STEP, 12, vec); 
 	
 
 	/*
@@ -33,7 +33,7 @@ int main(){
 	
 	fstream orbit("orbit.txt", ios::out);
 	for(int i = 0; i < cnt; i++){
-		orbit << orbit1[i][1] << " " << orbit1[i][2] << " " << orbit1[i][3] << endl;
+		orbit << orbits[i][1] << " " << orbits[i][2] << " " << orbits[i][3] << endl;
 	}
 	orbit.close();
 
@@ -43,12 +43,6 @@ int main(){
 	После построение первой орбиты заметили, что через шаг расстояние от начальной точки примерно такое
 	Поэтому за начальную точку второй орбиты возьмём координаты после этого шага
 	*/
-
-
-	vec[0] = 1472.62, vec[1] = -6718.5, vec[2] = -0.148523;
-	vec[3] = 7.43608, vec[4] = 1.63027, vec[5] = 0.000242242;
-	
-	double **orbit2 = Integrate(JD, STEP, 6, vec);
 	
 	/*
 	fstream file("orbit.txt", ios::out);
@@ -58,7 +52,7 @@ int main(){
 	file.close();
 	*/
 
-	double* res = OrbitDistance(orbit1, orbit2, cnt);
+	double* res = OrbitDistance(orbits, cnt);
 	
 	/*
 	for(int i = 0; i < cnt; i++){
@@ -72,14 +66,12 @@ int main(){
 	}
 	dist.close();
 
-
 	LeastSquare* solve = new LeastSquare(res, cnt);
-	solve->Iteration(1);
+	solve->Iteration(5);
 	delete solve;
 
 	for(int i = 0; i < cnt; i++){
-		delete[] orbit1[i];
-		delete[] orbit2[i];
+		delete[] orbits[i];
 	}
 	delete[] vec;			
 }

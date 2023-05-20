@@ -17,6 +17,7 @@ double GravPotWithParams(double* vec, Matrix<double> *params, ComplexNum(*func)(
 					   {0.0, 0.0, -0.9038680729e-6, -0.2114023978e-6, 0.1481554569e-6},
 					   {0.0, 0.0, 0.0, 0.1972013239e-6, -0.1201129183e-7},
 					   {0.0, 0.0, 0.0, 0.0, 0.6525605810e-8} };
+	
 	int cnt = 12;
     //Cmn
     for(int n = 2; n < 4; n++){
@@ -33,7 +34,7 @@ double GravPotWithParams(double* vec, Matrix<double> *params, ComplexNum(*func)(
             cnt++;
         }
     }
-
+	
 	//Создаю таблицу значений полиномов Лежандра до N + 2 степени и порядка
 	LegFunc Pmn = LegFunc(N + MAX_ORD, N + MAX_ORD, vec[2] / sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]));
 	//Pmn.PrintMaxtrix();
@@ -140,6 +141,7 @@ Matrix<double> *MatrixdFdParam(double *x, Matrix<double> *params, double JD){
             cnt++;
         }
     }
+	
 
     return dFdParam;
 }

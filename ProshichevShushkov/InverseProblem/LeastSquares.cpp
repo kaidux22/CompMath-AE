@@ -18,11 +18,12 @@ LeastSquare::LeastSquare(double *measure, int measureCnt){
 					   {0.0, 0.0, 0.0, 0.1972013239e-6, -0.1201129183e-7},
 					   {0.0, 0.0, 0.0, 0.0, 0.6525605810e-8} };
 
-    double mNoise[34] = {0, 0, 0, 0, 0, 0, 0,
-						0, 0, 0, 0, 0, 0, 0,
-						0, 0, 0, 0, 0, 0, 0,
-						0, 0, 0, 0, 0, 0, 0,
-						0, 0, 0, 0, 0, 0};
+    double mNoise[34];
+    srand(time(0));
+
+    for(int i = 0; i < 34; i++){
+        mNoise[i] = 1.0; //(double)(rand() % (int)2e9 - 1e9) / 1e9 / 2e2 + 1;
+    }
 
     // Вектор состояния для одного спутника (начальных 12 параметров | единичная матрица 12х12 | нулевые столбцы для оставшихся 22ух коэффициентов)
     mVec = new double[12 + 12 * UNKNOWN_PARAM];
@@ -30,23 +31,25 @@ LeastSquare::LeastSquare(double *measure, int measureCnt){
     mParams = new Matrix<double>(UNKNOWN_PARAM, 1);
     mResiduals = new Matrix<double>(mMeasureCount, 1);
     mMatrixA = new Matrix<double>(mMeasureCount, UNKNOWN_PARAM);
+    mTruth = new Matrix<double>(UNKNOWN_PARAM, 1);
 
     // координаты первого и второго спутников
-    mParams->Set(0, 0, 1248.77 + mNoise[0]), mParams->Set(1, 0, -6763.69 + mNoise[1]), mParams->Set(2, 0, -0.155766 + mNoise[2]);
-    mParams->Set(3, 0, 1472.62 + mNoise[6]), mParams->Set(4, 0, -6718.5 + mNoise[7]), mParams->Set(5, 0, -0.148523 + mNoise[8]);
+    mParams->Set(0, 0, 1248.77 * mNoise[0]), mParams->Set(1, 0, -6763.69 * mNoise[1]), mParams->Set(2, 0, -0.155766 * mNoise[2]);
+    mParams->Set(3, 0, 1472.62 * mNoise[6]), mParams->Set(4, 0, -6718.5 * mNoise[7]), mParams->Set(5, 0, -0.148523 * mNoise[8]);
 
     //скорости первого и второго спутников
-    mParams->Set(6, 0, 7.48616 + mNoise[3]), mParams->Set(7, 0, 1.38216 + mNoise[4]), mParams->Set(8, 0, 0.00024043 + mNoise[5]);
-    mParams->Set(9, 0, 7.43608 + mNoise[9]), mParams->Set(10, 0, 1.63027 + mNoise[10]), mParams->Set(11, 0, 0.000242242 + mNoise[11]);
+    mParams->Set(6, 0, 7.48616 * mNoise[3]), mParams->Set(7, 0, 1.38216 * mNoise[4]), mParams->Set(8, 0, 0.00024043 * mNoise[5]);
+    mParams->Set(9, 0, 7.43608 * mNoise[9]), mParams->Set(10, 0, 1.63027 * mNoise[10]), mParams->Set(11, 0, 0.000242242 * mNoise[11]);
     
     //Нахождение параметра массы
     //mParams->Set(12, 0, 398600.4415 + mNoise[12]);
+
 
     int cnt = 12;
     //Cmn
     for(int n = 2; n < 4; n++){
         for(int m = 0; m <= n; m++){
-            mParams->Set(cnt, 0, Cmn[m][n] + mNoise[cnt]);
+            mParams->Set(cnt, 0, Cmn[m][n] * mNoise[cnt]);
             cnt++;
         }
     }
@@ -54,10 +57,13 @@ LeastSquare::LeastSquare(double *measure, int measureCnt){
     //Smn
     for(int n = 2; n <= 4; n++){
         for(int m = 1; m <= n; m++){
-            mParams->Set(cnt, 0, Smn[m][n] + mNoise[cnt]);
+            mParams->Set(cnt, 0, Smn[m][n] * mNoise[cnt]);
             cnt++;
         }
     }
+    
+    for(int i = 0; i < UNKNOWN_PARAM; i++)
+        mTruth->Set(i, 0, mParams->Get(i, 0));
 
 }
 
@@ -99,7 +105,7 @@ void LeastSquare::Iteration(int steps){
 
         /*
         for(int i = 0; i < mMeasureCount; i++){
-            cout << distance[2 * i] << " " << distance[2 * i + 1] << endl;
+            cout << distance[2 * i] - JD << " " << distance[2 * i + 1] << endl;
         }
         assert(false);
         */
@@ -122,7 +128,7 @@ void LeastSquare::Iteration(int steps){
             }
 
             //разобраться со слау
-            mResiduals->Set(i, 0, 0); //abs(mMeasure[2 * i + 1] - distance[2 * i + 1]));        
+            mResiduals->Set(i, 0, mMeasure[2 * i + 1] - distance[2 * i + 1]);        
         }
 
         Matrix<double> MatrixAtA(UNKNOWN_PARAM, UNKNOWN_PARAM);
@@ -138,7 +144,9 @@ void LeastSquare::Iteration(int steps){
             mParams->Set(i, 0, mParams->Get(i, 0) - Vectorx->Get(i, 0));
         }
 
+        cout << "Step\n";
         mParams->Print();
+        //mTruth->Print();
 
     }
 }

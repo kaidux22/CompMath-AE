@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <cstdlib>
 
 #include "../Math/Matrix.h"
 #include "../NumIntegrate/IntegrateFunc.h"
@@ -46,6 +47,7 @@ private:
     // Невязки
     Matrix<double> *mResiduals;
     Matrix<double> *mMatrixA;
+    Matrix<double> *mTruth;
 };
 
 #endif //COMPMATH_LEASTSQUARES
