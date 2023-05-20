@@ -40,11 +40,11 @@ LeastSquare::LeastSquare(double *measure, int measureCnt){
     mParams->Set(9, 0, 7.43608 + mNoise[9]), mParams->Set(10, 0, 1.63027 + mNoise[10]), mParams->Set(11, 0, 0.000242242 + mNoise[11]);
     
     //Нахождение параметра массы
-    mParams->Set(12, 0, 398600.4415 + mNoise[12]);
+    //mParams->Set(12, 0, 398600.4415 + mNoise[12]);
 
-    int cnt = 13;
+    int cnt = 12;
     //Cmn
-    for(int n = 2; n < 5; n++){
+    for(int n = 2; n < 4; n++){
         for(int m = 0; m <= n; m++){
             mParams->Set(cnt, 0, Cmn[m][n] + mNoise[cnt]);
             cnt++;
@@ -52,7 +52,7 @@ LeastSquare::LeastSquare(double *measure, int measureCnt){
     }
 
     //Smn
-    for(int n = 2; n < 5; n++){
+    for(int n = 2; n <= 4; n++){
         for(int m = 1; m <= n; m++){
             mParams->Set(cnt, 0, Smn[m][n] + mNoise[cnt]);
             cnt++;
