@@ -49,7 +49,7 @@ double GravPotWithParams(double* vec, Matrix<double> *params, ComplexNum(*func)(
 		}
 	}
 
-	return params->Get(12, 0) * res.Real();
+	return NU_CONST * res.Real();
 }
 
 Matrix<double> *MatrixdFdX(double *x, Matrix<double> *params, double JD){
