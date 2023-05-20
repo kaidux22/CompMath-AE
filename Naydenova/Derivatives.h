@@ -1,5 +1,6 @@
 #pragma once
-
+#include "sofa/sofa.h"
+#include "Converter.h"
 #include <cmath>
 #define MU_CONST 398600.4415 // км^3/с^2
 #define J2 1.75553e10

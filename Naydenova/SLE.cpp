@@ -12,6 +12,8 @@ double* Cholesky_decomposition(double** A, int size, double* b){
         L[i] = new double [size];
     }
 
+
+
     for (int i=0; i < size; i++){
         for (int j = 0; j < (i + 1); j++){
             double res = 0;
@@ -21,10 +23,22 @@ double* Cholesky_decomposition(double** A, int size, double* b){
             if (i == j) {
                 L[i][j] = sqrt( (A[i][i] - res));
             } else {
-                L[i][j] = (1.0 / L[j][j] * (A[i][j] - res));
+                if (L[j][j] == 0){
+                    L[i][j] = 0;
+                }
+                else {
+                    L[i][j] = (1.0 / L[j][j] * (A[i][j] - res));
+                }
             }
         }
     }
+    /*
+    for (int i=0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            cout << L[i][j] << " ";
+        }
+        cout << endl << endl;
+    } */
 
 
     double* x = new double[size];
@@ -36,8 +50,12 @@ double* Cholesky_decomposition(double** A, int size, double* b){
         for (int j = 0; j < i; j++){
             res += L[i][j] * y[j];
         }
-
-        y[i] = (1.0 / L[i][i]) * (b[i] - res);
+        if (L[i][i] == 0){
+            y[i] = 0;
+        }
+        else {
+            y[i] = (1.0 / L[i][i]) * (b[i] - res);
+        }
     }
 
     //  L^t*x=y
@@ -46,8 +64,13 @@ double* Cholesky_decomposition(double** A, int size, double* b){
         for (int j = i+1; j < size; j++){
             res += L[j][i] * x[j];
         }
+        if (L[i][i] == 0){
+            x[i] = 0;
+        }
+        else {
+            x[i] = (1.0 / L[i][i]) * (y[i] - res);
+        }
 
-        x[i] = (1.0 / L[i][i]) * (y[i] - res);
 
     }
 
