@@ -57,30 +57,42 @@ double DerivativedVdGM(double* vec, Matrix<double> *params, ComplexNum(*func)(Le
 
 //метод возвращается градиент гравитационного потенциала
 void GradV(double* x, double* vec, double JD, Matrix<double> *params) {
+    vec[0] = x[6];
+    vec[1] = x[7];
+    vec[2] = x[8];
+    vec[3] = x[9];
+    vec[4] = x[10];
+    vec[5] = x[11];
 
-    vec[0] = x[3];
-    vec[1] = x[4];
-    vec[2] = x[5];
-    vec[3] = 0;
-    vec[4] = 0;
-    vec[5] = 0;
+	vec[6] = 0;
+	vec[7] = 0;
+	vec[8] = 0;
+	vec[9] = 0;
+	vec[10] = 0;
+	vec[11] = 0;
 
     double rotateMatrix[3][3];
 
     iauC2t06a(JD + (37.0 + 32.184) / 86400.0, 0, JD, 0, 0, 0, rotateMatrix);
 
     changeCoords(rotateMatrix, x, 0);
+	changeCoords(rotateMatrix, x + 3, 0);
 
-    double *grad = new double[3];
+    double *grad = new double[6];
     grad[0] = -GravPot(x, Vdx);
     grad[1] = -GravPot(x, Vdy);
     grad[2] = -GravPot(x, Vdz);
 
+	grad[3] = -GravPot(x + 3, Vdx);
+	grad[4] = -GravPot(x + 3, Vdy);
+	grad[5] = -GravPot(x + 3, Vdz);
+
     Transposition(rotateMatrix);
 
     changeCoords(rotateMatrix, grad, 0);
+	changeCoords(rotateMatrix, grad, 3);
 
-    for (int i = 0; i < 3; i++) {
-        vec[i + 3] = grad[i];
+    for (int i = 0; i < 6; i++) {
+        vec[i + 6] = grad[i];
     }
 }
