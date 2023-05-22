@@ -49,8 +49,8 @@ double** integrate(double JD, double h, const int N, double* vec) {
         }
     }
 
-    int cnt = GENERAL_TIME / h;
-    double** orbit = new double* [ cnt];
+    int cnt = GENERAL_TIME * 2  / h;
+    double** orbit = new double* [cnt];
 
 
     // 86400 секунд в сутках
@@ -93,11 +93,11 @@ double** integrate_for_inverse(double JD, double h, const int N, double* vec, do
         }
     }
 
-    int cnt = GENERAL_TIME / h;
+    int cnt = GENERAL_TIME * 2  / h;
     double** states = new double* [cnt];
 
     // 86400 секунд в сутках
-    for (int i = 0; i <  cnt; i++) {
+    for (int i = 0; i < cnt; i++) {
         DormandPrince(JD, h, N, J, mu, vec, a, b, k, c, function);
         states[i] = new double[7 + 48];
         states[i][0] = JD;
