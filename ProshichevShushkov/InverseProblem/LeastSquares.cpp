@@ -32,23 +32,40 @@ LeastSquare::LeastSquare(double *measure, int measureCnt){
     mResiduals = new Matrix<double>(mMeasureCount, 1);
     mMatrixA = new Matrix<double>(mMeasureCount, UNKNOWN_PARAM);
     mTruth = new Matrix<double>(UNKNOWN_PARAM, 1);
-
-    mParams->Set(0, 0, Cmn[2][3] * mNoise[0]);
     
+
+    int cnt = 0;
+
+    for(int n = 3; n < 4; n++){
+        for(int m = 0; m <= n; m++){
+            mParams->Set(cnt, 0, Cmn[m][n]);
+            cnt++;
+        }
+    }
+
+
+    for(int n = 3; n <= 4; n++){
+        for(int m = 1; m <= n; m++){
+            mParams->Set(cnt, 0, Smn[m][n]);
+            cnt++;
+        }
+    }
+
     
     for(int i = 0; i < UNKNOWN_PARAM; i++){
         mTruth->Set(i, 0, mParams->Get(i, 0));
         mParams->Set(i, 0, mParams->Get(i, 0) * mNoise[i]);
     }
 
+    cout << "\t" << "Offset value" << "\t" << "True value" << "\t" << "Difference" << endl;
     for(int i = 0; i < UNKNOWN_PARAM; i++)
-        cout << mParams->Get(i, 0) << "\t\t" << mTruth->Get(i, 0) << endl;
+        cout << mSymb[i] << "\t" << mParams->Get(i, 0) << "\t" << mTruth->Get(i, 0) << "\t" << mParams->Get(i, 0) - mTruth->Get(i, 0) << endl;;
     cout << endl;
 
 }
 
 void LeastSquare::Iteration(int steps){
-
+    double **orbits;
 
     for(int step = 0 ; step < steps; step++){
         for(int i = 0; i < 12; i++){
@@ -70,7 +87,7 @@ void LeastSquare::Iteration(int steps){
             mVec[i] = mStates->TransToVector()[i - 12];
         }
 
-        double **orbits = ConditionVectorIntegrate(JD, STEP, 12 + 12 * UNKNOWN_PARAM, mVec, mParams);
+        orbits = ConditionVectorIntegrate(JD, STEP, 12 + 12 * UNKNOWN_PARAM, mVec, mParams);
 
         /*
         for(int t = 0; t < mMeasureCount; t++){
@@ -109,7 +126,6 @@ void LeastSquare::Iteration(int steps){
                 mMatrixA->Set(i, j, -res[j]);
             }
 
-            //разобраться со слау
             mResiduals->Set(i, 0, mMeasure[2 * i + 1] - distance[2 * i + 1]);        
         }
 
@@ -127,11 +143,16 @@ void LeastSquare::Iteration(int steps){
         }
 
         for(int i = 0; i < UNKNOWN_PARAM; i++)
-            cout << mParams->Get(i, 0) << "\t\t" << mTruth->Get(i, 0) << endl;
+            cout << mSymb[i] << "\t" <<  mParams->Get(i, 0) << "\t" << mTruth->Get(i, 0) << "\t" << mParams->Get(i, 0) - mTruth->Get(i, 0) << endl;
         cout << endl;
-        //mTruth->Print();
 
     }
+
+    fstream resetOrbit("resetOrbit.txt", ios::out);
+	for(int i = 0; i < mMeasureCount; i++){
+		resetOrbit << orbits[i][1] << " " << orbits[i][2] << " " << orbits[i][3] << endl;
+	}
+	resetOrbit.close();
 }
 
 Matrix<double>* LeastSquare::MatrixdGdX(){
@@ -214,16 +235,6 @@ Matrix<double>* LeastSquare::CholeskyDecomposition(Matrix<double> *MatrixA, Matr
     delete Vectory;
     delete MatrixL;
     return Vectorx;
-}
-
-LeastSquare::~LeastSquare(){
-    /*
-    delete[] mVec;
-    delete mStates;
-    delete mParams;
-    delete mResiduals;
-    delete mMatrixA;
-    */
 }
 
 

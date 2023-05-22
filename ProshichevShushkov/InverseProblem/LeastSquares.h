@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cmath>
 #include <cstdlib>
+#include <fstream>
 
 #include "../Math/Matrix.h"
 #include "../NumIntegrate/IntegrateFunc.h"
@@ -31,8 +32,6 @@ public:
 
     /* Один шаг метода Ньютона-Гаусса */
     void Iteration(int staps = 1);
-
-    ~LeastSquare();
 private:
     Matrix<double> *MatrixdGdX();
     Matrix<double> *CholeskyDecomposition(Matrix<double> *MatrixA, Matrix<double> *Vectorb);
@@ -48,6 +47,7 @@ private:
     Matrix<double> *mResiduals;
     Matrix<double> *mMatrixA;
     Matrix<double> *mTruth;
+    char* mSymb[UNKNOWN_PARAM] = {"С03", "C13", "C23", "C33", "S13", "S23", "S33", "S14", "S24", "S34", "S44"};
 };
 
 #endif //COMPMATH_LEASTSQUARES
