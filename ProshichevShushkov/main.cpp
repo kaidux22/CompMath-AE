@@ -53,6 +53,12 @@ int main(){
 	*/
 
 	double* res = OrbitDistance(orbits, cnt);
+
+	
+	for(int i = 0; i < cnt; i++){
+		res[2 * i + 1] *= (1 + (rand() % (int)2e5 - 1e5) / 1e8);
+	}
+	
 	
 	/*
 	for(int i = 0; i < cnt; i++){

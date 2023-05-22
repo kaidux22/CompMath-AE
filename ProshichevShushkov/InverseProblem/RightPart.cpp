@@ -18,20 +18,21 @@ double GravPotWithParams(double* vec, Matrix<double> *params, ComplexNum(*func)(
 					   {0.0, 0.0, 0.0, 0.1972013239e-6, -0.1201129183e-7},
 					   {0.0, 0.0, 0.0, 0.0, 0.6525605810e-8} };
 	
-	int cnt = 12;
-    //Cmn
-    for(int n = 2; n < 4; n++){
+
+	int cnt = 0;
+
+	for(int n = 3; n < 4; n++){
         for(int m = 0; m <= n; m++){
-            Cmn[m][n] = params->Get(cnt, 0);
-            cnt++;
+            Cmn[m][3] = params->Get(cnt, 0);
+        cnt++;
         }
     }
 
-    //Smn
-    for(int n = 2; n <= 4; n++){
+
+    for(int n = 3; n <= 4; n++){
         for(int m = 1; m <= n; m++){
-            Smn[m][n] = params->Get(cnt, 0);
-            cnt++;
+            Smn[m][3] = params->Get(cnt, 0);
+        cnt++;
         }
     }
 	
@@ -113,35 +114,37 @@ Matrix<double> *MatrixdFdParam(double *x, Matrix<double> *params, double JD){
 
 	Transposition(matrix);
 
-	int cnt = 12;
-    //Cmn
-    for(int n = 2; n < 4; n++){
+	int cnt = 0;
+	
+	for(int n = 3; n < 4; n++){
         for(int m = 0; m <= n; m++){
-			vec[0] = -DerivativedVdC(x, params, n, m, Vdx), vec[1] = -DerivativedVdC(x, params, n, m, Vdy), vec[2] = -DerivativedVdC(x, params, n, m, Vdz);
+           vec[0] = -DerivativedVdC(x, params, 3, m, Vdx), vec[1] = -DerivativedVdC(x, params, 3, m, Vdy), vec[2] = -DerivativedVdC(x, params, 3, m, Vdz);
 			changeCoords(matrix, vec, 0);
-            dFdParam->Set(6, cnt, vec[0]), dFdParam->Set(7, cnt, vec[1]), dFdParam->Set(8, cnt, vec[2]);
+    		dFdParam->Set(6, cnt, vec[0]), dFdParam->Set(7, cnt, vec[1]), dFdParam->Set(8, cnt, vec[2]);
 			
-			vec[0] = -DerivativedVdC(x + 3, params, n, m, Vdx), vec[1] = -DerivativedVdC(x + 3, params, n, m, Vdy), vec[2] = -DerivativedVdC(x + 3, params, n, m, Vdz);
+			vec[0] = -DerivativedVdC(x + 3, params, 3, m, Vdx), vec[1] = -DerivativedVdC(x + 3, params, 3, m, Vdy), vec[2] = -DerivativedVdC(x + 3, params, 3, m, Vdz);
 			changeCoords(matrix, vec, 0);
 			dFdParam->Set(9, cnt, vec[0]), dFdParam->Set(10, cnt, vec[1]), dFdParam->Set(11, cnt, vec[2]);
-            cnt++;
+
+			cnt++;
         }
     }
 
-    //Smn
-    for(int n = 2; n <= 4; n++){
+
+    for(int n = 3; n <= 4; n++){
         for(int m = 1; m <= n; m++){
-            vec[0] = -DerivativedVdS(x, params, n, m, Vdx), vec[1] = -DerivativedVdS(x, params, n, m, Vdy), vec[2] = -DerivativedVdS(x, params, n, m, Vdz);
+            vec[0] = -DerivativedVdS(x, params, 3, m, Vdx), vec[1] = -DerivativedVdS(x, params, 3, m, Vdy), vec[2] = -DerivativedVdS(x, params, 3, m, Vdz);
 			changeCoords(matrix, vec, 0);
-            dFdParam->Set(6, cnt, vec[0]), dFdParam->Set(7, cnt, vec[1]), dFdParam->Set(8, cnt, vec[2]);
+   			dFdParam->Set(6, cnt, vec[0]), dFdParam->Set(7, cnt, vec[1]), dFdParam->Set(8, cnt, vec[2]);
 			
-			vec[0] = -DerivativedVdS(x + 3, params, n, m, Vdx), vec[1] = -DerivativedVdS(x + 3, params, n, m, Vdy), vec[2] = -DerivativedVdS(x + 3, params, n, m, Vdz);
+			vec[0] = -DerivativedVdS(x + 3, params, 3, m, Vdx), vec[1] = -DerivativedVdS(x + 3, params, 3, m, Vdy), vec[2] = -DerivativedVdS(x + 3, params, 3, m, Vdz);
 			changeCoords(matrix, vec, 0);
 			dFdParam->Set(9, cnt, vec[0]), dFdParam->Set(10, cnt, vec[1]), dFdParam->Set(11, cnt, vec[2]);
-            cnt++;
+        	cnt++;
         }
     }
 	
+
 
     return dFdParam;
 }
