@@ -5,13 +5,13 @@
 #define GM 398600.4415 // км^3 / с^2
 #define START_POINT 6878.0 //км
 #define J2 1.75553e10
-#define STATIONS_NUMBER 4
+#define STATIONS_NUMBER 80
 
 
 
 double** create_observatories(double JD_start){
 
-    Observatories initial_coord[80] = {
+    Observatories initial_coord[STATIONS_NUMBER] = {
             Observatories(55.5061, 0.93464, -0.35447), // St. Clotilde, Reunion
             Observatories(55.4100, 0.93288, -0.35941), // Observatoire des Makes, Saint-Louis
             Observatories(55.2586, 0.93394, -0.35634), // St. Paul, Reunion
@@ -100,10 +100,11 @@ double** create_observatories(double JD_start){
     }
 
     double rotateMatrix[3][3];
+    /*
     rotateMatrix[0][0] = 1;
     rotateMatrix[1][1] = 1;
-    rotateMatrix[2][2] = 1;
-    //iauC2t06a(JD_start + (37.0 + 32.184) / 86400.0, 0, JD_start, 0, 0, 0, rotateMatrix);
+    rotateMatrix[2][2] = 1; */
+    iauC2t06a(JD_start + (37.0 + 32.184) / 86400.0, 0, JD_start, 0, 0, 0, rotateMatrix);
     Transposition(rotateMatrix);
     for (int i=0; i < STATIONS_NUMBER; i++){
         changeCoords(rotateMatrix, station[i], 0);
@@ -116,16 +117,17 @@ double** create_observatories(double JD_start){
 int main(){
 
     double noise[8] = {0.0005,-0.0005,0.0000002,0.0000005,-0.0000005,0.0000002,2, -10};
+    //double noise[8] = {0,0,0,0,0,0,0, 0};
     //double noise[8] = {0.0005,-0.0005,0,0.0000005,-0.0000005,0,2, -10};
 
     int cnt = GENERAL_TIME / STEP;
     double JD_start = JD;
     double *vec = new double[6];
 
-    //vec[0] = 1248.77, vec[1] = -6763.69, vec[2] = -0.155766;
-    //vec[3] = 7.48616, vec[4] = 1.38216, vec[5] = 0.00024043;
-    vec[0] = START_POINT, vec[1] = 0, vec[2] = 0;
-    vec[3] = 0, vec[4] = sqrt(GM / START_POINT), vec[5] = 0;
+    vec[0] = 1248.77, vec[1] = -6763.69, vec[2] = -0.155766;
+    vec[3] = 7.48616, vec[4] = 1.38216, vec[5] = 0.00024043;
+    //vec[0] = START_POINT, vec[1] = 0, vec[2] = 0;
+    //vec[3] = 0, vec[4] = sqrt(GM / START_POINT), vec[5] = 0;
 
     for (int i=0; i < 6; i++){
         cout << vec[i] << "  ";
@@ -167,26 +169,44 @@ int main(){
 
     double **new_res;
 
+    /*
     double ** stations = new double* [STATIONS_NUMBER];
     for (int i=0; i < STATIONS_NUMBER; i++){
         stations[i] = new double [3];
-    }
-    stations[0][0] = 6378.1363 ; stations[0][1] = 0; stations[0][2] = 0;
-    stations[1][0] = -6378.1363; stations[1][1] = 0; stations[1][2] = 0;
-    stations[2][0] = 0; stations[2][1] = 6378.1363; stations[2][2] = 0;
-    stations[3][0] = 0; stations[3][1] = -6378.1363; stations[3][2] = 0;
+    } */
 
+    /*
+            stations[0][0] = 6378.1363 ; stations[0][1] = 0; stations[0][2] = 0;
+            stations[1][0] = -6378.1363; stations[1][1] = 0; stations[1][2] = 0;
+            stations[2][0] = 0; stations[2][1] = 6378.1363; stations[2][2] = 0;
+            stations[3][0] = 0; stations[3][1] = -6378.1363; stations[3][2] = 0;
+            double rotateMatrix[3][3];
+            iauC2t06a(res[i][0] + (37.0 + 32.184) / 86400.0, 0, res[i][0], 0, 0, 0, rotateMatrix);
+            Transposition(rotateMatrix);
+            for (int t=0; t < STATIONS_NUMBER; t++){
+                changeCoords(rotateMatrix, stations[t], 0);
+            } */
+
+    /*
+    random_device randomDevice;
+    mt19937 generation(randomDevice());
+    double var = 1.0/(pow(0.00001, 2));
+    uniform_real_distribution<double> distribution(-0.5, 0.5);
+    double W[8];
+    for (int i=0; i < 8; i++){
+        W[i] = 1.0 / pow( 1.0/ 10000, 2)   ;
+    }
+
+    for (int i=0; i < 8; i++){
+        cout << W[i] << " ";
+    }
+    cout << endl;
+
+    */
 
     for(int iter = 0; iter < 4; iter++) {
 
         new_res = integrate_for_inverse(JD, STEP, 54, states, b[7], b[6]);
-        /*
-        for (int i=0; i < cnt; i++){
-            for (int j=0; j < 55; j++){
-                cout << new_res[i][j] << " ";
-            }
-            cout << endl << endl;
-        } */
 
         vector<vector<double>> A;
         vector<double> r_b;
@@ -195,7 +215,7 @@ int main(){
 
         for (int i = 0; i < cnt; i++) {
 
-            //double **stations = create_observatories(res[i][0]);
+            double **stations = create_observatories(res[i][0]);
 
             double distance = pow(res[i][1], 2) + pow(res[i][2], 2) + pow(res[i][3], 2);
             double max_distance = sqrt(distance - pow(R_CONST, 2));
@@ -212,7 +232,7 @@ int main(){
 
                 //cout << distance << " " << r_original << endl;
 
-                uniform_real_distribution<double> dist(-r_original * 0.02, r_original * 0.02);
+                uniform_real_distribution<double> dist(-r_original * 0.05, r_original * 0.05);
                 double r_original_var = r_original ;//+ dist(gen);
 
                 if (r_original <= max_distance) {
@@ -243,23 +263,26 @@ int main(){
             }
         }
 
-        //double var = 1.0/(pow(0.00001, 2));
+
 
         double **AtA = multiplication_AtA(A);
+        double *Atr = multiplication_Atr(A, r_b);
 
         /*
+        double W[8];
+        for (int i=0; i < 8; i++){
+            W[i] = 1.0 / pow( 0.00001, 2)   ;
+        }
+
         for (int i=0; i < 8; i++){
             for (int j=0; j < 8; j++){
-                AtA[i][j] *= var;
+                AtA[i][j] *= W[i];
             }
-        } */
+        }
 
-        double *Atr = multiplication_Atr(A, r_b);
-        /*
         for (int i=0; i < 8; i++){
-            Atr[i] *= var;
+            Atr[i] *= W[i];
         } */
-
 
         double *x = Cholesky_decomposition(AtA, 8, Atr);
         /*cout << "X: ";
@@ -272,7 +295,7 @@ int main(){
 
 
         for (int i = 0; i < 8; i++) {
-            b_new[i] = b[i] - x[i];
+            b_new[i] = -x[i] + b[i];
         }
         cout << endl;
         for (int i = 0; i < 8; i++) {
