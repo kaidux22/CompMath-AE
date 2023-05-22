@@ -12,11 +12,17 @@ void GradV(double* x, double* vec, double JD, double J, double mu) {
     vec[5] = 0;
 
     double rotateMatrix[3][3];
+    /*
+    for(int i=0; i < 3; i++){
+        for (int j =0; j < 3; j++){
+            rotateMatrix[i][j] = 0;
+        }
+    }
 
+    rotateMatrix[0][0] = 1;
+    rotateMatrix[1][1] = 1;
+    rotateMatrix[2][2] = 1; */
     iauC2t06a(JD + (37.0 + 32.184) / 86400.0, 0, JD, 0, 0, 0, rotateMatrix);
-    //rotateMatrix[0][0] = 1;
-    //rotateMatrix[1][1] = 1;
-    //rotateMatrix[2][2] = 1;
 
     changeCoords(rotateMatrix, x, 0);   // НСК -> ЗСК
 

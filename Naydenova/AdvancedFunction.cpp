@@ -25,9 +25,16 @@ double** create_matrix_df_dx(double* x, double mu, double J, double JD){
 
 
     double rotateMatrix[3][3];
-    //rotateMatrix[0][0] = 1;
-    //rotateMatrix[1][1] = 1;
-    //rotateMatrix[2][2] = 1;
+    /*
+    for(int i=0; i < 3; i++){
+        for (int j =0; j < 3; j++){
+            rotateMatrix[i][j] = 0;
+        }
+    }
+
+    rotateMatrix[0][0] = 1;
+    rotateMatrix[1][1] = 1;
+    rotateMatrix[2][2] = 1; */
     iauC2t06a(JD + (37.0 + 32.184) / 86400.0, 0, JD, 0, 0, 0, rotateMatrix);
 
     double da_dx[3][3];
@@ -66,10 +73,16 @@ void function(double* x, double* vec, double JD, double J, double mu){
     vec[5] = 0;
 
     double rotateMatrix[3][3];
-  //  rotateMatrix[0][0] = 1;
-   // rotateMatrix[1][1] = 1;
-   // rotateMatrix[2][2] = 1;
+    /*
+    for(int i=0; i < 3; i++){
+        for (int j =0; j < 3; j++){
+            rotateMatrix[i][j] = 0;
+        }
+    }
 
+    rotateMatrix[0][0] = 1;
+    rotateMatrix[1][1] = 1;
+    rotateMatrix[2][2] = 1; */
     iauC2t06a(JD + (37.0 + 32.184) / 86400.0, 0, JD, 0, 0, 0, rotateMatrix);
 
     changeCoords(rotateMatrix, x, 0); //ЗСК
@@ -106,14 +119,12 @@ void function(double* x, double* vec, double JD, double J, double mu){
     changeCoords(rotateMatrix, dx_dp, 0);
     changeCoords(rotateMatrix, dx_dp, 3);
 
-
     states[39] += dx_dp[0];
     states[40] += dx_dp[1];
     states[41] += dx_dp[2];
     states[45] += dx_dp[3];
     states[46] += dx_dp[4];
     states[47] += dx_dp[5];
-
 
     changeCoords(rotateMatrix, grad, 0);
 

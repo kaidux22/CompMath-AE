@@ -30,6 +30,7 @@ double dz(double* vec) {
 }
 
 double dg_dx(double* vec, double* coord){
+
     double res = (vec[1] - coord[0])/( sqrt(pow(vec[1] - coord[0], 2) + pow(vec[2] - coord[1], 2) + pow(vec[3] - coord[2], 2) ));
     return res;
 }

@@ -38,12 +38,12 @@ double** multiplication_AtA(vector<vector<double>> &A){
         AtA[i] = new double [8];
     }
 
-    int size = A.size();
+    int n = A.size();
 
     for(int i=0; i < 8; i++){
         for (int j=0; j < 8; j++){
             double res = 0;
-            for (int t = 0; t < size; t++){
+            for (int t = 0; t < n; t++){
                 res += A[t][i] * A[t][j];
             }
             AtA[i][j] = res;
@@ -54,11 +54,11 @@ double** multiplication_AtA(vector<vector<double>> &A){
 
 double* multiplication_Atr(vector<vector<double>> &A, vector<double>& r){
     double* Atr = new double[8];
-    int size = A.size();
+    int n = A.size();
 
     for(int i=0; i < 8; i++){
         double res = 0;
-        for (int t = 0; t < size; t++){
+        for (int t = 0; t < n; t++){
             res += A[t][i] * r[t];
         }
         Atr[i] = res;
