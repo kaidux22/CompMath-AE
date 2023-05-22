@@ -1,17 +1,36 @@
 #include "main.h"
 
 #define JD 2451545.0
-#define STEP 60.0
+#define STEP 30.0
 #define GM 398600.4415 // км^3 / с^2
 #define START_POINT 6878.0 //км
 #define J2 1.75553e10
-#define STATIONS_NUMBER 80
+#define STATIONS_NUMBER 18
 
 
 
 double** create_observatories(double JD_start){
 
     Observatories initial_coord[STATIONS_NUMBER] = {
+            Observatories(281.5075, 1.00045, -0.00405),
+            Observatories(260.8053, 0.94388, +0.33026),
+            Observatories(107.6160, 0.99316, -0.11808),
+            Observatories(281.65, 0.999, +0.000),
+            Observatories(321.3126, 0.98840, -0.15179),
+            Observatories(299.99039, 0.998647, -0.051941),
+            Observatories(101.43942, 0.998617, +0.052565),
+            Observatories(282.70896, 1.000183, +0.021030),
+            Observatories(98.48553, 0.948521, +0.316891),
+            Observatories(99.78111, 0.994005, +0.109127),
+            Observatories(101.27869, 0.975556, +0.218996),
+            Observatories(114.08987, 0.928304, -0.370597),
+            Observatories(203.74299, 0.936235, +0.351547),
+            Observatories(210.39020, 0.953686, -0.299837),
+            Observatories(204.52398, 0.941706, +0.337237),
+            Observatories(286.36626, 0.995574, +0.097155),
+            Observatories(289.32156, 0.957949, -0.287797),
+            Observatories( 289.32156, 0.957949, -0.287797),
+            /*
             Observatories(55.5061, 0.93464, -0.35447), // St. Clotilde, Reunion
             Observatories(55.4100, 0.93288, -0.35941), // Observatoire des Makes, Saint-Louis
             Observatories(55.2586, 0.93394, -0.35634), // St. Paul, Reunion
@@ -91,7 +110,7 @@ double** create_observatories(double JD_start){
             Observatories(316.01580, 0.940890, -0.337985), // SONEAR 2 Observatory, Belo Horizonte
             Observatories(318.68794, 0.929268, -0.368170), // ROCG, Campos dos Goytacazes
             Observatories(321.3126, 0.98840, -0.15179), // OASI, Nova Itacuruba
-            Observatories(324.03889, 0.989706, -0.143217), // Discovery Observatory, Caruaru
+            Observatories(324.03889, 0.989706, -0.143217), // Discovery Observatory, Caruaru */
     };
 
     double** station = new double *[STATIONS_NUMBER];
@@ -120,12 +139,16 @@ int main(){
     //double noise[8] = {0,0,0,0,0,0,0, 0};
     //double noise[8] = {0.0005,-0.0005,0,0.0000005,-0.0000005,0,2, -10};
 
-    int cnt = GENERAL_TIME / STEP;
+    int cnt = GENERAL_TIME * 2  / STEP;
     double JD_start = JD;
     double *vec = new double[6];
 
     vec[0] = 1248.77, vec[1] = -6763.69, vec[2] = -0.155766;
     vec[3] = 7.48616, vec[4] = 1.38216, vec[5] = 0.00024043;
+
+    //vec[0] = 1472.62, vec[1] = -6718.5, vec[2] = -0.148523;
+    //vec[3] = 7.43608, vec[4] = 1.63027, vec[5] = 0.000242242;
+
     //vec[0] = START_POINT, vec[1] = 0, vec[2] = 0;
     //vec[3] = 0, vec[4] = sqrt(GM / START_POINT), vec[5] = 0;
 
@@ -213,7 +236,7 @@ int main(){
         random_device rd;
         mt19937 gen(rd());
 
-        for (int i = 0; i < cnt; i++) {
+        for (int i = 0; i <  cnt; i++) {
 
             double **stations = create_observatories(res[i][0]);
 
@@ -232,10 +255,10 @@ int main(){
 
                 //cout << distance << " " << r_original << endl;
 
-                uniform_real_distribution<double> dist(-r_original * 0.05, r_original * 0.05);
+                uniform_real_distribution<double> dist(-r_original * 0.02, r_original * 0.02);
                 double r_original_var = r_original ;//+ dist(gen);
 
-                if (r_original <= max_distance) {
+                if (r_original < max_distance) {
                     //cout << station_number << " ";
 
                     double *dg_dX = new double[6];
@@ -262,7 +285,6 @@ int main(){
 
             }
         }
-
 
 
         double **AtA = multiplication_AtA(A);
