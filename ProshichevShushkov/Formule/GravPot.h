@@ -33,7 +33,7 @@
     - Коэффициенты S при m = 0 равны 0, их не учитываем
 Итого: 34 неизвестных параметров
 */
-#define UNKNOWN_PARAM 28
+#define UNKNOWN_PARAM 1
 
 using namespace std;
 
