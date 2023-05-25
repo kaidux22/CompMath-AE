@@ -18,3 +18,4 @@
 using namespace std;
 
 double** create_observatories(double JD_start);
+double** create_model_observatories(double JD_start);
