@@ -21,8 +21,10 @@ double GravPotWithParams(double* vec, Matrix<double> *params, ComplexNum(*func)(
 
 	int cnt = 0;
 
-	for(int n = 3; n < 4; n++){
+	for(int n = 3; n <= 4; n++){
         for(int m = 0; m <= n; m++){
+			if(m == 0)
+                continue;
             Cmn[m][3] = params->Get(cnt, 0);
         cnt++;
         }
@@ -116,9 +118,11 @@ Matrix<double> *MatrixdFdParam(double *x, Matrix<double> *params, double JD){
 
 	int cnt = 0;
 	
-	for(int n = 3; n < 4; n++){
+	for(int n = 3; n <= 4; n++){
         for(int m = 0; m <= n; m++){
-           vec[0] = -DerivativedVdC(x, params, 3, m, Vdx), vec[1] = -DerivativedVdC(x, params, 3, m, Vdy), vec[2] = -DerivativedVdC(x, params, 3, m, Vdz);
+			if(m == 0)
+                continue;
+           	vec[0] = -DerivativedVdC(x, params, 3, m, Vdx), vec[1] = -DerivativedVdC(x, params, 3, m, Vdy), vec[2] = -DerivativedVdC(x, params, 3, m, Vdz);
 			changeCoords(matrix, vec, 0);
     		dFdParam->Set(6, cnt, vec[0]), dFdParam->Set(7, cnt, vec[1]), dFdParam->Set(8, cnt, vec[2]);
 			

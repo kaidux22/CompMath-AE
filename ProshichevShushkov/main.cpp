@@ -5,7 +5,7 @@ using namespace std;
 int main(){
 	double JD_start = JD;
 	double *vec = new double[12];
-	int cnt =  86400.0 / STEP;
+	int cnt =  GENERAL_TIME / STEP;
 	double rotateMatrix[3][3];
 
 	//начальное положение в НСК первого спутника
@@ -21,8 +21,6 @@ int main(){
 	vec[9] = 7.43608, vec[10] = 1.63027, vec[11] = 0.000242242;
 
 	double** orbits = Integrate(JD, STEP, 12, vec); 
-	
-
 	/*
 	for(int i = 0; i < cnt; i++){
 		cout << "time: " << orbit1[i][0] << " x: " << orbit1[i][1] << " y: " << orbit1[i][2] << " z: " << orbit1[i][3] << endl;
@@ -36,7 +34,6 @@ int main(){
 		orbit << orbits[i][1] << " " << orbits[i][2] << " " << orbits[i][3] << endl;
 	}
 	orbit.close();
-
 
 	/*
 	По программе GRACE между спутниками соблюдалось расстояние ~220 +- 50 км

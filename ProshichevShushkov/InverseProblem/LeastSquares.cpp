@@ -36,8 +36,10 @@ LeastSquare::LeastSquare(double *measure, int measureCnt){
 
     int cnt = 0;
 
-    for(int n = 3; n < 4; n++){
+    for(int n = 3; n <= 4; n++){  
         for(int m = 0; m <= n; m++){
+            if(m == 0)
+                continue;
             mParams->Set(cnt, 0, Cmn[m][n]);
             cnt++;
         }
@@ -58,10 +60,11 @@ LeastSquare::LeastSquare(double *measure, int measureCnt){
     }
 
     cout << "\t" << "Offset value" << "\t" << "True value" << "\t" << "Difference" << endl;
+    /*
     for(int i = 0; i < UNKNOWN_PARAM; i++)
         cout << mSymb[i] << "\t" << mParams->Get(i, 0) << "\t" << mTruth->Get(i, 0) << "\t" << mParams->Get(i, 0) - mTruth->Get(i, 0) << endl;;
     cout << endl;
-
+    */
 }
 
 void LeastSquare::Iteration(int steps){
