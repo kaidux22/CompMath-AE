@@ -21,11 +21,12 @@ LeastSquare::LeastSquare(double *measure, int measureCnt){
     double mNoise[UNKNOWN_PARAM];
     srand(time(0));
 
+    //генерируем шум
     for(int i = 0; i < UNKNOWN_PARAM; i++){
         mNoise[i] = (rand() % (int)2e5 - 1e5) / 1e8 + 1;
     }
 
-    // Вектор состояния для одного спутника (начальных 12 параметров | единичная матрица 12х12 | нулевые столбцы для оставшихся 22ух коэффициентов)
+    // начальных 12 параметров | нулевые столбцы для восстанавливаемых 14ти коэффициентов
     mVec = new double[12 + 12 * UNKNOWN_PARAM];
     mStates = new Matrix<double>(12, UNKNOWN_PARAM);
     mParams = new Matrix<double>(UNKNOWN_PARAM, 1);
@@ -36,8 +37,10 @@ LeastSquare::LeastSquare(double *measure, int measureCnt){
 
     int cnt = 0;
 
-    for(int n = 3; n < 4; n++){
+    for(int n = 3; n <= 4; n++){  
         for(int m = 0; m <= n; m++){
+            if(m == 0)
+                continue;
             mParams->Set(cnt, 0, Cmn[m][n]);
             cnt++;
         }
@@ -58,10 +61,6 @@ LeastSquare::LeastSquare(double *measure, int measureCnt){
     }
 
     cout << "\t" << "Offset value" << "\t" << "True value" << "\t" << "Difference" << endl;
-    for(int i = 0; i < UNKNOWN_PARAM; i++)
-        cout << mSymb[i] << "\t" << mParams->Get(i, 0) << "\t" << mTruth->Get(i, 0) << "\t" << mParams->Get(i, 0) - mTruth->Get(i, 0) << endl;;
-    cout << endl;
-
 }
 
 void LeastSquare::Iteration(int steps){
@@ -81,34 +80,16 @@ void LeastSquare::Iteration(int steps){
         //скорости первого и второго спутников
         mVec[6] = 7.48616, mVec[7] = 1.38216, mVec[8] = 0.00024043;
         mVec[9] = 7.43608, mVec[10] = 1.63027, mVec[11] = 0.000242242;
-        
-        //проверить переворот матрицы в список по столбцам
+
         for(int i = 12; i < 12 + 12 * UNKNOWN_PARAM; i++){
             mVec[i] = mStates->TransToVector()[i - 12];
         }
 
         orbits = ConditionVectorIntegrate(JD, STEP, 12 + 12 * UNKNOWN_PARAM, mVec, mParams);
 
-        /*
-        for(int t = 0; t < mMeasureCount; t++){
-            for(int i = 13; i < 12 + 12 * UNKNOWN_PARAM + 1; i++){
-               cout << orbits[t][i] << " ";
-            }
-            cout << endl;
-        }
-        cout << endl;
-        assert(false);
-        */
-
         double *distance = OrbitDistance(orbits, mMeasureCount);
 
-        /*
-        for(int i = 0; i < mMeasureCount; i++){
-            cout << distance[2 * i] - JD << " " << distance[2 * i + 1] << endl;
-        }
-        assert(false);
-        */
-
+        //составление матрицы A и невязок
         for(int i = 0; i < mMeasureCount; i++){
             for(int j = 0; j < 12; j++){
                 mVec[j] = orbits[i][j + 1];
@@ -129,15 +110,16 @@ void LeastSquare::Iteration(int steps){
             mResiduals->Set(i, 0, mMeasure[2 * i + 1] - distance[2 * i + 1]);        
         }
 
+        //подготовка СЛАУ
         Matrix<double> MatrixAtA(UNKNOWN_PARAM, UNKNOWN_PARAM);
         MatrixAtA = (mMatrixA->Transposition() * *mMatrixA);
- 
-
         Matrix<double> MatrixArb(UNKNOWN_PARAM, 1);
         MatrixArb = mMatrixA->Transposition() * *mResiduals;
 
+        //решение СЛАУ
         Matrix<double> *Vectorx = CholeskyDecomposition(&MatrixAtA, &MatrixArb);
 
+        //переход к вновь восстановленным параметрам
         for(int i = 0; i < UNKNOWN_PARAM; i++){
             mParams->Set(i, 0, mParams->Get(i, 0) - Vectorx->Get(i, 0));
         }
@@ -147,12 +129,6 @@ void LeastSquare::Iteration(int steps){
         cout << endl;
 
     }
-
-    fstream resetOrbit("resetOrbit.txt", ios::out);
-	for(int i = 0; i < mMeasureCount; i++){
-		resetOrbit << orbits[i][1] << " " << orbits[i][2] << " " << orbits[i][3] << endl;
-	}
-	resetOrbit.close();
 }
 
 Matrix<double>* LeastSquare::MatrixdGdX(){
@@ -170,6 +146,7 @@ Matrix<double>* LeastSquare::CholeskyDecomposition(Matrix<double> *MatrixA, Matr
     assert(MatrixA->RowsCount() == Vectorb->RowsCount());
     Matrix<double> *MatrixL = new Matrix<double>(MatrixA->RowsCount(), MatrixA->ColumnCount());
 
+    //составление матрицы L
      for (int i=0; i < MatrixA->RowsCount(); i++){
         for (int j = 0; j < (i + 1); j++){
             double res = 0;

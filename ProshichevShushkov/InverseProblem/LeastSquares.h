@@ -33,21 +33,22 @@ public:
     /* Один шаг метода Ньютона-Гаусса */
     void Iteration(int staps = 1);
 private:
+    /* подсчёт матрицы dg/dx */
     Matrix<double> *MatrixdGdX();
+
+    /* Решение СЛАУ методом Холецкого */
     Matrix<double> *CholeskyDecomposition(Matrix<double> *MatrixA, Matrix<double> *Vectorb);
 
-    int mMeasureCount;
+    int mMeasureCount; // количество измерений
 
-    double *mMeasure;
-    double *mVec;
-    Matrix<double> *mStates;
-    Matrix<double> *mParams;
-
-    // Невязки
-    Matrix<double> *mResiduals;
-    Matrix<double> *mMatrixA;
-    Matrix<double> *mTruth;
-    char* mSymb[UNKNOWN_PARAM] = {"С03", "C13", "C23", "C33", "S13", "S23", "S33", "S14", "S24", "S34", "S44"};
+    double *mMeasure; // измерений
+    double *mVec; // расширенный вектор
+    Matrix<double> *mStates; // dx/dp
+    Matrix<double> *mParams; // восстанавливаемые параметры
+    Matrix<double> *mResiduals; //невязки
+    Matrix<double> *mMatrixA; //матрица A
+    Matrix<double> *mTruth; //истинные значения
+    char* mSymb[UNKNOWN_PARAM] = {"C13", "C23", "C33", "C14", "C24", "C34", "C44", "S13", "S23", "S33", "S14", "S24", "S34", "S44"};
 };
 
 #endif //COMPMATH_LEASTSQUARES
