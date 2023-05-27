@@ -12,14 +12,14 @@
 #include "../sofa/sofa.h"
 #include "../Math/Matrix.h"
 
-#define N_CONST 4
+#define N_CONST 4 //количество гармоник
 #define NU_CONST 398600.4415 // км^3/с^2
 #define R_CONST 6378.1363 // км
 #define M_CONST 5,972e24 // кг
 #define MAX_ORD 2 //наибольшая степень производной
 #define GENERAL_TIME 15.0 * 86400.0 //сутки в секундах
 
-#define UNKNOWN_PARAM 14
+#define UNKNOWN_PARAM 14 // количество восстанавливаемых параметров
 
 using namespace std;
 
@@ -34,9 +34,6 @@ double DerivativedVdC(double* vec, Matrix<double> *params, int n, int m, Complex
 
 /* Производная по Snm */
 double DerivativedVdS(double* vec, Matrix<double> *params, int n, int m, ComplexNum(*func)(LegFunc&, int, int, double*));
-
-/* Производная по M */
-double DerivativedVdGM(double* vec, Matrix<double> *params, ComplexNum(*func)(LegFunc&, int, int, double*));
 
 /* Подсчёт градиента гравитационного потенциала */
 void GradV(double* x, double* vec, double JD, Matrix<double> *params);

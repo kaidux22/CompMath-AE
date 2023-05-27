@@ -18,7 +18,7 @@ double GravPotWithParams(double* vec, Matrix<double> *params, ComplexNum(*func)(
 					   {0.0, 0.0, 0.0, 0.1972013239e-6, -0.1201129183e-7},
 					   {0.0, 0.0, 0.0, 0.0, 0.6525605810e-8} };
 	
-
+	//заменяем истинные коэффициенты на восстанавливаемые
 	int cnt = 0;
 
 	for(int n = 3; n <= 4; n++){
@@ -56,6 +56,22 @@ double GravPotWithParams(double* vec, Matrix<double> *params, ComplexNum(*func)(
 	return NU_CONST * res.Real();
 }
 
+
+/*
+0 0 0 0 0 0 1 0 0 0 0 0
+0 0 0 0 0 0 0 1 0 0 0 0
+0 0 0 0 0 0 0 0 1 0 0 0
+0 0 0 0 0 0 0 0 0 1 0 0
+0 0 0 0 0 0 0 0 0 0 1 0
+0 0 0 0 0 0 0 0 0 0 0 1
+d d d 0 0 0 0 0 0 0 0 0
+d d d 0 0 0 0 0 0 0 0 0
+d d d 0 0 0 0 0 0 0 0 0
+0 0 0 d d d 0 0 0 0 0 0
+0 0 0 d d d 0 0 0 0 0 0
+0 0 0 d d d 0 0 0 0 0 0
+12x12
+*/
 Matrix<double> *MatrixdFdX(double *x, Matrix<double> *params, double JD){
     Matrix<double> *dFdX = new Matrix<double>(12, 12);
     for(int i = 0; i < 6; i++){
@@ -107,6 +123,22 @@ Matrix<double> *MatrixdFdX(double *x, Matrix<double> *params, double JD){
 	return dFdX;
 }
 
+
+/*
+0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0
+d d d d d d d d d d d d d d
+d d d d d d d d d d d d d d
+d d d d d d d d d d d d d d
+d d d d d d d d d d d d d d
+d d d d d d d d d d d d d d
+d d d d d d d d d d d d d d
+12x14
+*/
 Matrix<double> *MatrixdFdParam(double *x, Matrix<double> *params, double JD){
 	Matrix<double> *dFdParam = new Matrix<double>(12, UNKNOWN_PARAM);
 
@@ -147,8 +179,6 @@ Matrix<double> *MatrixdFdParam(double *x, Matrix<double> *params, double JD){
         	cnt++;
         }
     }
-	
-
 
     return dFdParam;
 }
@@ -167,13 +197,6 @@ void RightPart(double* x, double* vec, double JD, Matrix<double> *params) {
 	vec[9] = 0;
 	vec[10] = 0;
 	vec[11] = 0;
-
-	/*
-	for(int i = 0; i < 12; i++){
-		cout << vec[i] << endl;
-	}
-	cout << endl;
-	*/
 
     double rotateMatrix[3][3];
 
@@ -196,8 +219,6 @@ void RightPart(double* x, double* vec, double JD, Matrix<double> *params) {
 	Matrix<double> *dXdParam = new Matrix<double>(x + 12, 12, UNKNOWN_PARAM);
     Matrix<double> *dFdParam = MatrixdFdParam(x, params, JD);
 	Matrix<double> prod = *dFdX * *dXdParam + *dFdParam;
-	//prod.Print();
-
 
 	double *res = prod.TransToVector();
 

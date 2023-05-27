@@ -40,6 +40,8 @@ double GravPot(double* vec, ComplexNum(*func)(LegFunc&, int, int, double*)) {
 double DerivativedVdC(double* vec, Matrix<double> *params, int n, int m, ComplexNum(*func)(LegFunc&, int, int, double*)){
     int N = N_CONST;
     LegFunc Pmn = LegFunc(N + MAX_ORD, N + MAX_ORD, vec[2] / sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]));
+
+	//вычисление производной по гармонике С
     ComplexNum res = ComplexNum(R_CONST,0).Pow(n) * func(Pmn, n, m, vec);
     return NU_CONST * res.Real();
 }
@@ -47,15 +49,12 @@ double DerivativedVdC(double* vec, Matrix<double> *params, int n, int m, Complex
 double DerivativedVdS(double* vec, Matrix<double> *params, int n, int m, ComplexNum(*func)(LegFunc&, int, int, double*)){
     int N = N_CONST;
     LegFunc Pmn = LegFunc(N + MAX_ORD, N + MAX_ORD, vec[2] / sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]));
+
+	//вычисление производной по гармонике S
     ComplexNum res = ComplexNum(0,-1) * ComplexNum(R_CONST,0).Pow(n) * func(Pmn, n, m, vec);
     return NU_CONST * res.Real();
 }
 
-double DerivativedVdGM(double* vec, Matrix<double> *params, ComplexNum(*func)(LegFunc&, int, int, double*)){
-    return GravPotWithParams(vec, params, func) / NU_CONST;
-}
-
-//метод возвращается градиент гравитационного потенциала
 void GradV(double* x, double* vec, double JD, Matrix<double> *params) {
     vec[0] = x[6];
     vec[1] = x[7];
