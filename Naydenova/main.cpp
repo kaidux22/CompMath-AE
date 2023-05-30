@@ -5,10 +5,11 @@
 #define GM 398600.4415 // км^3 / с^2
 #define START_POINT 6878.0 //км
 #define J2 1.75553e10
-#define STATIONS_NUMBER 4
+#define LEVELS 1200
+#define ON_LEVEL 8
+#define STATIONS_NUMBER 19200
 
-
-
+/*
 double** create_observatories(double JD_start){
 
     Observatories initial_coord[18] = {
@@ -33,32 +34,62 @@ double** create_observatories(double JD_start){
 
     };
 
-    double** station = new double *[STATIONS_NUMBER];
-    for (int i=0; i < STATIONS_NUMBER; i++){
+    double** station = new double *[18];
+    for (int i=0; i < 18; i++){
         station[i] = initial_coord[i].get_coords();
     }
 
     double rotateMatrix[3][3];
     iauC2t06a(JD_start + (37.0 + 32.184) / 86400.0, 0, JD_start, 0, 0, 0, rotateMatrix);
     Transposition(rotateMatrix);
-    for (int i=0; i < STATIONS_NUMBER; i++){
+    for (int i=0; i < 18; i++){
         changeCoords(rotateMatrix, station[i], 0);
     }
 
     return station;
 
-}
+}*/
 
 double** create_model_observatories(double JD_start){
     double** station = new double *[STATIONS_NUMBER];
     for (int i=0; i < STATIONS_NUMBER; i++){
         station[i] = new double[3];
     }
-    station[0][0] = 6378.1363 ; station[0][1] = 0; station[0][2] = 0;
-    station[1][0] = -6378.1363; station[1][1] = 0; station[1][2] = 0;
-    station[2][0] = 0; station[2][1] = 6378.1363; station[2][2] = 0;
-    station[3][0] = 0; station[3][1] = -6378.1363; station[3][2] = 0;
 
+    double cur = 0;
+    int st_n;
+    double phi;
+
+    double R_array[LEVELS];
+    double z_array[LEVELS];
+    for(int i = 0; i < LEVELS; i++){
+        R_array[i] = sqrt(pow(R_CONST, 2) - pow(cur, 2));
+        z_array[i] = cur;
+        cur += 1;
+    }
+
+
+    for (int i = 0; i < LEVELS; i++){
+        for(int j = 0; j < ON_LEVEL; j++){
+
+            st_n = j + ON_LEVEL*i;
+            phi = (2*PI/ON_LEVEL)*j;
+
+            station[st_n*2][0] = R_array[i]*cos(phi);
+            station[st_n*2][1] = R_array[i]*sin(phi);
+            station[st_n*2][2] = z_array[i];
+
+            station[st_n*2+1][0] = R_array[i]*cos(phi);
+            station[st_n*2+1][1] = R_array[i]*sin(phi);
+            station[st_n*2+1][2] = -z_array[i];
+        }
+    }
+
+/*
+    for (int i=0; i < STATIONS_NUMBER; i++){
+        cout << station[i][0] << " " << station[i][1] << " " << station[i][2] << endl;
+    }
+    exit(0);*/
 
     double rotateMatrix[3][3];
     iauC2t06a(JD_start + (37.0 + 32.184) / 86400.0, 0, JD_start, 0, 0, 0, rotateMatrix);
@@ -72,22 +103,32 @@ double** create_model_observatories(double JD_start){
 
 int main(){
 
-    double noise[8] = {0.0005,-0.0005,0.0000002,0.0000005,-0.0000005,0.0000002,2, -10};
+    //double noise[8] = {0.0005,-0.0005,0.0000002,0.0000005,-0.0000005,0.0000002,2, -10};
     //double noise[8] = {0,0,0,0,0,0,0, 0};
-    //double noise[8] = {0.0005,-0.0005,0,0.0000005,-0.0000005,0,2, -10};
+    double noise[8] = {0.0005,-0.0005,0,0.0000005,-0.0000005,0,2, 10};
 
-    int cnt = GENERAL_TIME  / STEP;
+    int cnt = GENERAL_TIME / STEP;
     double JD_start = JD;
     double *vec = new double[6];
 
     vec[0] = 1248.77, vec[1] = -6763.69, vec[2] = -0.155766;
     vec[3] = 7.48616, vec[4] = 1.38216, vec[5] = 0.00024043;
+    double angle = 10 * PI / 180;
+    double matrix[3][3] = {{1, 0, 0}, {0, cos(angle), -sin(angle)}, {0, sin(angle), cos(angle)}};
+    changeCoords(matrix, vec, 0);
+    changeCoords(matrix, vec, 3);
 
     //vec[0] = 1472.62, vec[1] = -6718.5, vec[2] = -0.148523;
     //vec[3] = 7.43608, vec[4] = 1.63027, vec[5] = 0.000242242;
 
-    //vec[0] = START_POINT, vec[1] = 0, vec[2] = 0;
-    //vec[3] = 0, vec[4] = sqrt(GM / START_POINT), vec[5] = 0;
+    /*
+    vec[0] = START_POINT, vec[1] = 0, vec[2] = 0;
+    vec[3] = 0, vec[4] = sqrt(GM / START_POINT) , vec[5] = 0;
+    double rotateMatrix[3][3];
+    iauC2t06a(JD_start + (37.0 + 32.184) / 86400.0, 0, JD_start, 0, 0, 0, rotateMatrix);
+    Transposition(rotateMatrix);
+    changeCoords( rotateMatrix,vec, 0);
+    changeCoords( rotateMatrix,vec, 3); */
 
     for (int i=0; i < 6; i++){
         cout << vec[i] << "  ";
@@ -104,14 +145,21 @@ int main(){
     }
     states[6] = 1; states[13] = 1; states[20] = 1; states[27] = 1; states[34] = 1; states[41] = 1;
 
-    for (int i=0; i < 6; i++){
-        states[i] += noise[i];
+    random_device randomDevice;
+    mt19937 generation(randomDevice());
+
+    for (int i=0; i < 5; i++){
+        uniform_real_distribution<double> d(-states[i] * 0.0005, states[i] * 0.0005);
+        //states[i] += noise[i];
+        states[i] += d(generation);
     }
 
 
     double *b = new double[8];
-    for (int i=0; i < 6; i++){
-        b[i] = states[i];
+
+
+    for (int i=0; i < 8; i++){
+        b[i] = states[i] ;
     }
 
     b[6] = GM + noise[6];
@@ -129,25 +177,7 @@ int main(){
 
     double **new_res;
 
-
-    /*
-    random_device randomDevice;
-    mt19937 generation(randomDevice());
-    double var = 1.0/(pow(0.00001, 2));
-    uniform_real_distribution<double> distribution(-0.5, 0.5);
-    double W[8];
-    for (int i=0; i < 8; i++){
-        W[i] = 1.0 / pow( 1.0/ 10000, 2)   ;
-    }
-
-    for (int i=0; i < 8; i++){
-        cout << W[i] << " ";
-    }
-    cout << endl;
-
-    */
-
-    for(int iter = 0; iter < 4; iter++) {
+    for(int iter = 0; iter < 7 ; iter++) {
 
         new_res = integrate_for_inverse(JD, STEP, 54, states, b[7], b[6]);
 
@@ -175,10 +205,10 @@ int main(){
 
                 //cout << distance << " " << r_original << endl;
 
-                uniform_real_distribution<double> dist(-r_original * 0.01, r_original * 0.01);
-                double r_original_var = r_original ;//+ dist(gen);
-
                 if (r_original <= max_distance) {
+
+                    uniform_real_distribution<double> dist(-r_original * 0.005, r_original * 0.005);
+                    double r_original_var = r_original + dist(gen);
                     //cout << station_number << " ";
 
                     double *dg_dX = new double[6];
@@ -200,7 +230,7 @@ int main(){
                     }
 
                     A.push_back(current_r);
-                    r_b.push_back(r_var - r_original_var);
+                    r_b.push_back(-r_var + r_original_var);
                 }
 
             }
@@ -249,9 +279,12 @@ int main(){
             b[i] = b_new[i];
         }
 
-        for (int i = 0; i < 6; i++){
+        for (int i = 0; i < 8; i++){
             states[i] = b[i];
         }
+        /*
+        states[0] = 1248.77, states[1] = -6763.69, states[2] = -0.155766;
+        states[3] = 7.48616, states[4] = 1.38216, states[5] = 0.00024043;*/
 
         for(int i = 6; i < 54; i++){
             states[i] = 0;
@@ -266,6 +299,16 @@ int main(){
     for (int i=0; i < cnt; i++) {
         file <<  res[i][1] << " " << res[i][2] << " " << res[i][3] << endl;
     }
+    /*
+    double maxi = -100000000.0;
+    int kol;
+    for (int i=0; i < cnt; i++){
+        if (res[i][3] > maxi){
+            maxi = res[i][3];
+            kol = i;
+        }
+    }
+    cout <<res[kol][1] << " " << res[kol][2] << " " << res[kol][3] << endl; */
 
     file.close();
 

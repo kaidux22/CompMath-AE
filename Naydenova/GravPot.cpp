@@ -27,9 +27,9 @@ void GradV(double* x, double* vec, double JD, double J, double mu) {
     changeCoords(rotateMatrix, x, 0);   // НСК -> ЗСК
 
     double *grad = new double[3];
-    grad[0] = -dx(x);
-    grad[1] = -dy(x);
-    grad[2] = -dz(x);
+    grad[0] = -dx(x, MU_CONST, J2);
+    grad[1] = -dy(x, MU_CONST, J2);
+    grad[2] = -dz(x, MU_CONST, J2);
 
     Transposition(rotateMatrix);
 
