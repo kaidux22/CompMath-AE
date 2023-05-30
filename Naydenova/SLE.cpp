@@ -29,6 +29,7 @@ double* Cholesky_decomposition(double** A, int size, double* b){
                 else {
                     L[i][j] = (1.0 / L[j][j] * (A[i][j] - res));
                 }
+
             }
         }
     }
@@ -53,9 +54,10 @@ double* Cholesky_decomposition(double** A, int size, double* b){
         if (L[i][i] == 0){
             y[i] = 0;
         }
-        else {
+        else{
             y[i] = (1.0 / L[i][i]) * (b[i] - res);
-        }
+         }
+
     }
 
     //  L^t*x=y
@@ -70,7 +72,6 @@ double* Cholesky_decomposition(double** A, int size, double* b){
         else {
             x[i] = (1.0 / L[i][i]) * (y[i] - res);
         }
-
 
     }
 

@@ -18,7 +18,7 @@ void changeCoords(double(*rotateMatrix)[3], double* vec, int idx) {
 
     for(int i = 0; i < 3; i++)
         vec[idx + i] = newCoords[i];
-    delete newCoords;
+    delete[] newCoords;
 }
 
 void changeCoordsRight(double(*rotateMatrix)[3], double* vec, int idx) {

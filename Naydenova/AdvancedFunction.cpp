@@ -13,15 +13,15 @@ double** create_matrix_df_dx(double* x, double mu, double J, double JD){
     df_dx[1][4] = 1;
     df_dx[2][5] = 1;
 
-    df_dx[3][0] = -dux_dx(x, mu, J);
-    df_dx[3][1] = -dux_dy(x, mu, J);
-    df_dx[3][2] = -dux_dz(x, mu, J);
-    df_dx[4][0] = -duy_dx(x, mu, J);
-    df_dx[4][1] = -duy_dy(x, mu, J);
-    df_dx[4][2] = -duy_dz(x, mu, J);
-    df_dx[5][0] = -duz_dx(x, mu, J);
-    df_dx[5][1] = -duz_dy(x, mu, J);
-    df_dx[5][2] = -duz_dz(x, mu, J);
+    df_dx[3][0] = dux_dx(x, mu, J);
+    df_dx[3][1] = dux_dy(x, mu, J);
+    df_dx[3][2] = dux_dz(x, mu, J);
+    df_dx[4][0] = duy_dx(x, mu, J);
+    df_dx[4][1] = duy_dy(x, mu, J);
+    df_dx[4][2] = duy_dz(x, mu, J);
+    df_dx[5][0] = duz_dx(x, mu, J);
+    df_dx[5][1] = duz_dy(x, mu, J);
+    df_dx[5][2] = duz_dz(x, mu, J);
 
 
     double rotateMatrix[3][3];
@@ -88,9 +88,9 @@ void function(double* x, double* vec, double JD, double J, double mu){
     changeCoords(rotateMatrix, x, 0); //ЗСК
 
     double *grad = new double[3];
-    grad[0] = -dx(x);
-    grad[1] = -dy(x);
-    grad[2] = -dz(x);
+    grad[0] = -dx(x, mu, J);
+    grad[1] = -dy(x, mu, J);
+    grad[2] = -dz(x, mu, J);
 
     double *states = new double[48];
 
@@ -109,12 +109,12 @@ void function(double* x, double* vec, double JD, double J, double mu){
     Transposition(rotateMatrix);   // ЗСК -> НСК
 
     double *dx_dp = new double[6];
-    dx_dp[0] = -dux_dmu(x);
-    dx_dp[1] = -duy_dmu(x);
-    dx_dp[2] = -duz_dmu(x);
-    dx_dp[3] = -dux_dJ(x);
-    dx_dp[4] = -duy_dJ(x);
-    dx_dp[5] = -duz_dJ(x);
+    dx_dp[0] = dux_dmu(x);
+    dx_dp[1] = duy_dmu(x);
+    dx_dp[2] = duz_dmu(x);
+    dx_dp[3] = dux_dJ(x);
+    dx_dp[4] = duy_dJ(x);
+    dx_dp[5] = duz_dJ(x);
 
     changeCoords(rotateMatrix, dx_dp, 0);
     changeCoords(rotateMatrix, dx_dp, 3);

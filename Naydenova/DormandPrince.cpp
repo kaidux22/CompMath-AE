@@ -49,7 +49,7 @@ double** integrate(double JD, double h, const int N, double* vec) {
         }
     }
 
-    int cnt = GENERAL_TIME * 2  / h;
+    int cnt = GENERAL_TIME / h;
     double** orbit = new double* [cnt];
 
 
@@ -93,7 +93,7 @@ double** integrate_for_inverse(double JD, double h, const int N, double* vec, do
         }
     }
 
-    int cnt = GENERAL_TIME * 2  / h;
+    int cnt = GENERAL_TIME   / h;
     double** states = new double* [cnt];
 
     // 86400 секунд в сутках

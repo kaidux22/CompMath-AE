@@ -6,11 +6,11 @@
 #define J2 1.75553e10
 using namespace std;
 
-double dx(double* vec) ;
+double dx(double* vec, double mu, double J) ;
 
-double dy(double* vec) ;
+double dy(double* vec, double mu, double J) ;
 
-double dz(double* vec) ;
+double dz(double* vec, double mu, double J) ;
 
 double dg_dx(double* vec, double* coords);
 double dg_dy(double* vec, double* coords);
