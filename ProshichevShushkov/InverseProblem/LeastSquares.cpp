@@ -81,6 +81,14 @@ void LeastSquare::Iteration(int steps){
         mVec[6] = 7.48616, mVec[7] = 1.38216, mVec[8] = 0.00024043;
         mVec[9] = 7.43608, mVec[10] = 1.63027, mVec[11] = 0.000242242;
 
+        double angle = ANGLE * M_PI / 180.0;
+
+        double rotateMatrix[3][3] = {{1.0, 0.0, 0.0}, {0.0, cos(angle), -sin(angle)}, {0, sin(angle), cos(angle)}};
+
+	    for(int i = 0; i < 4; i++){
+	    	changeCoords(rotateMatrix, mVec, 3 * i);
+	    }
+
         for(int i = 12; i < 12 + 12 * UNKNOWN_PARAM; i++){
             mVec[i] = mStates->TransToVector()[i - 12];
         }
