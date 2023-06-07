@@ -17,7 +17,7 @@
 #define R_CONST 6378.1363 // км
 #define M_CONST 5,972e24 // кг
 #define MAX_ORD 2 //наибольшая степень производной
-#define GENERAL_TIME 15.0 * 86400.0 //сутки в секундах
+#define GENERAL_TIME 86400.0 //сутки в секундах
 
 #define UNKNOWN_PARAM 14 // количество восстанавливаемых параметров
 
