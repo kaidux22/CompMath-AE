@@ -55,7 +55,7 @@ LeastSquare::LeastSquare(double *measure, int measureCnt){
         mTruth->Set(i, 0, mParams->Get(i, 0));
         mParams->Set(i, 0, mParams->Get(i, 0) * mNoise[i]);
     }
-    cout << "Current Value\t" << "True Value\t" << "Difference\n";
+    cout << "\tCurrent Value\t" << "True Value\t" << "Difference\n";
     for(int i = 0; i < UNKNOWN_PARAM; i++){
         cout << mSymb[i] << "\t" << mParams->Get(i, 0) << "\t" << mTruth->Get(i, 0) << "\t" << mParams->Get(i, 0) - mTruth->Get(i, 0) << endl;
     }
