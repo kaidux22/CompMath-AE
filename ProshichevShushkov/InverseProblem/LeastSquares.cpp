@@ -18,10 +18,10 @@ LeastSquare::LeastSquare(double *measure, int measureCnt){
 					   {0.0, 0.0, 0.0, 0.1972013239e-6, -0.1201129183e-7},
 					   {0.0, 0.0, 0.0, 0.0, 0.6525605810e-8} };
 
-    double mNoise[34];
+    double mNoise[UNKNOWN_PARAM];
     srand(time(0));
 
-    for(int i = 0; i < 34; i++){
+    for(int i = 0; i < UNKNOWN_PARAM; i++){
         mNoise[i] = 1.0; //(double)(rand() % (int)2e9 - 1e9) / 1e9 / 2e2 + 1;
     }
 
@@ -33,23 +33,12 @@ LeastSquare::LeastSquare(double *measure, int measureCnt){
     mMatrixA = new Matrix<double>(mMeasureCount, UNKNOWN_PARAM);
     mTruth = new Matrix<double>(UNKNOWN_PARAM, 1);
 
-    // координаты первого и второго спутников
-    mParams->Set(0, 0, 1248.77 * mNoise[0]), mParams->Set(1, 0, -6763.69 * mNoise[1]), mParams->Set(2, 0, -0.155766 * mNoise[2]);
-    mParams->Set(3, 0, 1472.62 * mNoise[6]), mParams->Set(4, 0, -6718.5 * mNoise[7]), mParams->Set(5, 0, -0.148523 * mNoise[8]);
+    int cnt = 0;
 
-    //скорости первого и второго спутников
-    mParams->Set(6, 0, 7.48616 * mNoise[3]), mParams->Set(7, 0, 1.38216 * mNoise[4]), mParams->Set(8, 0, 0.00024043 * mNoise[5]);
-    mParams->Set(9, 0, 7.43608 * mNoise[9]), mParams->Set(10, 0, 1.63027 * mNoise[10]), mParams->Set(11, 0, 0.000242242 * mNoise[11]);
-    
-    //Нахождение параметра массы
-    //mParams->Set(12, 0, 398600.4415 + mNoise[12]);
-
-
-    int cnt = 12;
     //Cmn
-    for(int n = 2; n < 4; n++){
+    for(int n = 2; n <= 4; n++){
         for(int m = 0; m <= n; m++){
-            mParams->Set(cnt, 0, Cmn[m][n] * mNoise[cnt]);
+            mParams->Set(cnt, 0, Cmn[m][n]);
             cnt++;
         }
     }
@@ -57,32 +46,43 @@ LeastSquare::LeastSquare(double *measure, int measureCnt){
     //Smn
     for(int n = 2; n <= 4; n++){
         for(int m = 1; m <= n; m++){
-            mParams->Set(cnt, 0, Smn[m][n] * mNoise[cnt]);
+            mParams->Set(cnt, 0, Smn[m][n]);
             cnt++;
         }
     }
     
-    for(int i = 0; i < UNKNOWN_PARAM; i++)
+    for(int i = 0; i < UNKNOWN_PARAM; i++){
         mTruth->Set(i, 0, mParams->Get(i, 0));
-
+        mParams->Set(i, 0, mParams->Get(i, 0) * mNoise[i]);
+    }
+    cout << "Current Value\t" << "True Value\t" << "Difference\n";
+    for(int i = 0; i < UNKNOWN_PARAM; i++){
+        cout << mSymb[i] << "\t" << mParams->Get(i, 0) << "\t" << mTruth->Get(i, 0) << "\t" << mParams->Get(i, 0) - mTruth->Get(i, 0) << endl;
+    }
+    cout << endl;
 }
 
 void LeastSquare::Iteration(int steps){
     for(int step = 0 ; step < steps; step++){
         for(int i = 0; i < 12; i++){
             for(int j = 0; j < UNKNOWN_PARAM; j++){
-                if(i == j){
-                    mStates->Set(i, j, 1);
-                    continue;
-                }
                 mStates->Set(i, j, 0);
             }
         }
 
-        for(int i = 0; i < 12; i++){
-            mVec[i] = mParams->Get(i, 0);
-        }
-        
+       //начальное положение в НСК первого спутника
+        mVec[0] = 1248.77, mVec[1] = -117.887, mVec[2] = -6762.66;
+
+        //начальное положение в НСК второго спутника
+        mVec[3] = 1472.62, mVec[4] = -117.105, mVec[5] = -6717.48;
+
+        // начальная скорость в НСК первого спутника
+        mVec[6] = 7.48616, mVec[7] = 0.0238816, mVec[8] = 1.38195;
+
+        //начальная скорость в НСК второго спутника
+        mVec[9] = 7.43608, mVec[10] = 0.0282099, mVec[11] = 1.63003;
+
+
         //проверить переворот матрицы в список по столбцам
         for(int i = 12; i < 12 + 12 * UNKNOWN_PARAM; i++){
             mVec[i] = mStates->TransToVector()[i - 12];
@@ -144,9 +144,10 @@ void LeastSquare::Iteration(int steps){
             mParams->Set(i, 0, mParams->Get(i, 0) - Vectorx->Get(i, 0));
         }
 
-        cout << "Step\n";
-        mParams->Print();
-        //mTruth->Print();
+        for(int i = 0; i < UNKNOWN_PARAM; i++){
+        cout << mSymb[i] << "\t" << mParams->Get(i, 0) << "\t" << mTruth->Get(i, 0) << "\t" << mParams->Get(i, 0) - mTruth->Get(i, 0) << endl;
+        }
+        cout << endl;
 
     }
 }
@@ -166,6 +167,7 @@ Matrix<double>* LeastSquare::CholeskyDecomposition(Matrix<double> *MatrixA, Matr
     assert(MatrixA->RowsCount() == Vectorb->RowsCount());
     Matrix<double> *MatrixL = new Matrix<double>(MatrixA->RowsCount(), MatrixA->ColumnCount());
 
+    //составление матрицы L
      for (int i=0; i < MatrixA->RowsCount(); i++){
         for (int j = 0; j < (i + 1); j++){
             double res = 0;

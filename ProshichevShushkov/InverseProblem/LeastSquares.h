@@ -48,6 +48,12 @@ private:
     Matrix<double> *mResiduals;
     Matrix<double> *mMatrixA;
     Matrix<double> *mTruth;
+    char* mSymb[UNKNOWN_PARAM] = {"C02", "C12", "C22", 
+                                  "C03", "C13", "C23", "C33", 
+                                  "C04", "C14", "C24", "C34", "C44", 
+                                  "S12", "S22",
+                                  "S13", "S23", "S33", 
+                                  "S14", "S24", "S34", "S44"};
 };
 
 #endif //COMPMATH_LEASTSQUARES
