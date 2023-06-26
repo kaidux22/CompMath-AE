@@ -12,7 +12,7 @@
 #include "../sofa/sofa.h"
 #include "../Math/Matrix.h"
 
-#define N_CONST 4
+#define N_CONST 4 //количество гармоник
 #define NU_CONST 398600.4415 // км^3/с^2
 #define R_CONST 6378.1363 // км
 #define M_CONST 5,972e24 // кг
@@ -20,6 +20,7 @@
 #define GENERAL_TIME 86400.0 //сутки в секундах
 #define ANGLE 89.0
 
+<<<<<<< HEAD
 /* 
 В прямой задаче использовались первые 4 члена ряда гравитационного потенцила.
 Тогда количетсво параметров, на которые нужно наложить шум, следующие:
@@ -35,6 +36,9 @@
 Итого: 34 неизвестных параметров
 */
 #define UNKNOWN_PARAM 21
+=======
+#define UNKNOWN_PARAM 14 // количество восстанавливаемых параметров
+>>>>>>> d9a997fa8a9e59c18ef81a71abaa4a30aea08804
 
 using namespace std;
 
@@ -49,9 +53,6 @@ double DerivativedVdC(double* vec, Matrix<double> *params, int n, int m, Complex
 
 /* Производная по Snm */
 double DerivativedVdS(double* vec, Matrix<double> *params, int n, int m, ComplexNum(*func)(LegFunc&, int, int, double*));
-
-/* Производная по M */
-double DerivativedVdGM(double* vec, Matrix<double> *params, ComplexNum(*func)(LegFunc&, int, int, double*));
 
 /* Подсчёт градиента гравитационного потенциала */
 void GradV(double* x, double* vec, double JD, Matrix<double> *params);

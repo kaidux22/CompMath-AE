@@ -3,8 +3,7 @@
 
 #include <cmath>
 
-double* OrbitDistance(double** orbit1, double** orbit2, int stepCnt);
-
+/* функция для вычисления дифференциальных межспутниковых измерений */
 double* OrbitDistance(double **orbits, int stepCnt);
 
 #endif //COMPMATH_DISTANCE

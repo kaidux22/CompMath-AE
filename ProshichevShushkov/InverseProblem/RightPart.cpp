@@ -18,20 +18,29 @@ double GravPotWithParams(double* vec, Matrix<double> *params, ComplexNum(*func)(
 					   {0.0, 0.0, 0.0, 0.1972013239e-6, -0.1201129183e-7},
 					   {0.0, 0.0, 0.0, 0.0, 0.6525605810e-8} };
 	
+<<<<<<< HEAD
 	int cnt = 0;
     //Cmn
     for(int n = 2; n <= 4; n++){
+=======
+	//заменяем истинные коэффициенты на восстанавливаемые
+	int cnt = 0;
+
+	for(int n = 3; n <= 4; n++){
+>>>>>>> d9a997fa8a9e59c18ef81a71abaa4a30aea08804
         for(int m = 0; m <= n; m++){
-            Cmn[m][n] = params->Get(cnt, 0);
-            cnt++;
+			if(m == 0)
+                continue;
+            Cmn[m][3] = params->Get(cnt, 0);
+        cnt++;
         }
     }
 
-    //Smn
-    for(int n = 2; n <= 4; n++){
+
+    for(int n = 3; n <= 4; n++){
         for(int m = 1; m <= n; m++){
-            Smn[m][n] = params->Get(cnt, 0);
-            cnt++;
+            Smn[m][3] = params->Get(cnt, 0);
+        cnt++;
         }
     }
 	
@@ -53,6 +62,10 @@ double GravPotWithParams(double* vec, Matrix<double> *params, ComplexNum(*func)(
 	return NU_CONST * res.Real();
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> d9a997fa8a9e59c18ef81a71abaa4a30aea08804
 /*
 0 0 0 0 0 0 1 0 0 0 0 0
 0 0 0 0 0 0 0 1 0 0 0 0
@@ -119,6 +132,10 @@ Matrix<double> *MatrixdFdX(double *x, Matrix<double> *params, double JD){
 	return dFdX;
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> d9a997fa8a9e59c18ef81a71abaa4a30aea08804
 /*
 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -145,8 +162,15 @@ Matrix<double> *MatrixdFdParam(double *x, Matrix<double> *params, double JD){
 
 	int cnt = 0;
 	
+<<<<<<< HEAD
 	for(int n = 2; n <= 4; n++){
         for(int m = 0; m <= n; m++){
+=======
+	for(int n = 3; n <= 4; n++){
+        for(int m = 0; m <= n; m++){
+			if(m == 0)
+                continue;
+>>>>>>> d9a997fa8a9e59c18ef81a71abaa4a30aea08804
            	vec[0] = -DerivativedVdC(x, params, 3, m, Vdx), vec[1] = -DerivativedVdC(x, params, 3, m, Vdy), vec[2] = -DerivativedVdC(x, params, 3, m, Vdz);
 			changeCoords(matrix, vec, 0);
     		dFdParam->Set(6, cnt, vec[0]), dFdParam->Set(7, cnt, vec[1]), dFdParam->Set(8, cnt, vec[2]);
@@ -160,7 +184,11 @@ Matrix<double> *MatrixdFdParam(double *x, Matrix<double> *params, double JD){
     }
 
 
+<<<<<<< HEAD
     for(int n = 2; n <= 4; n++){
+=======
+    for(int n = 3; n <= 4; n++){
+>>>>>>> d9a997fa8a9e59c18ef81a71abaa4a30aea08804
         for(int m = 1; m <= n; m++){
             vec[0] = -DerivativedVdS(x, params, 3, m, Vdx), vec[1] = -DerivativedVdS(x, params, 3, m, Vdy), vec[2] = -DerivativedVdS(x, params, 3, m, Vdz);
 			changeCoords(matrix, vec, 0);
@@ -191,13 +219,6 @@ void RightPart(double* x, double* vec, double JD, Matrix<double> *params) {
 	vec[10] = 0;
 	vec[11] = 0;
 
-	/*
-	for(int i = 0; i < 12; i++){
-		cout << vec[i] << endl;
-	}
-	cout << endl;
-	*/
-
     double rotateMatrix[3][3];
 
     iauC2t06a(JD + (37.0 + 32.184) / 86400.0, 0, JD, 0, 0, 0, rotateMatrix);
@@ -219,8 +240,6 @@ void RightPart(double* x, double* vec, double JD, Matrix<double> *params) {
 	Matrix<double> *dXdParam = new Matrix<double>(x + 12, 12, UNKNOWN_PARAM);
     Matrix<double> *dFdParam = MatrixdFdParam(x, params, JD);
 	Matrix<double> prod = *dFdX * *dXdParam + *dFdParam;
-	//prod.Print();
-
 
 	double *res = prod.TransToVector();
 

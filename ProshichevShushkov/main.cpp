@@ -5,8 +5,13 @@ using namespace std;
 int main(){
 	double JD_start = JD;
 	double *vec = new double[12];
+<<<<<<< HEAD
 	int cnt =  86400.0 / STEP;
 
+=======
+	int cnt =  GENERAL_TIME / STEP;
+	
+>>>>>>> d9a997fa8a9e59c18ef81a71abaa4a30aea08804
 
 	//начальное положение в НСК первого спутника
 	vec[0] = 1248.77, vec[1] = -117.887, vec[2] = -6762.66;
@@ -20,16 +25,23 @@ int main(){
 	//начальная скорость в НСК второго спутника
 	vec[9] = 7.43608, vec[10] = 0.0282099, vec[11] = 1.63003;
 
-	double** orbits = Integrate(JD, STEP, 12, vec); 
-	
+	double angle = ANGLE * M_PI / 180.0;
 
-	/*
-	for(int i = 0; i < cnt; i++){
-		cout << "time: " << orbit1[i][0] << " x: " << orbit1[i][1] << " y: " << orbit1[i][2] << " z: " << orbit1[i][3] << endl;
-		cout << "Vx: " << orbit1[i][4] << " Vy: " << orbit1[i][5] << " Vz: " << orbit1[i][6] << endl;
-		cout << endl;	
+	double rotateMatrix[3][3] = {{1.0, 0.0, 0.0}, {0.0, cos(angle), -sin(angle)}, {0, sin(angle), cos(angle)}};
+
+	for(int i = 0; i < 4; i++){
+		changeCoords(rotateMatrix, vec, 3 * i);
 	}
-	*/
+
+	for(int i = 0; i < 12; i++)
+		cout << vec[i] << " ";
+	cout << endl;
+
+	double** orbits = Integrate(JD, STEP, 12, vec); 
+
+	for(int i = 0; i < 12; i++)
+		cout << orbits[0][i + 1] << " ";
+	cout << endl;
 	
 	fstream orbit("orbit.txt", ios::out);
 	for(int i = 0; i < cnt; i++){
@@ -37,28 +49,18 @@ int main(){
 	}
 	orbit.close();
 
-
 	/*
 	По программе GRACE между спутниками соблюдалось расстояние ~220 +- 50 км
 	После построение первой орбиты заметили, что через шаг расстояние от начальной точки примерно такое
 	Поэтому за начальную точку второй орбиты возьмём координаты после этого шага
 	*/
-	
-	/*
-	fstream file("orbit.txt", ios::out);
-	for(int i = 0; i < cnt; i++){
-		file << orbit2[i][1] << " " << orbit2[i][2] << " " << orbit2[i][3] << endl;
-	}
-	file.close();
-	*/
 
 	double* res = OrbitDistance(orbits, cnt);
+
 	
-	/*
 	for(int i = 0; i < cnt; i++){
-		cout << res[i][0] << " " << res[i][1] << endl;
+		res[2 * i + 1] *= (1 + 0 * (rand() % (int)2e5 - 1e5) / 1e8);
 	}
-	*/
 
 	fstream dist("distance.txt", ios::out);
 	for(int i = 0; i < cnt; i++){
