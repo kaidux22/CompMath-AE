@@ -146,17 +146,14 @@ public:
 		return vector;
 	}
 	
-	/* раскладывание матрицы по столбцам в массив */
 	Type *TransToVector(){
 		return mMatrix;
 	}
 
-	/* количество строк */
 	int RowsCount() const{
 		return mRows;
 	}
 
-	/* количество колонн */
 	int ColumnCount() const{
 		return mColumn;
 	}
