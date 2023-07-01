@@ -58,6 +58,7 @@ double** Integrate(double JD, double h, const int N, double* vec) {
             orbit[i][j + 1] = vec[j];
         JD += h / 86400.0;
     }
+
     return orbit;
 
 }
