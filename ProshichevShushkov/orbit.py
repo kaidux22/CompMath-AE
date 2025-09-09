@@ -25,7 +25,6 @@ def animate(i):
 
     plt.xlabel('x [км]')
     plt.ylabel('y [км]')
-    #plt.zlabel('z [км]')
     plt.title('Орбита')
 
 

@@ -1,7 +1,5 @@
 #include "GravPot.h"
 
-
-
 double GravPot(double* vec, ComplexNum(*func)(LegFunc&, int, int, double*)) {
 	int N = N_CONST;
 	double R = R_CONST;

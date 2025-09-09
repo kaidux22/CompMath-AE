@@ -83,32 +83,12 @@ void LeastSquare::Iteration(int steps){
             }
         }
         
-        //проверить переворот матрицы в список по столбцам
         for(int i = 12; i < 12 + 12 * UNKNOWN_PARAM; i++){
             mVec[i] = mStates->TransToVector()[i - 12];
         }
 
         double **orbits = ConditionVectorIntegrate(JD, STEP, 12 + 12 * UNKNOWN_PARAM, mVec, mParams);
-
-        /*
-        for(int t = 0; t < mMeasureCount; t++){
-            for(int i = 13; i < 12 + 12 * 34 + 1; i++){
-               cout << orbits[t][i] << " ";
-            }
-            cout << endl;
-        }
-        cout << endl;
-        assert(false);
-        */
-
         double *distance = OrbitDistance(orbits, mMeasureCount);
-
-        /*
-        for(int i = 0; i < mMeasureCount; i++){
-            cout << distance[2 * i] - JD << " " << distance[2 * i + 1] << endl;
-        }
-        assert(false);
-        */
 
         for(int i = 0; i < mMeasureCount; i++){
             for(int j = 0; j < 12; j++){
@@ -126,8 +106,6 @@ void LeastSquare::Iteration(int steps){
             for(int j = 0; j < UNKNOWN_PARAM; j++){
                 mMatrixA->Set(i, j, -res[j]);
             }
-
-            //разобраться со слау
             mResiduals->Set(i, 0, mMeasure[2 * i + 1] - distance[2 * i + 1]);        
         }
 
@@ -232,16 +210,6 @@ Matrix<double>* LeastSquare::CholeskyDecomposition(Matrix<double> *MatrixA, Matr
     delete Vectory;
     delete MatrixL;
     return Vectorx;
-}
-
-LeastSquare::~LeastSquare(){
-    /*
-    delete[] mVec;
-    delete mStates;
-    delete mParams;
-    delete mResiduals;
-    delete mMatrixA;
-    */
 }
 
 

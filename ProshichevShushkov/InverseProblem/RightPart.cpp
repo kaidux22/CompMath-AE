@@ -37,7 +37,6 @@ double GravPotWithParams(double* vec, Matrix<double> *params, ComplexNum(*func)(
 	
 	//Создаю таблицу значений полиномов Лежандра до N + 2 степени и порядка
 	LegFunc Pmn = LegFunc(N + MAX_ORD, N + MAX_ORD, vec[2] / sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]));
-	//Pmn.PrintMaxtrix();
 	ComplexNum res = ComplexNum(0, 0);
 
 
@@ -161,13 +160,6 @@ void RightPart(double* x, double* vec, double JD, Matrix<double> *params) {
 	vec[10] = 0;
 	vec[11] = 0;
 
-	/*
-	for(int i = 0; i < 12; i++){
-		cout << vec[i] << endl;
-	}
-	cout << endl;
-	*/
-
     double rotateMatrix[3][3];
 
     iauC2t06a(JD + (37.0 + 32.184) / 86400.0, 0, JD, 0, 0, 0, rotateMatrix);
@@ -189,7 +181,6 @@ void RightPart(double* x, double* vec, double JD, Matrix<double> *params) {
 	Matrix<double> *dXdParam = new Matrix<double>(x + 12, 12, UNKNOWN_PARAM);
     Matrix<double> *dFdParam = MatrixdFdParam(x, params, JD);
 	Matrix<double> prod = *dFdX * *dXdParam + *dFdParam;
-	//prod.Print();
 
 
 	double *res = prod.TransToVector();
